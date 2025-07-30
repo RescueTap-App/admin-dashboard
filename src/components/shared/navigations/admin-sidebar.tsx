@@ -5,9 +5,9 @@ import {
     Boxes,
     Car,
     Users,
-    BookAudioIcon
+    BookAudioIcon,
+    LogOut
 } from "lucide-react"
-
 import {
     Sidebar,
     SidebarContent,
@@ -113,7 +113,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <NavMain items={data.navMain} />
             </SidebarContent>
             <SidebarFooter>
-                <button>Logout</button>
+                  <button className="flex flex-row items-center justify-between py-2 px-1.5 font-lato">Logout <LogOut/></button>
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>

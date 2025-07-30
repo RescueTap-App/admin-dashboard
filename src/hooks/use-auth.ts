@@ -21,7 +21,10 @@ export function useAuth() {
                     user: res.user,
                 })
             );
-            toast.success("Login successful")
+            sessionStorage.setItem("token", res.access_token);
+            sessionStorage.setItem("userId", res.user._id);
+            sessionStorage.setItem("role", res.user.role);
+            toast.success(res.messages || "Login successful")
             return res
         } catch (error: unknown) {
             const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to Login"
@@ -33,7 +36,8 @@ export function useAuth() {
     const sendOtp = async (crdentails: SendOtpTypes) => {
         try {
             const res = await sendOtpMutation(crdentails).unwrap()
-            toast.success("Otp sent successfully")
+            toast.success(res.messages || "Otp sent successfully");
+            console.log(res)
             return res
         } catch (error: unknown) {
             const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to send otp"
@@ -45,7 +49,8 @@ export function useAuth() {
     const resetPassword = async (crdentails: ResetPasswordTypes) => {
         try {
             const res = await resetMutation(crdentails).unwrap()
-            toast.success("Your have successfully reset your password")
+            toast.success(res.messages || "Your have successfully reset your password")
+            console.log(res)
             return res
         } catch (error: unknown) {
             const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to reset password"
@@ -56,13 +61,17 @@ export function useAuth() {
     const verifyOtp = async (crdentails: VerifyOtpTypes) => {
         try {
             const res = await verifyMutation(crdentails).unwrap()
-            toast.success("Otp code verified successfully")
+            toast.success(res.messages || "Otp code verified successfully");
             return res
         } catch (error: unknown) {
             const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to verify otp"
             toast.error(errorMessage)
             console.log(error)
         }
+    }
+
+    const resendOtp = async () => {
+
     }
 
     return {
@@ -73,7 +82,7 @@ export function useAuth() {
         verifyOtp,
         verifying,
         resetPassword,
-        resetting
-
+        resetting,
+        resendOtp
     }
 }

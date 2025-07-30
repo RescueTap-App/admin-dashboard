@@ -29,10 +29,9 @@ export const resetPasswordSchema = z.object({
 });
 
 export const authCodeSchema = z.object({
-    code: z.string()
-        .length(6, "Code must be exactly 6 digits")
+    otp: z.string()
+        .length(5, "Code must be exactly 6 digits")
         .regex(/^\d+$/, "Code must contain only numbers"),
-    email: z.string().email("Please enter a valid email address"),
 });
 
 export type ResetPasswordDataType = z.infer<typeof resetPasswordSchema>;

@@ -1,4 +1,8 @@
 import { authApi } from '@/redux/features/auth-api';
+import { driversApi } from '@/redux/features/drivers-api';
+import { organizationApi } from "@/redux/features/organization-api";
+import { uploadApi } from '@/redux/features/upload-api';
+import { usersApi } from "@/redux/features/users-api";
 import { authSlice } from '@/redux/slices/auth-slice';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
@@ -15,6 +19,10 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
     [authApi.reducerPath]: authApi.reducer,
+    [usersApi.reducerPath]: usersApi.reducer,
+    [uploadApi.reducerPath]: uploadApi.reducer,
+    [driversApi.reducerPath]: driversApi.reducer,
+    [organizationApi.reducerPath]: organizationApi.reducer,
     auth: authSlice.reducer,
 });
 
@@ -27,6 +35,10 @@ export const store = configureStore({
             serializableCheck: false,
         }).concat(
             authApi.middleware,
+            usersApi.middleware,
+            uploadApi.middleware,
+            driversApi.middleware,
+            organizationApi.middleware
         ),
 });
 

@@ -9,10 +9,11 @@ export type SendOtpTypes = {
 }
 
 export type ResetPasswordTypes = {
-    newPassword: string
-    confirmPassword: string
+    newPassword: string;
+    userId: string;
+    otp: string;
 }
 
 export type VerifyOtpTypes = {
-    otpCode: string
+    otp: string
 }

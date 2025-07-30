@@ -71,6 +71,8 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile"
 import { ActiveVisitorsTableTypes } from "@/types/visitors.types"
 import { VisitorsActions } from "./actions"
+import SearchInput from "@/components/shared/search-input"
+
 
 function DragHandle({ id }: { id: string }) {
     const { attributes, listeners } = useSortable({
@@ -244,7 +246,8 @@ export function ActiveVisitorsTable({
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
     )
-    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [sorting, setSorting] = React.useState<SortingState>([]);
+    const [globalFilter, setGlobalFilter] = React.useState('');
     const [pagination, setPagination] = React.useState({
         pageIndex: 0,
         pageSize: 10,
@@ -268,6 +271,7 @@ export function ActiveVisitorsTable({
             sorting,
             columnVisibility,
             rowSelection,
+            globalFilter,
             columnFilters,
             pagination,
         },
@@ -275,6 +279,8 @@ export function ActiveVisitorsTable({
         enableRowSelection: true,
         onRowSelectionChange: setRowSelection,
         onSortingChange: setSorting,
+        onGlobalFilterChange: setGlobalFilter,
+        globalFilterFn: 'includesString',
         onColumnFiltersChange: setColumnFilters,
         onColumnVisibilityChange: setColumnVisibility,
         onPaginationChange: setPagination,
@@ -299,7 +305,10 @@ export function ActiveVisitorsTable({
 
     return (
         <React.Fragment>
-
+            <SearchInput
+                value={globalFilter}
+                placeholder="active visitors"
+                onChange={(e) => setGlobalFilter(e.target.value)} />
             <div className="overflow-hidden border">
                 <DndContext
                     collisionDetection={closestCenter}

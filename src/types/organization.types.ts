@@ -51,3 +51,24 @@ export interface Organization {
   qrStickers: number
   vehiclePasses: number
 }
+
+
+export type OrganizationRegistrationData = {
+  organizationName: string;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+  email: string;
+  password: string;
+  subscriptionPlan: 'monthly' | 'yearly'; 
+  driverLimit: number;
+  userLimit: number;
+  amount: string; 
+};
+
+export type OrgUserInviteData = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+};

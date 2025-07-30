@@ -2,8 +2,12 @@
 
 import * as React from "react"
 import {
-    Boxes,
-    Car
+    Users,
+    Car,
+    Settings,
+    UserCog2,
+    IdCardIcon,
+    LogOut
 } from "lucide-react"
 import {
     Sidebar,
@@ -20,18 +24,18 @@ const data = {
         {
             title: "Vehicles Registry",
             url: "#",
-            icon: Boxes,
+            icon: Car,
             isActive: true,
             items: [
                 {
                     title: "All Vehicles",
                     url: "/org/vehicles",
                 },
-                 {
+                {
                     title: "Register Vehicle",
                     url: "/org/vehicles/register",
                 },
-                 {
+                {
                     title: "Request Slots",
                     url: "/org/vehicles/request-slot",
                 },
@@ -40,41 +44,45 @@ const data = {
         {
             title: "Users Registry",
             url: "#",
-            icon: Car,
+            icon: Users,
             items: [
                 {
                     title: "Drivers List",
-                    url: "/org/drivers/create",
+                    url: "/org/drivers",
                 },
                 {
                     title: "Create Driver",
                     url: "/org/drivers/create",
                 },
-                 {
+                {
                     title: "Bulk Registration",
                     url: "/org/bulk-registry/create",
                 },
             ],
         },
-         {
+        {
             title: "Visitors Registry",
             url: "#",
-            icon: Car,
+            icon: UserCog2,
             items: [
                 {
-                    title: "Drivers List",
-                    url: "/org/visitors/create",
+                    title: "All Visitors",
+                    url: "/org/visitors",
                 },
                 {
-                    title: "Create Driver",
-                    url: "/org/visitors/create",
+                    title: "Active Visitors",
+                    url: "/org/visitors/active",
+                },
+                {
+                    title: "Create Visitor",
+                    url: "/org/visitors/generate-pass",
                 },
             ],
         },
         {
             title: "Analytics",
             url: "#",
-            icon: Car,
+            icon: IdCardIcon,
             items: [
                 {
                     title: "Your Analytics",
@@ -85,7 +93,7 @@ const data = {
         {
             title: "Settings",
             url: "/org/settigs",
-            icon: Car,
+            icon: Settings,
             // items: [
             //     {
             //         title: "Your Settings",
@@ -112,7 +120,7 @@ export function UserAppSidebar({ ...props }: React.ComponentProps<typeof Sidebar
                 <NavMain items={data.navMain} />
             </SidebarContent>
             <SidebarFooter>
-                <button>Logout</button>
+                <button className="flex flex-row items-center justify-between py-2 px-1.5 font-lato">Logout <LogOut/></button>
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>

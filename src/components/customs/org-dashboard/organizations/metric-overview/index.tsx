@@ -1,11 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Building2, Users, QrCode, Car } from "lucide-react"
+import { Users, QrCode, Car } from "lucide-react"
 import type { Organization, Activity } from "@/types/organization.types"
 import { CiExport } from "react-icons/ci";
 import { IoIosArrowRoundForward } from "react-icons/io";
-
+import Image from "next/image"
 
 interface DashboardOverviewProps {
     organization: Organization
@@ -26,8 +26,14 @@ export function DashboardOverview({
         <div className="bg-gray-100 min-h-screen">
             <div className="bg-white p-4 mb-4">
                 <div className="flex items-center justify-center flex-col gap-3 mb-4 mx-auto">
-                    <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
-                        <Building2 className="w-6 h-6 text-white" />
+                    <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center relative">
+                        <Image
+                            src={"/icons/org-icon.svg"}
+                            alt={"Building Logo"}
+                            fetchPriority="high"
+                            height={50}
+                            width={50}
+                            className="object-contain object-center" />
                     </div>
                     <div className={"flex flex-col items-center"}>
                         <div className="font-semibold text-gray-900">{organization.name}</div>

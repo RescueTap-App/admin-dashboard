@@ -30,7 +30,6 @@ import {
     IconCircleCheckFilled,
     IconDotsVertical,
     IconGripVertical,
-    // IconLayoutColumns,
     IconLoader,
 } from "@tabler/icons-react"
 import {
@@ -50,16 +49,6 @@ import {
 } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-    Drawer,
-    DrawerClose,
-    DrawerContent,
-    DrawerDescription,
-    DrawerFooter,
-    DrawerHeader,
-    DrawerTitle,
-    DrawerTrigger,
-} from "@/components/ui/drawer"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
     DropdownMenu,
@@ -85,13 +74,10 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { useIsMobile } from "@/hooks/use-mobile"
 import { OrganizationTableType } from "@/types/organization.types"
+import SearchInput from "@/components/shared/search-input";
 
 
-
-
-// Create a separate component for the drag handle
 function DragHandle({ id }: { id: string }) {
     const { attributes, listeners } = useSortable({
         id,
@@ -144,12 +130,15 @@ const columns: ColumnDef<OrganizationTableType>[] = [
         enableHiding: true,
     },
     {
-        accessorKey: "header",
+        accessorKey: "organization",
         header: "Organizations",
-        cell: ({ row }) => {
-            return <TableCellViewer item={row.original} />
-        },
-        enableHiding: false,
+        cell: ({ row }) => (
+            <div className="w-32">
+                <p className="text-muted-foreground px-1.5">
+                    {row.original.organization}
+                </p>
+            </div>
+        ),
     },
     {
         accessorKey: "category",
@@ -295,7 +284,8 @@ export function TotalOrganizationTable({
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
     )
-    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [sorting, setSorting] = React.useState<SortingState>([]);
+    const [globalFilter, setGlobalFilter] = React.useState('');
     const [pagination, setPagination] = React.useState({
         pageIndex: 0,
         pageSize: 10,
@@ -319,6 +309,7 @@ export function TotalOrganizationTable({
             sorting,
             columnVisibility,
             rowSelection,
+            globalFilter,
             columnFilters,
             pagination,
         },
@@ -326,6 +317,8 @@ export function TotalOrganizationTable({
         enableRowSelection: true,
         onRowSelectionChange: setRowSelection,
         onSortingChange: setSorting,
+        onGlobalFilterChange: setGlobalFilter,
+        globalFilterFn: 'includesString',
         onColumnFiltersChange: setColumnFilters,
         onColumnVisibilityChange: setColumnVisibility,
         onPaginationChange: setPagination,
@@ -350,7 +343,11 @@ export function TotalOrganizationTable({
 
     return (
         <React.Fragment>
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-3 mb-4">
+                <SearchInput
+                    value={globalFilter}
+                    placeholder="organization"
+                    onChange={(e) => setGlobalFilter(e.target.value)} />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="default" className={"rounded"}>
@@ -515,35 +512,5 @@ export function TotalOrganizationTable({
                 </div>
             </div>
         </React.Fragment>
-    )
-}
-
-function TableCellViewer({ item }: { item: OrganizationTableType }) {
-    const isMobile = useIsMobile()
-    return (
-        <Drawer direction={isMobile ? "bottom" : "right"}>
-            <DrawerTrigger asChild>
-                <Button variant="link" className="text-foreground w-fit px-0 text-left">
-                    {item.organization}
-                </Button>
-            </DrawerTrigger>
-            <DrawerContent>
-                <DrawerHeader className="gap-1">
-                    <DrawerTitle>{item.organization}</DrawerTitle>
-                    <DrawerDescription>
-                        Showing total visitors for the last 6 months
-                    </DrawerDescription>
-                </DrawerHeader>
-                <div>
-                    Content of Drawer
-                </div>
-                <DrawerFooter>
-                    <Button>Submit</Button>
-                    <DrawerClose asChild>
-                        <Button variant="outline">Done</Button>
-                    </DrawerClose>
-                </DrawerFooter>
-            </DrawerContent>
-        </Drawer>
     )
 }

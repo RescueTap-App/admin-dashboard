@@ -46,16 +46,6 @@ import {
 } from "@tanstack/react-table"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-    Drawer,
-    DrawerClose,
-    DrawerContent,
-    DrawerDescription,
-    DrawerFooter,
-    DrawerHeader,
-    DrawerTitle,
-    DrawerTrigger,
-} from "@/components/ui/drawer"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
     DropdownMenu,
@@ -79,8 +69,8 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { useIsMobile } from "@/hooks/use-mobile"
 import { RegisteredVehicleTableTypes } from "@/types/vehicles.types"
+import SearchInput from "@/components/shared/search-input"
 
 
 function DragHandle({ id }: { id: string }) {
@@ -137,10 +127,13 @@ const columns: ColumnDef<RegisteredVehicleTableTypes>[] = [
     {
         accessorKey: "header",
         header: "Owner",
-        cell: ({ row }) => {
-            return <TableCellViewer item={row.original} />
-        },
-        enableHiding: false,
+        cell: ({ row }) => (
+            <div className="w-32">
+                <p className="text-muted-foreground px-1.5">
+                    {row.original.owner}
+                </p>
+            </div>
+        ),
     },
     {
         accessorKey: "vehicle",
@@ -251,7 +244,8 @@ export function RegisteredVehicleTable({
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
     )
-    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [sorting, setSorting] = React.useState<SortingState>([]);
+    const [globalFilter, setGlobalFilter] = React.useState('');
     const [pagination, setPagination] = React.useState({
         pageIndex: 0,
         pageSize: 10,
@@ -275,6 +269,7 @@ export function RegisteredVehicleTable({
             sorting,
             columnVisibility,
             rowSelection,
+            globalFilter,
             columnFilters,
             pagination,
         },
@@ -282,6 +277,8 @@ export function RegisteredVehicleTable({
         enableRowSelection: true,
         onRowSelectionChange: setRowSelection,
         onSortingChange: setSorting,
+        onGlobalFilterChange: setGlobalFilter,
+        globalFilterFn: 'includesString',
         onColumnFiltersChange: setColumnFilters,
         onColumnVisibilityChange: setColumnVisibility,
         onPaginationChange: setPagination,
@@ -307,6 +304,9 @@ export function RegisteredVehicleTable({
     return (
         <React.Fragment>
             <div className="flex items-center gap-2 mb-4">
+                <SearchInput
+                    value={globalFilter}
+                    onChange={(e) => setGlobalFilter(e.target.value)} />
                 <Button onClick={onExport} variant="outline" size="default" className={"rounded"}>
                     <span className="hidden lg:inline">Export Registry</span>
                     <BsUpload />
@@ -445,32 +445,3 @@ export function RegisteredVehicleTable({
     )
 }
 
-function TableCellViewer({ item }: { item: RegisteredVehicleTableTypes }) {
-    const isMobile = useIsMobile()
-    return (
-        <Drawer direction={isMobile ? "bottom" : "right"}>
-            <DrawerTrigger asChild>
-                <Button variant="link" className="text-foreground w-fit px-0 text-left">
-                    {item.owner}
-                </Button>
-            </DrawerTrigger>
-            <DrawerContent>
-                <DrawerHeader className="gap-1">
-                    <DrawerTitle>{item.owner}</DrawerTitle>
-                    <DrawerDescription>
-                        Showing total visitors for the last 6 months
-                    </DrawerDescription>
-                </DrawerHeader>
-                <div>
-                    Content of Drawer
-                </div>
-                <DrawerFooter>
-                    <Button>Submit</Button>
-                    <DrawerClose asChild>
-                        <Button variant="outline">Done</Button>
-                    </DrawerClose>
-                </DrawerFooter>
-            </DrawerContent>
-        </Drawer>
-    )
-}

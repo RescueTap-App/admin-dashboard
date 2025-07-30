@@ -76,12 +76,12 @@ function ActiveVisitorsLog() {
                     <h1 className={"font-semibold text-xl"}>Visitors Logs</h1>
                     <p className={"text-sm pt-2"}>History of all visitors who have checked in and out</p>
                 </div>
-                <div>
-                    <Link href={"/org/vistors"}>
+                <div className={"flex flex-row justify-between gap-3"}>
+                    <Link href={"/org/visitors"}>
                         <Button variant={"outline"} className={"borderborder-[#EF4136] rounded text-black"}>See Active Visitors  <IconPlus /></Button>
                     </Link>
 
-                    <Link href={"/org/vistors/generate-pass"}>
+                    <Link href={"/org/visitors/generate-pass"}>
                         <Button className={"bg-[#EF4136] hover:bg-[#EF4136]/50 rounded text-white"}>Generate Pass  <IconPlus /></Button>
                     </Link>
                 </div>

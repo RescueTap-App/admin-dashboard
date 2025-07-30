@@ -101,7 +101,7 @@ export function ReusableFormField({
                         </div>
                     </FormControl>
                     {description && <FormDescription>{description}</FormDescription>}
-                    <FormMessage className="text-red-600 text-xs font-light" />
+                    <FormMessage className="text-red-600 text-xs font-light font-sans" />
                 </FormItem>
             )}
         />

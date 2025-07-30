@@ -4,9 +4,25 @@ import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Form } from "@/components/ui/form"
 import { visitorsSchema, VisitorsSchemaFormDataType } from "@/constants/validations/register-visitor"
 import { ReusableFormField } from "@/components/shared/forms/form-input"
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
+import { Calendar } from "@/components/ui/calendar"
+import { CalendarIcon } from "lucide-react"
+import { format } from "date-fns"
+import { cn } from "@/lib/utils"
 
 
 export default function GenerateVisitorsPass() {
@@ -20,7 +36,7 @@ export default function GenerateVisitorsPass() {
             phoneNumber: "",
             hostName: "",
             hostPhone: "",
-            date: "",
+            date: new Date(),
             time: "",
             vehiclePlateNumber: "",
             notes: "",
@@ -30,16 +46,19 @@ export default function GenerateVisitorsPass() {
     const handleSubmit = (data: VisitorsSchemaFormDataType) => {
         console.log(data)
     }
-    
+
     return (
         <section>
-            <Card className={"rounded shadow max-w-3xl 2xl:max-w-4xl"}>
+            <Card className={"rounded shadow max-w-4xl 2xl:max-w-4xl"}>
                 <CardContent className="space-y-4">
                     <div className="mb-6">
                         <h1 className="text-xl font-semibold font-roboto mb-2">Generate Visitor Pass</h1>
                         <p className="text-gray-600">Create a temporary tag pass for a visitor</p>
                     </div>
-
+                    <div className={"border border-[#5283EB] bg-[#5283EB]/20 rounded-sm p-2"}>
+                        <h1 className={"text-[#063776] font-semibold font-roboto"}>Visitor Tag Number: BH-0007</h1>
+                        <p className={"text-[#00499A]"}>This unique identifier will be used to track the visitor in the system</p>
+                    </div>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
                             <CardHeader className={"px-0"}>
@@ -110,8 +129,60 @@ export default function GenerateVisitorsPass() {
                             <CardHeader className={"px-0"}>
                                 <CardTitle>Check-in  Information</CardTitle>
                             </CardHeader>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+                                <FormField
+                                    control={form.control}
+                                    name="date"
+                                    render={({ field }) => (
+                                        <FormItem className="flex flex-col">
+                                            <FormLabel className={"text-black font-roboto"}>Date *</FormLabel>
+                                            <Popover>
+                                                <PopoverTrigger asChild>
+                                                    <FormControl>
+                                                        <Button
+                                                            variant={"outline"}
+                                                            className={cn(
+                                                                "w-full pl-3 text-left font-normal rounded border border-gray-300 p-2 2xl:h-12 h-11",
+                                                                !field.value && "text-muted-foreground"
+                                                            )}
+                                                        >
+                                                            {field.value ? (
+                                                                format(field.value, "PPP")
+                                                            ) : (
+                                                                <span>dd/mm/yyy</span>
+                                                            )}
+                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                                        </Button>
+                                                    </FormControl>
+                                                </PopoverTrigger>
+                                                <PopoverContent className="w-auto p-0" align="start">
+                                                    <Calendar
+                                                        mode="single"
+                                                        selected={field.value}
+                                                        onSelect={field.onChange}
+                                                        disabled={(date) =>
+                                                            date > new Date() || date < new Date("1900-01-01")
+                                                        }
+                                                        captionLayout="dropdown"
+                                                    />
+                                                </PopoverContent>
+                                            </Popover>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                                <ReusableFormField
+                                    control={form.control}
+                                    name={"time"}
+                                    label="Time *"
+                                    type="text"
+                                    placeholder="Will be generated automatically"
+                                />
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            </div>
+
+
+                            <div className="grid grid-cols-1 gap-4 w-full">
                                 <ReusableFormField
                                     control={form.control}
                                     name={"vehiclePlateNumber"}

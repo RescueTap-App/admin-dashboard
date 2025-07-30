@@ -41,7 +41,7 @@ export default function SignInPage() {
           <div className="w-full max-w-md space-y-6">
             <div className="space-y-2">
               <h1 className="text-2xl font-bold text-gray-900">Sign In</h1>
-              <p className="text-gray-600">Welcome Back! Log in to your account</p>
+              <p className="text-gray-600 text-sm 2xl:text-base">Welcome Back! Log in to your account</p>
             </div>
 
             <Form {...form}>
@@ -77,7 +77,7 @@ export default function SignInPage() {
 
                 <Button
                   type="submit"
-                  className="w-full bg-[#EF4136] hover:bg-[#EF4136]/50 text-white py-3 text-base font-medium rounded"
+                  className="w-full bg-[#EF4136] hover:bg-[#EF4136]/50 text-white py-3 text-base font-medium rounded font-lato"
                   disabled={logingIn}
                 >
                   {logingIn ? "Signing In..." : "Sign In"}

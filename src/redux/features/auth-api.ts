@@ -15,14 +15,14 @@ export const authApi = createApi({
         }),
         sendOtp: builder.mutation({
             query: (data) => ({
-                url: '/auth/send-otp',
+                url: '/users/forgot-password',
                 method: 'POST',
                 body: data
             })
         }),
          resetPassword: builder.mutation({
             query: (data) => ({
-                url: '/auth/reset-password',
+                url: '/users/reset-password',
                 method: 'POST',
                 body: data
             })

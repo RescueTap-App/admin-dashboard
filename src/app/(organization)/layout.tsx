@@ -2,8 +2,8 @@ import RootUserNavigationLayout from "@/layouts/root-user-layout";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Rescue Tap | User Dashboard",
-    description: "Manage your account dashboard with ease",
+    title: "Rescue Tap | Organization",
+    description: "Rescue Tap instantly let's you share your location send emergency alerts and stay connected with the people who matter most, because safety starts with awarenes",
 };
 
 export default function UsersRootLayout({

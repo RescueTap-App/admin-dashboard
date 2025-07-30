@@ -242,6 +242,7 @@ export function DataTable({
     data: z.infer<typeof schema>[]
 }) {
     const [data, setData] = React.useState(() => initialData)
+    const [globalFilter, setGlobalFilter] = React.useState('');
     const [rowSelection, setRowSelection] = React.useState({})
     const [columnVisibility, setColumnVisibility] =
         React.useState<VisibilityState>({})
@@ -271,6 +272,7 @@ export function DataTable({
         state: {
             sorting,
             columnVisibility,
+            globalFilter,
             rowSelection,
             columnFilters,
             pagination,
@@ -279,6 +281,8 @@ export function DataTable({
         enableRowSelection: true,
         onRowSelectionChange: setRowSelection,
         onSortingChange: setSorting,
+        onGlobalFilterChange: setGlobalFilter,
+        globalFilterFn: 'includesString',
         onColumnFiltersChange: setColumnFilters,
         onColumnVisibilityChange: setColumnVisibility,
         onPaginationChange: setPagination,

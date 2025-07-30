@@ -75,7 +75,7 @@ function RegisteredVehicle() {
                     <p className={"text-sm pt-2"}>Vehicles are automatically approved and set to “Active” upon registration by an organization, provided they are within their vehicle slot limit.</p>
                 </div>
                 <Link href={"/org/vehicles/register"}>
-                    <Button className={"bg-[#EF4136] hover:bg-[#EF4136]/50 rounded"}>Add Vehicle  <IconPlus /></Button>
+                    <Button className={"bg-[#EF4136] hover:bg-[#EF4136]/50 rounded"}>Add Vehicle <IconPlus /></Button>
                 </Link>
             </CardHeader>
             <div className='overflow-x-auto md:max-w-md min-w-full'>

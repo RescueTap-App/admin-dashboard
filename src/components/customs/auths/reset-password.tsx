@@ -5,14 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { ResetPasswordDataType, resetPasswordSchema } from "@/constants/validations/auth";
 import { useAuth } from "@/hooks/use-auth";
+import { RootState } from "@/lib/store";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
+import { useSelector } from "react-redux";
 
 export default function ResetOldPassword() {
 
   const { resetPassword, resetting } = useAuth();
+  const { user } = useSelector((state: RootState) => state.auth);
   const form = useForm<ResetPasswordDataType>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
@@ -21,9 +24,14 @@ export default function ResetOldPassword() {
     },
   })
 
-  
+
   const handleSubmit = (data: ResetPasswordDataType) => {
-    resetPassword(data)
+    const { newPassword } = data;
+    resetPassword({
+      userId: user?._id || "",
+      otp: "",
+      newPassword,
+    })
   }
 
 
@@ -39,8 +47,8 @@ export default function ResetOldPassword() {
         <div className="w-full max-w-md">
           <div className="w-full max-w-md space-y-6">
             <div className="space-y-2">
-              <h1 className="text-2xl font-bold text-gray-900">Reset Ypu password</h1>
-              <p className="text-gray-600">Please Provide a new secure password for your account!</p>
+              <h1 className="text-2xl font-bold text-gray-900">Reset Your Password</h1>
+              <p className="text-gray-600 text-sm 2xl:text-base">Please Provide a new secure password for your account!</p>
             </div>
 
             <Form {...form}>
@@ -52,7 +60,7 @@ export default function ResetOldPassword() {
                   placeholder="Enter your new password"
                   type={"password"}
                 />
-                  <ReusableFormField
+                <ReusableFormField
                   control={form.control}
                   name="confirmPassword"
                   label="Confirm Password"
@@ -61,17 +69,17 @@ export default function ResetOldPassword() {
                 />
 
                 <div className="flex items-center gap-2">
-                  <span>Remmbered Password?</span>
+                  <span>Remembered Password? / </span>
                   <Link href={"/auth/signin"}
                     className="hover:underline text-sm text-blue-600"
                   >
-                   Signin
+                    Signin
                   </Link>
                 </div>
 
                 <Button
                   type="submit"
-                  className="w-full bg-[#EF4136] hover:bg-[#EF4136]/50 text-white py-3 text-base font-medium rounded"
+                  className="w-full bg-[#EF4136] hover:bg-[#EF4136]/50 text-white py-3 text-base rounded font-lato"
                   disabled={resetting}
                 >
                   {resetting ? "Applying changes..." : "Reset Password"}
