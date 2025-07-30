@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/sidebar";
 import React from 'react';
 
-export default function RootUserNavigationLayout({ children }: { children: React.ReactNode }) {
+export default function RootOrgNavigationLayout({ children }: { children: React.ReactNode }) {
     const pathname = usePathname();
 
     // Split the current path into segments, filtering out empty strings

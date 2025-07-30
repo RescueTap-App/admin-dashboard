@@ -1,4 +1,4 @@
-import RootUserNavigationLayout from "@/layouts/root-user-layout";
+import RootOrgNavigationLayout from "@/layouts/root-org-layout";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -12,8 +12,8 @@ export default function UsersRootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <RootUserNavigationLayout>
+        <RootOrgNavigationLayout>
             {children}
-        </RootUserNavigationLayout>
+        </RootOrgNavigationLayout>
     );
 }

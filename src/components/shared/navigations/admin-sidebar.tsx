@@ -56,7 +56,7 @@ const data = {
             items: [
                 {
                     title: "Drivers List",
-                    url: "/dashboard/drivers/create",
+                    url: "/dashboard/drivers",
                 },
                 {
                     title: "Create Driver",
@@ -72,6 +72,10 @@ const data = {
                 {
                     title: "Users List",
                     url: "/dashboard/users",
+                },
+                {
+                    title: "Create User",
+                    url: "/dashboard/users/create",
                 },
             ],
         },

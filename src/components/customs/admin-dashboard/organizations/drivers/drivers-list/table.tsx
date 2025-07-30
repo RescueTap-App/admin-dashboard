@@ -28,7 +28,6 @@ import {
     IconChevronsLeft,
     IconChevronsRight,
     IconCircleCheckFilled,
-    IconDotsVertical,
     IconGripVertical,
     IconInfoCircle,
 } from "@tabler/icons-react"
@@ -50,13 +49,6 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Label } from "@/components/ui/label"
 import {
     Select,
@@ -65,6 +57,12 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import {
     Table,
     TableBody,
@@ -76,6 +74,7 @@ import {
 import { DriverListTypes } from "@/types/drivers.types"
 import SearchInput from "@/components/shared/search-input";
 import Image from "next/image"
+import { DriversActions } from "./actions";
 
 
 function DragHandle({ id }: { id: string }) {
@@ -134,11 +133,11 @@ const columns: ColumnDef<DriverListTypes>[] = [
         header: "Profile",
         cell: ({ row }) => (
             <div className="w-24 h-24 relative">
-                <Image src={row.original.profileImage}
+                <Image src={row.original.profileImage || "/icons/avatar.svg"}
                     alt={"Profile Image"}
                     fill
                     fetchPriority="high"
-                    className={"object-contain object-center"} />
+                    className={"object-contain object-center border rounded-full border-orange-600/50"} />
             </div>
         ),
     },
@@ -247,22 +246,8 @@ const columns: ColumnDef<DriverListTypes>[] = [
     {
         id: "actions",
         header: "Actions",
-        cell: () => (
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button
-                        variant="ghost"
-                        className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-                        size="icon"
-                    >
-                        <IconDotsVertical />
-                        <span className="sr-only">Open menu</span>
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-32">
-                    <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+        cell: ({ row }) => (
+            <DriversActions driverId={row.original._id} />
         ),
     },
 ]
@@ -321,6 +306,12 @@ export function DriversListTable({
         () => data?.map(({ _id }) => _id) || [],
         [data]
     )
+
+    React.useEffect(() => {
+        if (initialData?.length) {
+            setData(initialData);
+        }
+    }, [initialData]);
 
     const table = useReactTable({
         data,
@@ -405,7 +396,6 @@ export function DriversListTable({
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="default" className={"rounded"}>
-                            {/* <IconLayoutColumns /> */}
                             <span className="hidden lg:inline">This Month</span>
                             <span className="lg:hidden">Month</span>
                             <IconChevronDown />
@@ -488,7 +478,7 @@ export function DriversListTable({
                     </SortableContext>
                 </DndContext>
             </div>
-            <div className="flex items-center justify-between px-4">
+            <div className="flex items-center justify-between px-4 pt-3">
                 <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
                     {table.getFilteredSelectedRowModel().rows.length} of{" "}
                     {table.getFilteredRowModel().rows.length} row(s) selected.

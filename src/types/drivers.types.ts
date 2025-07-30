@@ -11,7 +11,7 @@ export type DriverRegistrationData = {
     vehicleModel: string;
     profileImage: string;
     vehicleImage: string;
-    password: string;
+    password?: string;
 };
 
 export type DriverListTypes = {

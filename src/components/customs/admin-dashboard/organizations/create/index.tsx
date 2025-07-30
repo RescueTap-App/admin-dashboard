@@ -3,14 +3,7 @@
 import { ReusableFormField } from "@/components/shared/forms/form-input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { Form} from "@/components/ui/form";
 import { createOrganizationSchema, createOrganizationSchemaType } from "@/constants/validations/organization";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { IconPlus } from "@tabler/icons-react";
@@ -75,26 +68,16 @@ function CreateOrganization() {
                             />
 
                             <div className={"col-span-full w-full flex flex-col gap-2"}>
-                                <FormField
+                                <ReusableFormField
                                     control={form.control}
                                     name="category"
-                                    render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Select Category</FormLabel>
-                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                <FormControl>
-                                                    <SelectTrigger className={"w-full rounded h-12 py-2"}>
-                                                        <SelectValue placeholder="Select a category" />
-                                                    </SelectTrigger>
-                                                </FormControl>
-                                                <SelectContent>
-                                                    <SelectItem value="Residential">Residential</SelectItem>
-                                                    <SelectItem value="Commercial">Commercial</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
+                                    label="Select Category *"
+                                    fieldType="select"
+                                    options={[
+                                        { label: "Residential", value: "residential" },
+                                        { label: "Commercial", value: "commercial" },
+                                    ]}
+                                    placeholder="Select a category"
                                 />
                                 <ReusableFormField
                                     control={form.control}
@@ -163,21 +146,21 @@ function CreateOrganization() {
                                 </div>
                             ))}
                             <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={() =>
-                                        append({ firstName: "", lastName: "", contactEmail: "", contactPhone: "" })
-                                    }
-                                >
-                                    Add Another Contact <IconPlus/>
-                                </Button>
+                                type="button"
+                                variant="outline"
+                                onClick={() =>
+                                    append({ firstName: "", lastName: "", contactEmail: "", contactPhone: "" })
+                                }
+                            >
+                                Add Another Contact <IconPlus />
+                            </Button>
                         </div>
 
-                       <div className={"flex flex-row items-center justify-end"}>
-                        <Button type="submit" className="max-w-fit rounded bg-[#EF4136] hover:bg-[#EF4136]/50 text-white">
-                            Create New Account
-                        </Button>
-                       </div>
+                        <div className={"flex flex-row items-center justify-end"}>
+                            <Button type="submit" className="max-w-fit rounded bg-[#EF4136] hover:bg-[#EF4136]/50 text-white">
+                                Create New Account
+                            </Button>
+                        </div>
                     </form>
                 </Form>
             </CardContent>

@@ -13,7 +13,7 @@ export default function SearchInput({ value, placeholder = " ", onChange }: Sear
         <div className="relative">
             <Input
                 type="text"
-                placeholder={`search ${placeholder}`}
+                placeholder={`Search ${placeholder}`}
                 value={value}
                 onChange={onChange}
                 className="w-full max-w-sm pl-8 pr-3 py-2 text-sm rounded font-lato"

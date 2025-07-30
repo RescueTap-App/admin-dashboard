@@ -2,33 +2,33 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader } from '@/components/ui/card'
-import useDrivers from "@/hooks/use-drivers"
+import useUsers from "@/hooks/use-users"
 import { IconPlus } from '@tabler/icons-react'
 import Link from "next/link"
 import { Suspense } from 'react'
-import { DriversListTable } from './table'
+import { UsersListTable } from './table'
 
 
-function DriversList() {
-    const { all_drivers } = useDrivers({ fetchAllDrivers: true })
+function UsersList() {
+    const { all_users } = useUsers({ fetchAllUsers: true })
     return (
         <Card className={"rounded-sm mt-10 px-3 min-w-full shadow"}>
             <CardHeader className='flex flex-row justify-between px-0'>
                 <div>
-                    <h1 className={"font-semibold text-xl"}>Drivers List</h1>
-                    <p className={"text-sm pt-2"}>List of all registered Drivers</p>
+                    <h1 className={"font-semibold text-xl"}>Users List</h1>
+                    <p className={"text-sm pt-2"}>List of all registered Users</p>
                 </div>
-                <Link href={"/dashboard/drivers/create"}>
-                    <Button className={"bg-[#EF4136] hover:bg-[#EF4136]/50 rounded"}>Add New Driver <IconPlus /></Button>
+                <Link href={"/dashboard/users/create"}>
+                    <Button className={"bg-[#EF4136] hover:bg-[#EF4136]/50 rounded"}>Create New User <IconPlus /></Button>
                 </Link>
             </CardHeader>
             <div className='overflow-x-auto md:max-w-md min-w-full'>
                 <Suspense>
-                    <DriversListTable data={all_drivers || []} />
+                    <UsersListTable data={all_users || []} />
                 </Suspense>
             </div>
         </Card>
     )
 }
 
-export default DriversList
+export default UsersList

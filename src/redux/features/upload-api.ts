@@ -6,13 +6,17 @@ export const uploadApi = createApi({
     reducerPath: 'uploadApi',
     baseQuery: customBaseQueryWithReauth,
     endpoints: (builder) => ({
-        getUsers: builder.query({
-            query: () => `/users`,
+        uploadFile: builder.mutation({
+            query: ({ file }: { file: FormData }) => ({
+                url: `/upload`,
+                method: "POST",
+                body: file
+            })
         }),
     }),
 });
 
 export const {
-useGetUsersQuery
+    useUploadFileMutation
 } = uploadApi;
 

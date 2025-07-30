@@ -2,8 +2,8 @@
 
 export default function CreateBlogs() {
     return (
-<section>
-    
-</section>
+        <section>
+
+        </section>
     )
 }

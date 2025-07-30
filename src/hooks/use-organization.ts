@@ -47,7 +47,7 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, invite
     const [bulkOrgUploadMutation, { isLoading: uploading }] = useBulkOrgUploadMutation();
     const [registerDriverMutation, { isLoading: registring }] = useRegisterDriverMutation();
 
-    // Mutation wrappers
+
     const createOrganization = async (payload: OrganizationRegistrationData) => {
         try {
             const res = await createOrganizationMutation({ data: payload }).unwrap();

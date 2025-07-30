@@ -1,3 +1,5 @@
+"use client"
+
 import * as React from "react"
 import {
     closestCenter,
@@ -10,6 +12,8 @@ import {
     type DragEndEvent,
     type UniqueIdentifier,
 } from "@dnd-kit/core"
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
+import { format } from 'date-fns';
 import {
     arrayMove,
     SortableContext,
@@ -17,12 +21,15 @@ import {
     verticalListSortingStrategy,
 } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
 import {
+    IconChevronDown,
     IconChevronLeft,
     IconChevronRight,
     IconChevronsLeft,
     IconChevronsRight,
+    IconUser,
+    IconShieldCheck,
+    IconSteeringWheel,
     IconGripVertical,
 } from "@tabler/icons-react"
 import {
@@ -40,17 +47,8 @@ import {
     useReactTable,
     VisibilityState,
 } from "@tanstack/react-table"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-    Drawer,
-    DrawerClose,
-    DrawerContent,
-    DrawerDescription,
-    DrawerFooter,
-    DrawerHeader,
-    DrawerTitle,
-    DrawerTrigger,
-} from "@/components/ui/drawer"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import {
@@ -61,6 +59,12 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
     Table,
     TableBody,
     TableCell,
@@ -68,10 +72,11 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { useIsMobile } from "@/hooks/use-mobile"
-import { ActiveVisitorsLogTableTypes } from "@/types/visitors.types"
-import { VisitorsLogActions } from "./actions"
-import SearchInput from "@/components/shared/search-input"
+import { UserListType } from "@/types/users.types"
+import SearchInput from "@/components/shared/search-input";
+import Image from "next/image"
+import { UsersActions } from "./actions";
+
 
 function DragHandle({ id }: { id: string }) {
     const { attributes, listeners } = useSortable({
@@ -92,11 +97,11 @@ function DragHandle({ id }: { id: string }) {
     )
 }
 
-const columns: ColumnDef<ActiveVisitorsLogTableTypes>[] = [
+const columns: ColumnDef<UserListType>[] = [
     {
         id: "drag",
         header: () => null,
-        cell: ({ row }) => <DragHandle id={row.original.id} />,
+        cell: ({ row }) => <DragHandle id={row.original._id} />,
     },
     {
         id: "select",
@@ -125,103 +130,118 @@ const columns: ColumnDef<ActiveVisitorsLogTableTypes>[] = [
         enableHiding: true,
     },
     {
-        accessorKey: "header",
-        header: "Vsitor Name",
+        accessorKey: "profileImage",
+        header: "Profile",
+        cell: ({ row }) => (
+            <div className="w-22 h-22 relative">
+                <Image src={row.original.profileImage || "/icons/avatar.svg"}
+                    alt={"Profile Image"}
+                    fill
+                    fetchPriority="high"
+                    className={"object-contain object-center border rounded-full border-orange-600/50"} />
+            </div>
+        ),
+    },
+    {
+        accessorKey: "firstName",
+        header: "First Name",
+        cell: ({ row }) => (
+            <div className="w-32">
+                <p className="text-muted-foreground px-1.5">
+                    {row.original.firstName}
+                </p>
+            </div>
+        ),
+    },
+    {
+        accessorKey: "lastName",
+        header: "Last Name",
+        cell: ({ row }) => (
+            <div className="w-32">
+                <p className="text-muted-foreground px-1.5">
+                    {row.original.lastName}
+                </p>
+            </div>
+        ),
+    },
+    {
+        accessorKey: "email",
+        header: "Email",
+        cell: ({ row }) => (
+            <div className="w-fit">
+                <p className="text-muted-foreground px-1.5">
+                    {row.original.email}
+                </p>
+            </div>
+        ),
+    },
+    {
+        accessorKey: "createdAt",
+        header: "Registration Date",
+        cell: ({ row }) => (
+            <div className="w-32">
+                <p className="text-muted-foreground px-1.5">
+                    {format(new Date(row.original.createdAt), 'MMM d, yyyy')}
+                </p>
+            </div>
+        ),
+    },
+    {
+        accessorKey: "updatedAt",
+        header: "Last Update",
+        cell: ({ row }) => (
+            <div className="w-32">
+                <p className="text-muted-foreground px-1.5">
+                    {format(new Date(row.original.updatedAt), 'MMM d, yyyy')}
+                </p>
+            </div>
+        ),
+    },
+    {
+        accessorKey: "role",
+        header: "Role",
         cell: ({ row }) => {
-            return <TableCellViewer item={row.original} />
-        },
-        enableHiding: false,
-    },
-    {
-        accessorKey: "tagNumber",
-        header: "Tag Number",
-        cell: ({ row }) => (
-            <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.tagNumber}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "phone",
-        header: "Phone",
-        cell: ({ row }) => (
-            <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.phone}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "purpose",
-        header: "Purpose",
-        cell: ({ row }) => (
-            <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.purpose}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "hostName",
-        header: "Host Name",
-        cell: ({ row }) => (
-            <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.hostName}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "regNumber",
-        header: "Reg.Number",
-        cell: ({ row }) => (
-            <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.regNumber}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "check_in_time",
-        header: "Check-In-Time",
-        cell: ({ row }) => (
-            <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.check_in_time}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "check_out_time",
-        header: "Check-Out-Time",
-        cell: ({ row }) => (
-            <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.check_out_time}
-                </p>
-            </div>
-        ),
-    },
+            const role = row.original.role;
 
+            let icon;
+            let color;
+
+            switch (role) {
+                case "admin":
+                    icon = <IconShieldCheck className="fill-blue-500 dark:fill-blue-400 mr-1" />;
+                    color = "text-blue-500 dark:text-blue-400";
+                    break;
+                case "driver":
+                    icon = <IconSteeringWheel className="fill-yellow-500 dark:fill-yellow-400 mr-1" />;
+                    color = "text-yellow-500 dark:text-yellow-400";
+                    break;
+                case "user":
+                default:
+                    icon = <IconUser className="fill-gray-500 dark:fill-gray-300 mr-1" />;
+                    color = "text-muted-foreground";
+                    break;
+            }
+
+            return (
+                <Badge variant="outline" className={`px-1.5 ${color} flex items-center gap-1`}>
+                    {icon}
+                    <span className="capitalize">{role}</span>
+                </Badge>
+            );
+        },
+    },
     {
-        id: "id",
+        id: "actions",
         header: "Actions",
-        cell: ({ row }) => (
-            <VisitorsLogActions visitorId={row.original.id} />
+        cell: () => (
+            <UsersActions />
         ),
     },
 ]
 
-function DraggableRow({ row }: { row: Row<ActiveVisitorsLogTableTypes> }) {
+function DraggableRow({ row }: { row: Row<UserListType> }) {
     const { transform, transition, setNodeRef, isDragging } = useSortable({
-        id: row.original.id,
+        id: row.original._id,
     })
 
     return (
@@ -244,10 +264,10 @@ function DraggableRow({ row }: { row: Row<ActiveVisitorsLogTableTypes> }) {
     )
 }
 
-export function ActiveVisitorsLogTable({
+export function UsersListTable({
     data: initialData,
 }: {
-    data: ActiveVisitorsLogTableTypes[],
+    data: UserListType[]
 }) {
     const [data, setData] = React.useState(() => initialData)
     const [rowSelection, setRowSelection] = React.useState({})
@@ -256,7 +276,7 @@ export function ActiveVisitorsLogTable({
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
     )
-    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [sorting, setSorting] = React.useState<SortingState>([]);
     const [globalFilter, setGlobalFilter] = React.useState('');
     const [pagination, setPagination] = React.useState({
         pageIndex: 0,
@@ -270,10 +290,9 @@ export function ActiveVisitorsLogTable({
     )
 
     const dataIds = React.useMemo<UniqueIdentifier[]>(
-        () => data?.map(({ id }) => id) || [],
+        () => data?.map(({ _id }) => _id) || [],
         [data]
     )
-
 
     React.useEffect(() => {
         if (initialData?.length) {
@@ -292,7 +311,7 @@ export function ActiveVisitorsLogTable({
             columnFilters,
             pagination,
         },
-        getRowId: (row) => row.id.toString(),
+        getRowId: (row) => row._id.toString(),
         enableRowSelection: true,
         onRowSelectionChange: setRowSelection,
         onSortingChange: setSorting,
@@ -322,10 +341,78 @@ export function ActiveVisitorsLogTable({
 
     return (
         <React.Fragment>
-            <SearchInput
-                value={globalFilter}
-                placeholder="visitors"
-                onChange={(e) => setGlobalFilter(e.target.value)} />
+            <div className="flex items-center gap-3 mb-4">
+                <SearchInput
+                    value={globalFilter}
+                    placeholder={"users"}
+                    onChange={(e) => setGlobalFilter(e.target.value)} />
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="default" className={"rounded"}>
+                            {/* <IconLayoutColumns /> */}
+                            <span className="hidden lg:inline">All Roles</span>
+                            <span className="lg:hidden">Roles</span>
+                            <IconChevronDown />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                        {table
+                            .getAllColumns()
+                            .filter(
+                                (column) =>
+                                    typeof column.accessorFn !== "undefined" &&
+                                    column.getCanHide()
+                            )
+                            .map((column) => {
+                                return (
+                                    <DropdownMenuCheckboxItem
+                                        key={column.id}
+                                        className="capitalize"
+                                        checked={column.getIsVisible()}
+                                        onCheckedChange={(value) =>
+                                            column.toggleVisibility(!!value)
+                                        }
+                                    >
+                                        {column.id}
+                                    </DropdownMenuCheckboxItem>
+                                )
+                            })}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="default" className={"rounded"}>
+                            <span className="hidden lg:inline">This Month</span>
+                            <span className="lg:hidden">Month</span>
+                            <IconChevronDown />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                        {table
+                            .getAllColumns()
+                            .filter(
+                                (column) =>
+                                    typeof column.accessorFn !== "undefined" &&
+                                    column.getCanHide()
+                            )
+                            .map((column) => {
+                                return (
+                                    <DropdownMenuCheckboxItem
+                                        key={column.id}
+                                        className="capitalize"
+                                        checked={column.getIsVisible()}
+                                        onCheckedChange={(value) =>
+                                            column.toggleVisibility(!!value)
+                                        }
+                                    >
+                                        {column.id}
+                                    </DropdownMenuCheckboxItem>
+                                )
+                            })}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
             <div className="overflow-hidden border">
                 <DndContext
                     collisionDetection={closestCenter}
@@ -456,35 +543,5 @@ export function ActiveVisitorsLogTable({
                 </div>
             </div>
         </React.Fragment>
-    )
-}
-
-function TableCellViewer({ item }: { item: ActiveVisitorsLogTableTypes }) {
-    const isMobile = useIsMobile()
-    return (
-        <Drawer direction={isMobile ? "bottom" : "right"}>
-            <DrawerTrigger asChild>
-                <Button variant="link" className="text-foreground w-fit px-0 text-left">
-                    {item.visitorsName}
-                </Button>
-            </DrawerTrigger>
-            <DrawerContent>
-                <DrawerHeader className="gap-1">
-                    <DrawerTitle>{item.visitorsName}</DrawerTitle>
-                    <DrawerDescription>
-                        Showing total visitors for the last 6 months
-                    </DrawerDescription>
-                </DrawerHeader>
-                <div>
-                    Content of Drawer
-                </div>
-                <DrawerFooter>
-                    <Button>Submit</Button>
-                    <DrawerClose asChild>
-                        <Button variant="outline">Done</Button>
-                    </DrawerClose>
-                </DrawerFooter>
-            </DrawerContent>
-        </Drawer>
     )
 }

@@ -264,6 +264,12 @@ export function ActiveVisitorsTable({
         [data]
     )
 
+    React.useEffect(() => {
+        if (initialData?.length) {
+            setData(initialData);
+        }
+    }, [initialData]);
+
     const table = useReactTable({
         data,
         columns,
@@ -361,7 +367,7 @@ export function ActiveVisitorsTable({
                     </SortableContext>
                 </DndContext>
             </div>
-            <div className="flex items-center justify-between px-4">
+             <div className="flex items-center justify-between px-4 pt-3">
                 <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
                     {table.getFilteredSelectedRowModel().rows.length} of{" "}
                     {table.getFilteredRowModel().rows.length} row(s) selected.

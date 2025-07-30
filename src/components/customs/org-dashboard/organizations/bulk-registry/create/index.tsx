@@ -9,11 +9,15 @@ import { FaRegHandRock } from "react-icons/fa";
 import { toast } from "sonner";
 import SuccessfulUpload from "./success-modal";
 import useOrganization from "@/hooks/use-organization";
-
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
 
 export default function BulkRegistration() {
     const { bulkOrgUpload, uploading } = useOrganization({})
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [showSuccess, setShowSuccess] = useState(false)
+    const { user } = useSelector((state: RootState) => state.auth);
+    const adminId = user?._id;
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         const file = acceptedFiles[0];
@@ -37,12 +41,13 @@ export default function BulkRegistration() {
             toast.error("Please upload a csv file")
             return;
         }
-        const adminId = "67a3d6d5e30ded6338e6d954"
         const formData = new FormData();
         formData.append("file", selectedFile);
-        bulkOrgUpload(formData, adminId);
+        const res = await bulkOrgUpload(formData, adminId);
+        if (res) {
+            setShowSuccess(true)
+        }
     }
-    const showSuccess = false
 
     if (showSuccess) {
         return (
