@@ -2,8 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Key, Mail, Users } from "lucide-react";
 import Link from "next/link";
-import { BsFiletypeCsv, BsUpload } from "react-icons/bs";
-import { FaRegHandRock } from "react-icons/fa";
 import { PiEyeThin, PiSealCheckBold } from "react-icons/pi";
 
 
