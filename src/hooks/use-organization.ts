@@ -20,9 +20,9 @@ interface OrgProps {
 }
 
 export default function useOrganization({ fetchAllUsers, fetchAllDrivers, inviterId }: OrgProps) {
-    const { data: allDrivers, isLoading:loadingDrivers } = useGetallDriversQuery(undefined, {
+    const { data: allDrivers, isLoading: loadingDrivers } = useGetallDriversQuery(undefined, {
         skip: !fetchAllDrivers,
-         refetchOnFocus: true,
+        refetchOnFocus: true,
         refetchOnMountOrArgChange: true,
         refetchOnReconnect: true
     });
@@ -51,7 +51,9 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, invite
     const createOrganization = async (payload: OrganizationRegistrationData) => {
         try {
             const res = await createOrganizationMutation({ data: payload }).unwrap();
-            toast.success("Organization created successfully");
+            if (res) {
+                toast.success("Organization created successfully");
+            }
             return res;
         } catch (error: unknown) {
             const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to create organization"
@@ -60,10 +62,12 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, invite
         }
     };
 
-    const inviteOrgUser = async (payload: OrgUserInviteData, inviterId: string) => {
+    const inviteOrgUser = async (data: OrgUserInviteData, inviterId: string) => {
         try {
-            const res = await inviteOrgUserMutation({ data: payload, inviterId }).unwrap();
-            toast.success("User invited successfully");
+            const res = await inviteOrgUserMutation({ data, inviterId }).unwrap();
+            if (res) {
+                toast.success("User invited successfully");
+            }
             return res;
         } catch (error: unknown) {
             const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to invite user"
@@ -75,7 +79,9 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, invite
     const bulkOrgUpload = async (formData: FormData, adminId: string) => {
         try {
             const res = await bulkOrgUploadMutation({ formData, adminId }).unwrap();
-            toast.success("Bulk upload successful");
+            if (res) {
+                toast.success("Bulk upload successful");
+            }
             return res;
         } catch (error: unknown) {
             const errorMessage = (error as { data?: { message: string } })?.data?.message || "Bulk upload failed"
@@ -87,7 +93,9 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, invite
     const registerDriver = async (payload: DriverRegistrationData, inviterId: string) => {
         try {
             const res = await registerDriverMutation({ data: payload, inviterId }).unwrap();
-            toast.success("Driver registered successfully");
+            if (res) {
+                toast.success("Driver registered successfully");
+            }
             return res;
         } catch (error: unknown) {
             const errorMessage = (error as { data?: { message: string } })?.data?.message || "Driver registration failed"

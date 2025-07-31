@@ -29,7 +29,7 @@ export function UploadField({ control, name, label, buttonLabel = "Upload" }: Up
         formData.append("file", file)
         const result = await upload(formData)
         if (result?.data) {
-          onChange(result.data)
+          onChange(result?.data)
         }
       },
       [onChange],

@@ -32,3 +32,17 @@ export function disableConsoleLogsInProduction() {
     }
   }
 }
+
+export function extractPlainText(content: string, wordLimit = 6) {
+  // Step 1: Remove HTML tags using a regular expression
+  const plainText = content.replace(/<\/?[^>]+(>|$)/g, "");
+
+  // Step 2: Replace HTML entity codes like `&nbsp;` with a space
+  const cleanedText = plainText.replace(/&nbsp;/g, " ").trim();
+
+  // Step 3: Split the cleaned text into words
+  const words = cleanedText.split(/\s+/);
+
+  // Step 4: Extract the first 'wordLimit' words
+  return words.slice(0, wordLimit).join(" ");
+}

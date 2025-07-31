@@ -1,6 +1,25 @@
 "use client"
 
-import * as React from "react"
+import SearchInput from "@/components/shared/search-input";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { BlogListTypes } from "@/types/blogs.types";
 import {
     closestCenter,
     DndContext,
@@ -11,26 +30,22 @@ import {
     useSensors,
     type DragEndEvent,
     type UniqueIdentifier,
-} from "@dnd-kit/core"
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
-import { format } from 'date-fns';
+} from "@dnd-kit/core";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
     arrayMove,
     SortableContext,
     useSortable,
     verticalListSortingStrategy,
-} from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import {
-    IconChevronDown,
     IconChevronLeft,
     IconChevronRight,
     IconChevronsLeft,
     IconChevronsRight,
-    IconCircleCheckFilled,
-    IconGripVertical,
-    IconInfoCircle,
-} from "@tabler/icons-react"
+    IconGripVertical
+} from "@tabler/icons-react";
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -45,36 +60,12 @@ import {
     SortingState,
     useReactTable,
     VisibilityState,
-} from "@tanstack/react-table"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
-import { DriverListTypes } from "@/types/drivers.types"
-import SearchInput from "@/components/shared/search-input";
-import Image from "next/image"
-import { DriversActions } from "./actions";
+} from "@tanstack/react-table";
+import { format } from 'date-fns';
+import Image from "next/image";
+import * as React from "react";
+import { BlobActions, BlogCategory } from "./actions";
+import { extractPlainText } from "@/lib/utils";
 
 
 function DragHandle({ id }: { id: string }) {
@@ -96,7 +87,7 @@ function DragHandle({ id }: { id: string }) {
     )
 }
 
-const columns: ColumnDef<DriverListTypes>[] = [
+const columns: ColumnDef<BlogListTypes>[] = [
     {
         id: "drag",
         header: () => null,
@@ -129,130 +120,65 @@ const columns: ColumnDef<DriverListTypes>[] = [
         enableHiding: true,
     },
     {
-        accessorKey: "profileImage",
-        header: "Profile",
+        accessorKey: "title",
+        header: "Title",
         cell: ({ row }) => (
-            <div className="w-24 h-24 relative">
-                <Image src={row.original.profileImage || "/icons/avatar.svg"}
-                    alt={"Profile Image"}
-                    fill
-                    fetchPriority="high"
-                    className={"object-contain object-center border rounded-full border-orange-600/50"} />
+            <div className={"flex flex-row items-center gap-3"}>
+                <div className="w-16 h-16 relative">
+                    <Image src={row.original.featureImage || "/icons/logo.svg"}
+                        alt={"Profile Image"}
+                        fill
+                        fetchPriority="high"
+                        className={"object-contain object-center border rounded"} />
+                </div>
+                <div className={"flex flex-col font-roboto gap-1.5"}>
+                    <h1 className={"text-blue-600"}>{row.original.title}</h1>
+                    <p>{extractPlainText(row.original.content, 9)}</p>
+                </div>
             </div>
         ),
     },
     {
-        accessorKey: "firstName",
-        header: "First Name",
+        accessorKey: "categories",
+        header: "Category",
+        cell: ({ row }) => (
+            <div className="max-w-fit">
+                <BlogCategory categoryId={row.original.categories} />
+            </div>
+        ),
+    },
+    {
+        accessorKey: "author",
+        header: "Author",
         cell: ({ row }) => (
             <div className="max-w-fit">
                 <p className="text-muted-foreground px-1.5">
-                    {row.original.firstName}
+                    {row.original.author}
                 </p>
             </div>
         ),
     },
     {
-        accessorKey: "lastName",
-        header: "Last Name",
+        accessorKey: "createdAt",
+        header: "Published",
         cell: ({ row }) => (
             <div className="max-w-fit">
                 <p className="text-muted-foreground px-1.5">
-                    {row.original.lastName}
+                    {format(new Date(row.original.createdAt), 'MMM d, yyyy')}
                 </p>
             </div>
-        ),
-    },
-    {
-        accessorKey: "email",
-        header: "Email",
-        cell: ({ row }) => (
-            <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.email}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "driverType",
-        header: "Driver Type",
-        cell: ({ row }) => (
-            <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.driverType}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "plateNumber",
-        header: "Plate Number",
-        cell: ({ row }) => (
-            <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.plateNumber}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "regNumber",
-        header: "Reg.Number",
-        cell: ({ row }) => (
-            <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.regNumber}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "vehicleModel",
-        header: "Vehicle Model",
-        cell: ({ row }) => (
-            <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.vehicleModel}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "registrationDate",
-        header: "Registration Date",
-        cell: ({ row }) => (
-            <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
-                    {format(new Date(row.original.registrationDate), 'MMM d, yyyy')}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }) => (
-            <Badge variant="outline" className="text-muted-foreground px-1.5">
-                {row.original.status === "active" ? (
-                    <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
-                ) : (
-                    <IconInfoCircle className={"fill-amber-500 text-white"} />
-                )}
-                {row.original.status}
-            </Badge>
         ),
     },
     {
         id: "actions",
         header: "Actions",
         cell: ({ row }) => (
-            <DriversActions driverId={row.original._id} />
+            <BlobActions blogId={row.original._id} />
         ),
     },
 ]
 
-function DraggableRow({ row }: { row: Row<DriverListTypes> }) {
+function DraggableRow({ row }: { row: Row<BlogListTypes> }) {
     const { transform, transition, setNodeRef, isDragging } = useSortable({
         id: row.original._id,
     })
@@ -277,10 +203,10 @@ function DraggableRow({ row }: { row: Row<DriverListTypes> }) {
     )
 }
 
-export function DriversListTable({
+export function BlogListTable({
     data: initialData,
 }: {
-    data: DriverListTypes[]
+    data: BlogListTypes[]
 }) {
     const [data, setData] = React.useState(() => initialData)
     const [rowSelection, setRowSelection] = React.useState({})
@@ -357,74 +283,8 @@ export function DriversListTable({
             <div className="flex items-center gap-3 mb-4">
                 <SearchInput
                     value={globalFilter}
-                    placeholder={"drivers"}
+                    placeholder={"blogs"}
                     onChange={(e) => setGlobalFilter(e.target.value)} />
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="default" className={"rounded"}>
-                            {/* <IconLayoutColumns /> */}
-                            <span className="hidden lg:inline">All Categories</span>
-                            <span className="lg:hidden">Categories</span>
-                            <IconChevronDown />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56">
-                        {table
-                            .getAllColumns()
-                            .filter(
-                                (column) =>
-                                    typeof column.accessorFn !== "undefined" &&
-                                    column.getCanHide()
-                            )
-                            .map((column) => {
-                                return (
-                                    <DropdownMenuCheckboxItem
-                                        key={column.id}
-                                        className="capitalize"
-                                        checked={column.getIsVisible()}
-                                        onCheckedChange={(value) =>
-                                            column.toggleVisibility(!!value)
-                                        }
-                                    >
-                                        {column.id}
-                                    </DropdownMenuCheckboxItem>
-                                )
-                            })}
-                    </DropdownMenuContent>
-                </DropdownMenu>
-
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="default" className={"rounded"}>
-                            <span className="hidden lg:inline">This Month</span>
-                            <span className="lg:hidden">Month</span>
-                            <IconChevronDown />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56">
-                        {table
-                            .getAllColumns()
-                            .filter(
-                                (column) =>
-                                    typeof column.accessorFn !== "undefined" &&
-                                    column.getCanHide()
-                            )
-                            .map((column) => {
-                                return (
-                                    <DropdownMenuCheckboxItem
-                                        key={column.id}
-                                        className="capitalize"
-                                        checked={column.getIsVisible()}
-                                        onCheckedChange={(value) =>
-                                            column.toggleVisibility(!!value)
-                                        }
-                                    >
-                                        {column.id}
-                                    </DropdownMenuCheckboxItem>
-                                )
-                            })}
-                    </DropdownMenuContent>
-                </DropdownMenu>
             </div>
             <div className="overflow-hidden border">
                 <DndContext

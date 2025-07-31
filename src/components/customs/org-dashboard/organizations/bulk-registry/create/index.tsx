@@ -17,7 +17,7 @@ export default function BulkRegistration() {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [showSuccess, setShowSuccess] = useState(false)
     const { user } = useSelector((state: RootState) => state.auth);
-    const adminId = user?._id;
+    const adminId = user?._id as string;
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         const file = acceptedFiles[0];

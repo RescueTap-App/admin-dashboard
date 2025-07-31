@@ -20,8 +20,10 @@ export default function useUsers({ fetchAllUsers }: UsersProps) {
     const createUser = async (data: CreateUserFormData) => {
         try {
             const res = await createUserMutation({ data }).unwrap();
-            toast.success("User created successfully");
-            router.push("/dashboard/users")
+            if (res) {
+                toast.success("User created successfully");
+                router.push("/dashboard/users")
+            }
             return res;
         } catch (error: unknown) {
             const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to create user"

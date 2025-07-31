@@ -9,10 +9,11 @@ import { createDriverSchema, CreateDriverFormData } from "@/constants/validation
 import { ReusableFormField } from "@/components/shared/forms/form-input"
 import { UploadField } from "@/components/shared/file-uploader-extend"
 import useDrivers from "@/hooks/use-drivers"
+import { useRouter } from "next/navigation"
 
 export default function CreateDriver() {
     const { createDriver, creating } = useDrivers({})
-
+    const router = useRouter()
     const form = useForm<CreateDriverFormData>({
         resolver: zodResolver(createDriverSchema),
         defaultValues: {
@@ -31,8 +32,12 @@ export default function CreateDriver() {
         },
     })
 
-    const handleSubmit = (data: CreateDriverFormData) => {
-        createDriver(data);
+    const handleSubmit = async (data: CreateDriverFormData) => {
+        const res = await createDriver(data);
+        if (res) {
+            form.reset();
+            router.push("/dasboard/drivers")
+        }
     }
 
     return (

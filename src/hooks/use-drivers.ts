@@ -29,7 +29,9 @@ export default function useDrivers({ fetchAllDrivers, fetchADriver, driverId }: 
     const createDriver = async (data: DriverRegistrationData) => {
         try {
             const res = await createDriverMutation({ data }).unwrap();
-            toast.success("Driver created successfully");
+            if (res) {
+                toast.success("Driver created successfully");
+            }
             return res;
         } catch (error: unknown) {
             const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to create driver"
@@ -41,7 +43,9 @@ export default function useDrivers({ fetchAllDrivers, fetchADriver, driverId }: 
     const updateDriver = async (data: DriverRegistrationData) => {
         try {
             const res = await updateDriverMutation({ id: driverId, data }).unwrap();
-            toast.success("Driver updated successfully");
+            if (res) {
+                toast.success("Driver updated successfully");
+            }
             return res;
         } catch (error: unknown) {
             const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to update driver details"

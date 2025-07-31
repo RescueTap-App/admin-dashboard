@@ -1,0 +1,89 @@
+import { createApi } from '@reduxjs/toolkit/query/react';
+import { customBaseQueryWithReauth } from '@/lib/custom-base-query';
+import { BlogDataTypes, CategoryDataType } from '@/types/blogs.types';
+
+export const blogsApi = createApi({
+    reducerPath: 'blogsApi',
+    baseQuery: customBaseQueryWithReauth,
+    tagTypes: ['Category', 'Blogs'],
+    endpoints: (builder) => ({
+        createCategory: builder.mutation({
+            query: ({ data }: { data: CategoryDataType }) => ({
+                url: `/blogs/categories`,
+                method: "POST",
+                body: data
+            }),
+            invalidatesTags: ['Category'],
+        }),
+        updateCategory: builder.mutation({
+            query: ({ id, data }: { id?: string, data: CategoryDataType }) => ({
+                url: `/blogs/categories/${id}`,
+                method: "PATCH",
+                body: data
+            }),
+            invalidatesTags: ['Category'],
+        }),
+        deleteCategory: builder.mutation({
+            query: ({ id }: { id?: string }) => ({
+                url: `/blogs/categories/${id}`,
+                method: "DELETE"
+            }),
+            invalidatesTags: ['Category'],
+        }),
+        getallCategory: builder.query({
+            query: () => `/blogs/categories`,
+            providesTags: ['Category'],
+        }),
+        getaCategory: builder.query({
+            query: (id) => `/blogs/categories/${id}`,
+            providesTags: ['Category'],
+        }),
+
+        // blogs sections
+        createBlog: builder.mutation({
+            query: ({ data }: { data: BlogDataTypes }) => ({
+                url: `/blogs`,
+                method: "POST",
+                body: data
+            }),
+            invalidatesTags: ['Blogs'],
+        }),
+        updateBlog: builder.mutation({
+            query: ({ id, data }: { id?: string; data: BlogDataTypes }) => ({
+                url: `/blogs/${id}`,
+                method: "PATCH",
+                body: data
+            }),
+            invalidatesTags: ['Blogs'],
+        }),
+        getallBlogs: builder.query({
+            query: () => `/blogs`,
+            providesTags: ['Blogs'],
+        }),
+        getaBlog: builder.query({
+            query: (id) => `/blogs/${id}`,
+            providesTags: ['Blogs'],
+        }),
+        deleteBlog: builder.mutation({
+            query: ({ id }: { id?: string }) => ({
+                url: `/blogs/${id}`,
+                method: "DELETE"
+            }),
+            invalidatesTags: ['Blogs'],
+        }),
+    }),
+});
+
+export const {
+    useCreateBlogMutation,
+    useCreateCategoryMutation,
+    useDeleteBlogMutation,
+    useDeleteCategoryMutation,
+    useGetaBlogQuery,
+    useGetaCategoryQuery,
+    useGetallBlogsQuery,
+    useGetallCategoryQuery,
+    useUpdateCategoryMutation,
+    useUpdateBlogMutation
+} = blogsApi;
+
