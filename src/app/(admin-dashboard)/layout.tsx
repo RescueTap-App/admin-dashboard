@@ -1,4 +1,5 @@
 import RootAdminNavigationLayout from "@/layouts/root-admin-layout";
+import ProtectedLayout from "@/layouts/protect-layout";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -13,7 +14,9 @@ export default function AdminRootLayout({
 }>) {
     return (
         <RootAdminNavigationLayout>
-            {children}
+            <ProtectedLayout>
+                {children}
+            </ProtectedLayout>
         </RootAdminNavigationLayout>
     );
 }

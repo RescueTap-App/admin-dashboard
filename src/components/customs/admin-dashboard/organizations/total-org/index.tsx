@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { IconPlus } from '@tabler/icons-react'
 import Link from 'next/link'
 import { OrganizationTableType } from '@/types/organization.types'
+import useOrganization from '@/hooks/use-organization'
 
 const mockOrganizations: OrganizationTableType[] = [
     {
@@ -66,6 +67,8 @@ const mockOrganizations: OrganizationTableType[] = [
 
 
 function TotalOrganizations() {
+    const { orgUsers } = useOrganization({ fetchAllUsers: true });
+    
     return (
         <Card className={"rounded-sm mt-10 px-3 min-w-full shadow"}>
             <CardHeader className='flex flex-row justify-between px-0'>

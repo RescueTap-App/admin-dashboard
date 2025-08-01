@@ -28,14 +28,14 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, invite
     });
 
     const { data: orgUsers } = useGetOrgUsersQuery(inviterId!, {
-        skip: fetchAllUsers || !inviterId,
+        skip: !fetchAllUsers || !inviterId,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true,
         refetchOnReconnect: true
     });
 
     const { data: orgDrivers } = useGetOrgDriversQuery(inviterId!, {
-        skip: fetchAllUsers || !inviterId,
+        skip: !fetchAllUsers || !inviterId,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true,
         refetchOnReconnect: true
@@ -48,9 +48,9 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, invite
     const [registerDriverMutation, { isLoading: registring }] = useRegisterDriverMutation();
 
 
-    const createOrganization = async (payload: OrganizationRegistrationData) => {
+    const createOrganization = async (data: OrganizationRegistrationData) => {
         try {
-            const res = await createOrganizationMutation({ data: payload }).unwrap();
+            const res = await createOrganizationMutation({ data }).unwrap();
             if (res) {
                 toast.success("Organization created successfully");
             }

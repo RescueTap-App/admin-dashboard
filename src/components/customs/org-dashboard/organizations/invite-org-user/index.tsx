@@ -30,8 +30,8 @@ export default function InviteOrgUser() {
         <div className="min-h-screen bg-gray-50 p-4">
             <div className="max-w-6xl mx-auto">
                 <div className="mb-6">
-                    <h1 className="text-2xl font-bold mb-2">Register New Driver</h1>
-                    <p className="text-gray-600">Add a new driver</p>
+                    <h1 className="text-2xl font-bold mb-2">Invite a new user</h1>
+                    <p className="text-gray-600">Fill in the details of the Organization user you intend to invite</p>
                 </div>
 
                 <Form {...form}>

@@ -3,6 +3,7 @@ import { setCredentials } from "@/redux/slices/auth-slice";
 import { LoginTypes, SendOtpTypes, ResetPasswordTypes, VerifyOtpTypes } from "@/types/auth.types";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
+import Cookies from "js-cookie";
 
 export function useAuth() {
 
@@ -24,6 +25,7 @@ export function useAuth() {
             sessionStorage.setItem("token", res.access_token);
             sessionStorage.setItem("userId", res.user._id);
             sessionStorage.setItem("role", res.user.role);
+            Cookies.set("token", res.access_token);
             toast.success(res.messages || "Login successful")
             return res
         } catch (error: unknown) {

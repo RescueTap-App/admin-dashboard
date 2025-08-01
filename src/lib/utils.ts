@@ -1,5 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { jwtVerify } from "jose";
+import { jwtDecode } from "jwt-decode";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -46,3 +48,28 @@ export function extractPlainText(content: string, wordLimit = 6) {
   // Step 4: Extract the first 'wordLimit' words
   return words.slice(0, wordLimit).join(" ");
 }
+
+
+const JWT_SECRET = process.env.JWT_SECRET!;
+
+export async function verifyToken(token: string | Uint8Array<ArrayBufferLike>) {
+  try {
+    const secret = new TextEncoder().encode(JWT_SECRET);
+    const { payload } = await jwtVerify(token, secret);
+    return payload;
+  } catch (err) {
+    console.error("Token verification failed:", err);
+    return null;
+  }
+}
+
+
+export const isTokenExpired = (token: string): boolean => {
+  try {
+    const decoded = jwtDecode<{ exp: number }>(token);
+    if (!decoded.exp) return true;
+    return Date.now() >= decoded.exp * 1000;
+  } catch {
+    return true;
+  }
+};

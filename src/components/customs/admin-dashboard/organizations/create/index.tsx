@@ -2,39 +2,36 @@
 
 import { ReusableFormField } from "@/components/shared/forms/form-input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form} from "@/components/ui/form";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form } from "@/components/ui/form";
 import { createOrganizationSchema, createOrganizationSchemaType } from "@/constants/validations/organization";
+import useOrganization from "@/hooks/use-organization";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { IconPlus } from "@tabler/icons-react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 
 function CreateOrganization() {
+
+    const { createOrganization, creating } = useOrganization({})
+
     const form = useForm<createOrganizationSchemaType>({
         resolver: zodResolver(createOrganizationSchema),
         defaultValues: {
             organizationName: "",
-            noOfUnits: "",
-            category: "",
-            address: "",
-            contactPerson: [
-                {
-                    firstName: "",
-                    lastName: "",
-                    contactEmail: "",
-                    contactPhone: ""
-                }
-            ],
-        },
-    });
-
-    const { fields, append, remove } = useFieldArray({
-        control: form.control,
-        name: "contactPerson"
+            firstName: "",
+            lastName: "",
+            phoneNumber: "",
+            email: "",
+            password: "",
+            subscriptionPlan: "monthly",
+            driverLimit: 1,
+            userLimit: 1,
+            amount: 1
+        }
     });
 
     const handleSubmit = (data: createOrganizationSchemaType) => {
+        createOrganization(data)
         console.log(data);
     };
 
@@ -56,113 +53,97 @@ function CreateOrganization() {
                                 name="organizationName"
                                 label="Organization Name *"
                                 type="text"
-                                placeholder="Enter Estate name"
+                                placeholder="Enter organization name"
                             />
 
                             <ReusableFormField
                                 control={form.control}
-                                name="noOfUnits"
-                                label="Number of Units *"
-                                type="number"
-                                placeholder="Total units"
+                                name="firstName"
+                                label="First Name *"
+                                type="text"
+                                placeholder="Enter first name"
                             />
 
-                            <div className={"col-span-full w-full flex flex-col gap-2"}>
-                                <ReusableFormField
-                                    control={form.control}
-                                    name="category"
-                                    label="Select Category *"
-                                    fieldType="select"
-                                    options={[
-                                        { label: "Residential", value: "residential" },
-                                        { label: "Commercial", value: "commercial" },
-                                    ]}
-                                    placeholder="Select a category"
-                                />
-                                <ReusableFormField
-                                    control={form.control}
-                                    name="address"
-                                    label="Address *"
-                                    placeholder="Enter full address"
-                                    type="text"
-                                    fieldType="textarea"
-                                    className={"min-h-24 rounded"}
-                                />
-                            </div>
+                            <ReusableFormField
+                                control={form.control}
+                                name="lastName"
+                                label="Last Name *"
+                                type="text"
+                                placeholder="Enter last name"
+                            />
+
+                            <ReusableFormField
+                                control={form.control}
+                                name="phoneNumber"
+                                label="Phone Number *"
+                                type="text"
+                                inputMode={"numeric"}
+                                placeholder="Enter phone number"
+                            />
+
+                            <ReusableFormField
+                                control={form.control}
+                                name="email"
+                                label="Email *"
+                                type="email"
+                                placeholder="Enter email address"
+                            />
+
+                            <ReusableFormField
+                                control={form.control}
+                                name="password"
+                                label="Password *"
+                                type="password"
+                                placeholder="Enter password"
+                            />
+
+                            <ReusableFormField
+                                control={form.control}
+                                name="subscriptionPlan"
+                                label="Subscription Plan *"
+                                fieldType="select"
+                                options={[
+                                    { label: "Monthly", value: "monthly" },
+                                    { label: "Yearly", value: "yearly" },
+                                ]}
+                                placeholder="Select a plan"
+                            />
+
+                            <ReusableFormField
+                                control={form.control}
+                                name="driverLimit"
+                                label="Driver Limit *"
+                                type="number"
+                                placeholder="Maximum number of drivers"
+                            />
+
+                            <ReusableFormField
+                                control={form.control}
+                                name="userLimit"
+                                label="User Limit *"
+                                type="number"
+                                inputMode={"numeric"}
+                                placeholder="Maximum number of users"
+                            />
+
+                            <ReusableFormField
+                                control={form.control}
+                                name="amount"
+                                label="Amount *"
+                                type="number"
+                                inputMode={"numeric"}
+                                placeholder="Amount (₦)"
+                            />
                         </div>
 
-                        {/* Contact Persons */}
-                        <div className="space-y-3 border sm:p-4 p-2 rounded-md">
-                            <div className="flex justify-between items-center font-lato">
-                                <h1 className="text-md font-semibold">Organization Contact Person’s Details</h1>
-                            </div>
-
-                            {fields.map((field, index) => (
-                                <div
-                                    key={field.id}
-                                    className="grid grid-cols-1 sm:grid-cols-2 gap-3  relative"
-                                >
-                                    <ReusableFormField
-                                        control={form.control}
-                                        name={`contactPerson.${index}.firstName`}
-                                        label="Address *"
-                                        placeholder="Enter first name"
-                                        type="text"
-                                    />
-                                    <ReusableFormField
-                                        control={form.control}
-                                        name={`contactPerson.${index}.lastName`}
-                                        label="Address *"
-                                        placeholder="Enter last name"
-                                        type="text"
-                                    />
-                                    <ReusableFormField
-                                        control={form.control}
-                                        name={`contactPerson.${index}.contactEmail`}
-                                        label="Contact Email"
-                                        placeholder="contact@estate.com"
-                                        type="email"
-                                    />
-
-                                    <ReusableFormField
-                                        control={form.control}
-                                        name={`contactPerson.${index}.contactPhone`}
-                                        label="Contact Phone"
-                                        placeholder="+234 xxx xxx xxxx"
-                                        type="number"
-                                    />
-
-                                    {fields.length > 1 && (
-                                        <Button
-                                            type="button"
-                                            variant="ghost"
-                                            size="sm"
-                                            className="absolute top-2 right-2 text-red-600"
-                                            onClick={() => remove(index)}
-                                        >
-                                            Remove
-                                        </Button>
-                                    )}
-                                </div>
-                            ))}
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() =>
-                                    append({ firstName: "", lastName: "", contactEmail: "", contactPhone: "" })
-                                }
-                            >
-                                Add Another Contact <IconPlus />
+                        <CardFooter className={"flex flex-row justify-end"}>
+                            <Button type="submit" className="max-w-md rounded bg-[#EF4136] hover:bg-[#EF4136]/50 text-white py-3" disabled={creating}>
+                                {creating ? "Processing..." : "Create Organization"}
                             </Button>
-                        </div>
-
-                        <div className={"flex flex-row items-center justify-end"}>
-                            <Button type="submit" className="max-w-fit rounded bg-[#EF4136] hover:bg-[#EF4136]/50 text-white">
-                                Create New Account
-                            </Button>
-                        </div>
+                        </CardFooter>
                     </form>
                 </Form>
+
             </CardContent>
         </Card>
     );
