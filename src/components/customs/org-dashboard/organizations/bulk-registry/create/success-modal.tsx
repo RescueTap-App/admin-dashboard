@@ -4,6 +4,11 @@ import { Key, Mail, Users } from "lucide-react";
 import Link from "next/link";
 import { PiEyeThin, PiSealCheckBold } from "react-icons/pi";
 
+interface UploadProps {
+    users:number
+    logins:number;
+    crdentails:number
+}
 
 function SuccessfulUpload() {
   return (

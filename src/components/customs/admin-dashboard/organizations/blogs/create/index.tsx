@@ -1,6 +1,5 @@
 "use client"
 
-// import RichTextEditor from "@/components/shared/editor"
 import { UploadField } from "@/components/shared/file-uploader-extend"
 import { ReusableFormField } from "@/components/shared/forms/form-input"
 import { Button } from "@/components/ui/button"
@@ -9,15 +8,13 @@ import { Form } from "@/components/ui/form"
 import { CreateBlogFormData, createBlogSchema } from "@/constants/validations/blogs"
 import useBlogs from "@/hooks/use-blogs"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter } from "next/navigation"
 import { Controller, useForm } from "react-hook-form"
 import Select from "react-select"
 
 
 export default function CreateBlogs() {
-    const { createBlog, creatingBlog, all_categories } = useBlogs({ fetchAllCategories: true })
-    const router = useRouter()
 
+    const { createBlog, creatingBlog, all_categories } = useBlogs({ fetchAllCategories: true })
     const form = useForm<CreateBlogFormData>({
         resolver: zodResolver(createBlogSchema),
         defaultValues: {
@@ -33,7 +30,6 @@ export default function CreateBlogs() {
         const res = await createBlog(data)
         if (res) {
             form.reset()
-            router.push("/dashboard/blogs")
         }
     }
 

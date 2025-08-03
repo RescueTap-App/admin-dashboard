@@ -12,6 +12,7 @@ import {
     useUpdateBlogMutation
 } from "@/redux/features/blogs-api";
 import { BlogDataTypes, CategoryDataType } from "@/types/blogs.types";
+import { useRouter } from "next/navigation";
 
 interface BlogProps {
     fetchAllBlogs?: boolean;
@@ -30,6 +31,7 @@ export default function useBlogs({
     fetchACategory,
     categoryId
 }: BlogProps) {
+      const router = useRouter();
     const [createBlogMutation, { isLoading: creatingBlog }] = useCreateBlogMutation();
     const [updateBlogMutation, { isLoading: updatingBlog }] = useUpdateBlogMutation();
     const [deleteBlogMutation, { isLoading: deletingBlog }] = useDeleteBlogMutation();
@@ -71,6 +73,7 @@ export default function useBlogs({
             const res = await createBlogMutation({ data }).unwrap();
             if (res) {
                 toast.success("Blog created successfully");
+                router.push("/dashboard/blogs")
             }
             return res;
         } catch (error: unknown) {

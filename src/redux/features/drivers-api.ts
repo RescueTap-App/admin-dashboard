@@ -1,6 +1,6 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { customBaseQueryWithReauth } from '@/lib/custom-base-query';
-import { DriverRegistrationData } from '@/types/drivers.types';
+import { UpdateDriverFormData, CreateDriverFormData } from '@/constants/validations/drivers';
 
 export const driversApi = createApi({
     reducerPath: 'driversApi',
@@ -16,7 +16,7 @@ export const driversApi = createApi({
             providesTags: ['Drivers'],
         }),
         createDriver: builder.mutation({
-            query: ({ data }: { data: DriverRegistrationData }) => ({
+            query: ({ data }: { data: CreateDriverFormData }) => ({
                 url: '/drivers',
                 method: 'POST',
                 body: data,
@@ -24,7 +24,7 @@ export const driversApi = createApi({
             invalidatesTags: ['Drivers'],
         }),
         updateDriver: builder.mutation({
-            query: ({ id, data }: { id?: string, data: DriverRegistrationData }) => ({
+            query: ({ id, data }: { id?: string, data: UpdateDriverFormData }) => ({
                 url: `/drivers/${id}`,
                 method: 'PUT',
                 body: data,

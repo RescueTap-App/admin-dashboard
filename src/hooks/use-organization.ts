@@ -12,6 +12,7 @@ import {
 import { toast } from "sonner";
 import { OrganizationRegistrationData, OrgUserInviteData } from '@/types/organization.types';
 import { DriverRegistrationData } from '@/types/drivers.types';
+import { useRouter } from "next/navigation";
 
 interface OrgProps {
     fetchAllUsers?: boolean;
@@ -20,6 +21,7 @@ interface OrgProps {
 }
 
 export default function useOrganization({ fetchAllUsers, fetchAllDrivers, inviterId }: OrgProps) {
+    const router = useRouter();
     const { data: allDrivers, isLoading: loadingDrivers } = useGetallDriversQuery(undefined, {
         skip: !fetchAllDrivers,
         refetchOnFocus: true,
@@ -53,6 +55,7 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, invite
             const res = await createOrganizationMutation({ data }).unwrap();
             if (res) {
                 toast.success("Organization created successfully");
+                router.push("/dashboard/organizations")
             }
             return res;
         } catch (error: unknown) {

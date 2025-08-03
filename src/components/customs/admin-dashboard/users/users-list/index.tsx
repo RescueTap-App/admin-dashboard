@@ -18,8 +18,11 @@ function UsersList() {
                     <h1 className={"font-semibold text-xl"}>Users List</h1>
                     <p className={"text-sm pt-2"}>List of all registered Users</p>
                 </div>
-                <Link href={"/dashboard/users/create"}>
-                    <Button className={"bg-[#EF4136] hover:bg-[#EF4136]/50 rounded"}>Create New User <IconPlus /></Button>
+                <Link href={"/dashboard/users/create"} passHref>
+                    <Button className={"bg-[#EF4136] hover:bg-[#EF4136]/50 rounded"}>
+                        <span className={"hidden lg:inline"}>Create New User</span>
+                        <IconPlus />
+                    </Button>
                 </Link>
             </CardHeader>
             <div className='overflow-x-auto md:max-w-md min-w-full'>

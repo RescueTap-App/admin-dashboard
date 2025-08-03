@@ -9,11 +9,9 @@ import useOrganization from "@/hooks/use-organization";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-
 function CreateOrganization() {
 
-    const { createOrganization, creating } = useOrganization({})
-
+    const { createOrganization, creating } = useOrganization({});
     const form = useForm<createOrganizationSchemaType>({
         resolver: zodResolver(createOrganizationSchema),
         defaultValues: {
@@ -32,7 +30,6 @@ function CreateOrganization() {
 
     const handleSubmit = (data: createOrganizationSchemaType) => {
         createOrganization(data)
-        console.log(data);
     };
 
     return (
@@ -45,7 +42,6 @@ function CreateOrganization() {
             <CardContent>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-
                         {/* Organization Info */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border rounded p-2 sm:p-4">
                             <ReusableFormField

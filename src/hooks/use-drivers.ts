@@ -1,6 +1,7 @@
 import { toast } from "sonner";
-import { DriverRegistrationData } from '@/types/drivers.types';
 import { useGetallDriversQuery, useGetaDriverQuery, useCreateDriverMutation, useUpdateDriverMutation } from "@/redux/features/drivers-api"
+import { useRouter } from "next/navigation";
+import { CreateDriverFormData, UpdateDriverFormData } from "@/constants/validations/drivers";
 
 interface DriverProps {
     fetchAllDrivers?: boolean;
@@ -9,7 +10,8 @@ interface DriverProps {
 }
 
 export default function useDrivers({ fetchAllDrivers, fetchADriver, driverId }: DriverProps) {
-
+    
+    const router = useRouter();
     const [createDriverMutation, { isLoading: creating }] = useCreateDriverMutation();
     const [updateDriverMutation, { isLoading: updating }] = useUpdateDriverMutation();
     const { data: all_drivers, isLoading: loadingDrivers } = useGetallDriversQuery(undefined, {
@@ -26,11 +28,12 @@ export default function useDrivers({ fetchAllDrivers, fetchADriver, driverId }: 
         refetchOnReconnect: true
     });
 
-    const createDriver = async (data: DriverRegistrationData) => {
+    const createDriver = async (data: CreateDriverFormData) => {
         try {
             const res = await createDriverMutation({ data }).unwrap();
             if (res) {
                 toast.success("Driver created successfully");
+                router.push("/dasboard/drivers")
             }
             return res;
         } catch (error: unknown) {
@@ -40,7 +43,7 @@ export default function useDrivers({ fetchAllDrivers, fetchADriver, driverId }: 
         }
     };
 
-    const updateDriver = async (data: DriverRegistrationData) => {
+    const updateDriver = async (data: UpdateDriverFormData) => {
         try {
             const res = await updateDriverMutation({ id: driverId, data }).unwrap();
             if (res) {

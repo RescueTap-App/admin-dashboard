@@ -72,3 +72,18 @@ export type OrgUserInviteData = {
   email: string;
   phoneNumber: string;
 };
+
+export type OrgUsersTypes = {
+  _id:string;
+  firstName: string;
+  lastName: string;
+  email:string;
+  phoneNumber: string;
+  profileImage: string;
+  address:string;
+  verified:boolean;
+  role:string;
+  password: string;
+  createdAt:Date;
+  updatedAt:Date;
+}

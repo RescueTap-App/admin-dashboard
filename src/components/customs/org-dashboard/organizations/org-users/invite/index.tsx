@@ -8,10 +8,16 @@ import { Form } from "@/components/ui/form"
 import { inviteOrgSchema, InviteOrgSchamaFormData } from "@/constants/validations/organization"
 import { ReusableFormField } from "@/components/shared/forms/form-input"
 import useOrganization from "@/hooks/use-organization"
+import { useSelector } from "react-redux";
+import { RootState } from "@/lib/store";
+
 
 export default function InviteOrgUser() {
+    
     const { inviteOrgUser, inviting, } = useOrganization({})
-    const inviterId = "12345566666666"
+    const { user } = useSelector((state: RootState) => state.auth);
+    const inviterId = user?._id as string;
+
     const form = useForm<InviteOrgSchamaFormData>({
         resolver: zodResolver(inviteOrgSchema),
         defaultValues: {

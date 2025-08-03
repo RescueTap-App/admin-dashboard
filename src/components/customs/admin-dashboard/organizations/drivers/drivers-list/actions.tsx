@@ -30,9 +30,9 @@ export function DriversActions({ driverId }: DriverProps) {
                         <DropdownMenuItem variant="default">View Driver Details</DropdownMenuItem>
                     </Link>
 
-                    {/* <Link href={`/dashboard/drivers/travels/${driverId}`} passHref>
-                        <DropdownMenuItem variant="default">View Driver Travels</DropdownMenuItem>
-                    </Link> */}
+                    <Link href={`/dashboard/drivers/update/${driverId}`} passHref>
+                        <DropdownMenuItem variant="default">Edit Driver</DropdownMenuItem>
+                    </Link>
                 </DropdownMenuContent>
             </DropdownMenu>
         </div>

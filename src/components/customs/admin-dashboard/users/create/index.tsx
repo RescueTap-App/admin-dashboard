@@ -8,11 +8,13 @@ import { Card, CardContent, CardHeader, CardFooter, CardTitle } from "@/componen
 import { Button } from "@/components/ui/button"
 import { ReusableFormField } from "@/components/shared/forms/form-input"
 import useUsers from "@/hooks/use-users"
+import { useRouter } from "next/navigation"
 
 
 export default function CreateUser() {
 
     const { createUser, creating } = useUsers({})
+    const router = useRouter()
     const form = useForm<CreateUserFormData>({
         resolver: zodResolver(userSchema),
         defaultValues: {
@@ -29,6 +31,7 @@ export default function CreateUser() {
         const res = await createUser(data)
         if (res) {
             form.reset();
+            router.push("/dashboard/users")
         }
     }
 
