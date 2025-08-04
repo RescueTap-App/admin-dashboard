@@ -19,6 +19,7 @@ export type BlogDataTypes = {
 }
 
 export type CategoryDataType = {
+    _id:string;
     name: string
     description: string
     isActive: boolean

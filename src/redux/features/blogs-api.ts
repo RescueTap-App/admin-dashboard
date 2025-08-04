@@ -1,6 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { customBaseQueryWithReauth } from '@/lib/custom-base-query';
-import { BlogDataTypes, CategoryDataType } from '@/types/blogs.types';
+import { BlogDataTypes } from '@/types/blogs.types';
+import { CreateCategoryFormData } from '@/constants/validations/blogs';
 
 export const blogsApi = createApi({
     reducerPath: 'blogsApi',
@@ -8,7 +9,7 @@ export const blogsApi = createApi({
     tagTypes: ['Category', 'Blogs'],
     endpoints: (builder) => ({
         createCategory: builder.mutation({
-            query: ({ data }: { data: CategoryDataType }) => ({
+            query: ({ data }: { data: CreateCategoryFormData }) => ({
                 url: `/blogs/categories`,
                 method: "POST",
                 body: data
@@ -16,7 +17,7 @@ export const blogsApi = createApi({
             invalidatesTags: ['Category'],
         }),
         updateCategory: builder.mutation({
-            query: ({ id, data }: { id?: string, data: CategoryDataType }) => ({
+            query: ({ id, data }: { id?: string, data: CreateCategoryFormData }) => ({
                 url: `/blogs/categories/${id}`,
                 method: "PATCH",
                 body: data

@@ -77,7 +77,7 @@ export default function SignInPage() {
 
                 <Button
                   type="submit"
-                  className="w-full bg-[#EF4136] hover:bg-[#EF4136]/50 text-white py-3 text-base font-medium rounded font-lato"
+                  className="w-full bg-[#EF4136] hover:bg-[#EF4136]/50 text-white py-3 h-11 text-base font-medium rounded font-lato"
                   disabled={logingIn}
                 >
                   {logingIn ? "Signing In..." : "Sign In"}

@@ -11,13 +11,24 @@ export const driversApi = createApi({
             query: () => `/drivers`,
             providesTags: ['Drivers'],
         }),
+        getallTravels: builder.query({
+            query: () => `/travels`,
+        }),
         getaDriver: builder.query({
             query: (id) => `/drivers/${id}`,
             providesTags: ['Drivers'],
         }),
         createDriver: builder.mutation({
+            query: ({ data, inviterId }: { data: CreateDriverFormData, inviterId: string }) => ({
+                url: `/users/${inviterId}/drivers`,
+                method: 'POST',
+                body: data,
+            }),
+            invalidatesTags: ['Drivers'],
+        }),
+        createDriverAdmin: builder.mutation({
             query: ({ data }: { data: CreateDriverFormData }) => ({
-                url: '/drivers',
+                url: `/drivers`,
                 method: 'POST',
                 body: data,
             }),
@@ -38,6 +49,8 @@ export const {
     useGetallDriversQuery,
     useGetaDriverQuery,
     useCreateDriverMutation,
-    useUpdateDriverMutation
+    useUpdateDriverMutation,
+    useGetallTravelsQuery,
+    useCreateDriverAdminMutation
 } = driversApi;
 

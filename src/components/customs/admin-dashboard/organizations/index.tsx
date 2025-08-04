@@ -2,7 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import StatsCard from "./stats-card";
-import TotalOrganizations from "./total-org";
+// import TotalOrganizations from "./total-org";
 import RevenueBrakedown from './total-revenue';
 import VehicleRegistry from './vehicle-registry';
 import OrganizationAnalytics from './org-analytics';
@@ -36,7 +36,7 @@ export default function Organizations() {
             <StatsCard data={stats_data} activeTab={activeTab} />
 
             <div>
-                {activeTab === 'organizations' && <TotalOrganizations />}
+                {activeTab === 'organizations' && <RevenueBrakedown />}
 
                 {activeTab === 'revenue' && <RevenueBrakedown />}
 

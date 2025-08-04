@@ -130,9 +130,9 @@ const columns: ColumnDef<DriverListTypes>[] = [
     },
     {
         accessorKey: "profileImage",
-        header: "Profile",
+        header: "Profiles",
         cell: ({ row }) => (
-            <div className="w-24 h-24 relative">
+            <div className="w-18 h-18 relative">
                 <Image src={row.original.profileImage || "/icons/avatar.svg"}
                     alt={"Profile Image"}
                     fill
@@ -233,7 +233,7 @@ const columns: ColumnDef<DriverListTypes>[] = [
         accessorKey: "status",
         header: "Status",
         cell: ({ row }) => (
-            <Badge variant="outline" className="text-muted-foreground px-1.5">
+            <Badge variant="outline" className="text-muted-foreground px-1.5 flex flex-row items-center capitalize">
                 {row.original.status === "active" ? (
                     <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
                 ) : (

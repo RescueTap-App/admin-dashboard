@@ -133,7 +133,7 @@ const columns: ColumnDef<UserListType>[] = [
         accessorKey: "profileImage",
         header: "Profile",
         cell: ({ row }) => (
-            <div className="w-22 h-22 relative">
+            <div className="w-16 h-16 relative">
                 <Image src={row.original.profileImage || "/icons/avatar.svg"}
                     alt={"Profile Image"}
                     fill

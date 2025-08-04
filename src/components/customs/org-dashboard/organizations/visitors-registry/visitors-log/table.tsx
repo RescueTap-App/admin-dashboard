@@ -322,10 +322,13 @@ export function ActiveVisitorsLogTable({
 
     return (
         <React.Fragment>
-            <SearchInput
-                value={globalFilter}
-                placeholder="visitors"
-                onChange={(e) => setGlobalFilter(e.target.value)} />
+            <div className="flex items-center gap-3 mb-4">
+                <SearchInput
+                    value={globalFilter}
+                    placeholder="visitors"
+                    onChange={(e) => setGlobalFilter(e.target.value)} />
+            </div>
+
             <div className="overflow-hidden border">
                 <DndContext
                     collisionDetection={closestCenter}
@@ -378,7 +381,7 @@ export function ActiveVisitorsLogTable({
                     </SortableContext>
                 </DndContext>
             </div>
-             <div className="flex items-center justify-between px-4 pt-3">
+            <div className="flex items-center justify-between px-4 pt-3">
                 <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
                     {table.getFilteredSelectedRowModel().rows.length} of{" "}
                     {table.getFilteredRowModel().rows.length} row(s) selected.

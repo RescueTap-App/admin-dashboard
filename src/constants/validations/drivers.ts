@@ -33,7 +33,7 @@ export const updateDriverSchema = z.object({
     image: z.string().url().optional(),
     driverId: z.string().optional(),
     licenseNumber: z.string().optional(),
-    emailAddress: z.string().email("Invalid email address").optional(),
+    emailAddress: z.email("Invalid email address").optional(),
     emergencyContactName: z.string().optional(),
     homeAddress: z.string().optional(),
     vehicleMake: z.string().optional(),

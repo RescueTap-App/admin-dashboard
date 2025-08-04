@@ -35,7 +35,7 @@ export function VehicleRegistration() {
         <div className="min-h-screen bg-gray-50 p-4">
             <div className="max-w-2xl mx-auto">
                 <div className="mb-6">
-                    <h1 className="text-2xl font-bold mb-2">Register New Vehicle</h1>
+                    <h1 className="text-2xl font-bold mb-2 font-lato">Register New Vehicle</h1>
                     <p className="text-gray-600">Add a new vehicle to your organization&apos;s registry</p>
                 </div>
 

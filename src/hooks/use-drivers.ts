@@ -1,18 +1,20 @@
 import { toast } from "sonner";
-import { useGetallDriversQuery, useGetaDriverQuery, useCreateDriverMutation, useUpdateDriverMutation } from "@/redux/features/drivers-api"
+import { useGetallDriversQuery, useGetaDriverQuery, useGetallTravelsQuery, useCreateDriverAdminMutation, useCreateDriverMutation, useUpdateDriverMutation } from "@/redux/features/drivers-api"
 import { useRouter } from "next/navigation";
 import { CreateDriverFormData, UpdateDriverFormData } from "@/constants/validations/drivers";
 
 interface DriverProps {
     fetchAllDrivers?: boolean;
     fetchADriver?: boolean;
+    fetchTravels?: boolean;
     driverId?: string;
 }
 
-export default function useDrivers({ fetchAllDrivers, fetchADriver, driverId }: DriverProps) {
-    
+export default function useDrivers({ fetchAllDrivers, fetchTravels, fetchADriver, driverId }: DriverProps) {
+
     const router = useRouter();
     const [createDriverMutation, { isLoading: creating }] = useCreateDriverMutation();
+    const [createAdminDriverMutation, { isLoading: creatingDriverAdmin }] = useCreateDriverAdminMutation()
     const [updateDriverMutation, { isLoading: updating }] = useUpdateDriverMutation();
     const { data: all_drivers, isLoading: loadingDrivers } = useGetallDriversQuery(undefined, {
         skip: !fetchAllDrivers,
@@ -27,10 +29,31 @@ export default function useDrivers({ fetchAllDrivers, fetchADriver, driverId }: 
         refetchOnMountOrArgChange: true,
         refetchOnReconnect: true
     });
+    const { data: travels, isLoading: loadingTravels } = useGetallTravelsQuery(undefined, {
+        skip: !fetchTravels,
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true,
+        refetchOnReconnect: true
+    });
 
-    const createDriver = async (data: CreateDriverFormData) => {
+    const createDriver = async (data: CreateDriverFormData, inviterId: string) => {
         try {
-            const res = await createDriverMutation({ data }).unwrap();
+            const res = await createDriverMutation({ data, inviterId }).unwrap();
+            if (res) {
+                toast.success("Driver created successfully");
+                router.push("/org/drivers")
+            }
+            return res;
+        } catch (error: unknown) {
+            const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to create driver"
+            toast.error(errorMessage)
+            console.log(error)
+        }
+    };
+
+    const createDriverAdmin = async (data: CreateDriverFormData) => {
+        try {
+            const res = await createAdminDriverMutation({ data }).unwrap();
             if (res) {
                 toast.success("Driver created successfully");
                 router.push("/dasboard/drivers")
@@ -58,6 +81,8 @@ export default function useDrivers({ fetchAllDrivers, fetchADriver, driverId }: 
     };
 
     return {
+        travels,
+        loadingTravels,
         all_drivers,
         loadingDrivers,
         driver,
@@ -65,6 +90,8 @@ export default function useDrivers({ fetchAllDrivers, fetchADriver, driverId }: 
         createDriver,
         creating,
         updateDriver,
-        updating
+        updating,
+        createDriverAdmin,
+        creatingDriverAdmin
     }
 }

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Lato, Roboto, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import ReduxProvider from "@/providers/redux-provider";
-import ProtectedLayout from "@/layouts/protect-layout";
+
 
 const inter = Inter({
   subsets: ["latin"],
@@ -42,9 +42,7 @@ export default function RootLayout({
         className={`${inter.variable} ${lato.variable} ${roboto.variable} ${roboto_mono.variable} antialiased scroll-smooth`}
       >
         <ReduxProvider>
-          <ProtectedLayout>
             {children}
-          </ProtectedLayout>
         </ReduxProvider>
       </body>
     </html>

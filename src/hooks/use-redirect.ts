@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -19,7 +19,15 @@ export function useRedirect() {
             .find((row) => row.startsWith("token="))
             ?.split("=")[1];
 
-        if (!token) return;
+        const path = window.location.pathname;
+
+        if (!token) {
+            // If not logged in, block access to protected routes
+            if (path.startsWith("/dashboard") || path.startsWith("/org")) {
+                router.replace("/auth/login");
+            }
+            return;
+        }
 
         let decoded: DecodedToken;
 
@@ -33,19 +41,30 @@ export function useRedirect() {
 
         const { exp, role } = decoded;
 
-        // 🧠 Role-based redirection
-        const path = window.location.pathname;
+        // Redirect logged-in users away from auth pages
+        if (path.startsWith("/auth")) {
+            if (role === "admin") {
+                router.replace("/dashboard");
+            } else if (role === "organization") {
+                router.replace("/org");
+            } else {
+                router.replace("/");
+            }
+            return;
+        }
 
+        // Role-based access control
         if (role === "admin" && !path.startsWith("/dashboard")) {
-            router.replace("/unauthorized"); // or '/'
+            router.replace("/unauthorized");
             return;
         }
 
         if (role === "organization" && !path.startsWith("/org")) {
-            router.replace("/unauthorized"); // or '/'
+            router.replace("/unauthorized");
             return;
         }
 
+        // Token expiry handling
         if (exp) {
             const now = Date.now() / 1000;
             const timeUntilExpiry = (exp - now) * 1000;

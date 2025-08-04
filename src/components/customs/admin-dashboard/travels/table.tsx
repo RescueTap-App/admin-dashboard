@@ -64,7 +64,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { TravelsTypes } from "@/types/travels.types"
+import { DriverApplication } from "@/types/travels.types"
 import SearchInput from "@/components/shared/search-input";
 import Image from "next/image"
 import { TravelsActions } from "./actions";
@@ -89,7 +89,7 @@ function DragHandle({ id }: { id: string }) {
     )
 }
 
-const columns: ColumnDef<TravelsTypes>[] = [
+export const columns: ColumnDef<DriverApplication>[] = [
     {
         id: "drag",
         header: () => null,
@@ -122,130 +122,109 @@ const columns: ColumnDef<TravelsTypes>[] = [
         enableHiding: true,
     },
     {
-        accessorKey: "profileImage",
+        accessorKey: "driverId.profileImage",
         header: "Profile",
         cell: ({ row }) => (
-            <div className="w-24 h-24 relative">
-                <Image src={row.original.profileImage || "/icons/avatar.svg"}
-                    alt={"Profile Image"}
+            <div className="w-20 h-20 relative">
+                <Image
+                    src={row.original.driverId.profileImage || "/icons/avatar.svg"}
+                    alt="Driver"
                     fill
-                    fetchPriority="high"
-                    className={"object-contain object-center border rounded-full border-orange-600/50"} />
+                    className="object-cover rounded-full border"
+                />
             </div>
         ),
     },
     {
-        accessorKey: "firstName",
-        header: "First Name",
+        accessorKey: "driverId.driverName",
+        header: "Driver Name",
         cell: ({ row }) => (
-            <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.firstName}
-                </p>
-            </div>
+            <p className="text-muted-foreground px-1.5">
+                {row.original.driverId.driverName}
+            </p>
         ),
     },
     {
-        accessorKey: "lastName",
-        header: "Last Name",
-        cell: ({ row }) => (
-            <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.lastName}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "email",
+        accessorKey: "driverId.emailAddress",
         header: "Email",
         cell: ({ row }) => (
-            <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.email}
-                </p>
-            </div>
+            <p className="text-muted-foreground px-1.5">
+                {row.original.driverId.emailAddress}
+            </p>
         ),
     },
     {
-        accessorKey: "driverType",
-        header: "Driver Type",
+        accessorKey: "driverId.vehicleType",
+        header: "Vehicle Type",
         cell: ({ row }) => (
-            <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.driverType}
-                </p>
-            </div>
+            <p className="text-muted-foreground px-1.5">
+                {row.original.driverId.vehicleType}
+            </p>
         ),
     },
     {
-        accessorKey: "plateNumber",
-        header: "Plate Number",
-        cell: ({ row }) => (
-            <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.plateNumber}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "regNumber",
-        header: "Reg.Number",
-        cell: ({ row }) => (
-            <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.regNumber}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "vehicleModel",
+        accessorKey: "driverId.vehicleModel",
         header: "Vehicle Model",
         cell: ({ row }) => (
-            <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.vehicleModel}
-                </p>
-            </div>
+            <p className="text-muted-foreground px-1.5">
+                {row.original.driverId.vehicleModel}
+            </p>
         ),
     },
     {
-        accessorKey: "registrationDate",
+        accessorKey: "driverId.licenseNumber",
+        header: "License No.",
+        cell: ({ row }) => (
+            <p className="text-muted-foreground px-1.5">
+                {row.original.driverId.licenseNumber}
+            </p>
+        ),
+    },
+    {
+        accessorKey: "driverId.registrationDate",
         header: "Registration Date",
         cell: ({ row }) => (
-            <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
-                    {format(new Date(row.original.registrationDate), 'MMM d, yyyy')}
-                </p>
-            </div>
+            <p className="text-muted-foreground px-1.5">
+                {format(new Date(row.original.driverId.registrationDate), "MMM d, yyyy")}
+            </p>
         ),
     },
     {
-        accessorKey: "status",
+        accessorKey: "driverId.status",
         header: "Status",
+        cell: ({ row }) => {
+            const status = row.original.driverId.status;
+            return (
+                <Badge variant="outline" className="flex items-center gap-1 text-muted-foreground px-1.5">
+                    {status === "Active" ? (
+                        <IconCircleCheckFilled className="w-4 h-4 fill-green-500" />
+                    ) : (
+                        <IconInfoCircle className="w-4 h-4 fill-amber-500" />
+                    )}
+                    {status}
+                </Badge>
+            );
+        },
+    },
+    {
+        accessorKey: "isConfirmed",
+        header: "Confirmed?",
         cell: ({ row }) => (
-            <Badge variant="outline" className="text-muted-foreground px-1.5">
-                {row.original.status === "active" ? (
-                    <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
-                ) : (
-                    <IconInfoCircle className={"fill-amber-500 text-white"} />
-                )}
-                {row.original.status}
+            <Badge
+                variant={row.original.isConfirmed ? "default" : "secondary"}
+                className="px-2 text-sm"
+            >
+                {row.original.isConfirmed ? "Yes" : "No"}
             </Badge>
         ),
     },
     {
         id: "actions",
         header: "Actions",
-        cell: ({ row }) => (
-            <TravelsActions/>
-        ),
+        cell: ({ row }) => <TravelsActions id={row.original._id} />,
     },
-]
-
-function DraggableRow({ row }: { row: Row<TravelsTypes> }) {
+];
+function DraggableRow({ row }: { row: Row<DriverApplication> }) {
     const { transform, transition, setNodeRef, isDragging } = useSortable({
         id: row.original._id,
     })
@@ -273,7 +252,7 @@ function DraggableRow({ row }: { row: Row<TravelsTypes> }) {
 export function TravelsTable({
     data: initialData,
 }: {
-    data: TravelsTypes[]
+    data: DriverApplication[]
 }) {
     const [data, setData] = React.useState(() => initialData)
     const [rowSelection, setRowSelection] = React.useState({})

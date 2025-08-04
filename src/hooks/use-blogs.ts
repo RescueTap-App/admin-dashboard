@@ -1,4 +1,4 @@
-import { toast } from "sonner";
+import { CreateCategoryFormData } from "@/constants/validations/blogs";
 import {
     useCreateBlogMutation,
     useCreateCategoryMutation,
@@ -8,11 +8,12 @@ import {
     useGetaCategoryQuery,
     useGetallBlogsQuery,
     useGetallCategoryQuery,
-    useUpdateCategoryMutation,
-    useUpdateBlogMutation
+    useUpdateBlogMutation,
+    useUpdateCategoryMutation
 } from "@/redux/features/blogs-api";
-import { BlogDataTypes, CategoryDataType } from "@/types/blogs.types";
+import { BlogDataTypes } from "@/types/blogs.types";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 interface BlogProps {
     fetchAllBlogs?: boolean;
@@ -31,7 +32,7 @@ export default function useBlogs({
     fetchACategory,
     categoryId
 }: BlogProps) {
-      const router = useRouter();
+    const router = useRouter();
     const [createBlogMutation, { isLoading: creatingBlog }] = useCreateBlogMutation();
     const [updateBlogMutation, { isLoading: updatingBlog }] = useUpdateBlogMutation();
     const [deleteBlogMutation, { isLoading: deletingBlog }] = useDeleteBlogMutation();
@@ -73,7 +74,9 @@ export default function useBlogs({
             const res = await createBlogMutation({ data }).unwrap();
             if (res) {
                 toast.success("Blog created successfully");
-                router.push("/dashboard/blogs")
+                setTimeout(() => {
+                    router.push("/dashboard/blogs");
+                }, 1000);
             }
             return res;
         } catch (error: unknown) {
@@ -111,7 +114,7 @@ export default function useBlogs({
         }
     };
 
-    const createCategory = async (data: CategoryDataType) => {
+    const createCategory = async (data: CreateCategoryFormData) => {
         try {
             const res = await createCategoryMutation({ data }).unwrap();
             if (res) {
@@ -125,7 +128,7 @@ export default function useBlogs({
         }
     };
 
-    const updateCategory = async (data: CategoryDataType) => {
+    const updateCategory = async (data: CreateCategoryFormData,) => {
         try {
             const res = await updateCategoryMutation({ id: categoryId, data }).unwrap();
             if (res) {

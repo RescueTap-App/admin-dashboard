@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/sidebar"
 import Image from "next/image"
 import { NavMain } from "./nav-main"
+import { useAuth } from "@/hooks/use-auth"
 
 const data = {
     navMain: [
@@ -53,6 +54,10 @@ const data = {
                 {
                     title: "Create Driver",
                     url: "/org/drivers/create",
+                },
+                 {
+                    title: "Invite User",
+                    url: "/org/invite",
                 },
                 {
                     title: "Bulk Registration",
@@ -92,21 +97,22 @@ const data = {
         },
         {
             title: "Settings",
-            url: "/org/settigs",
+            url: "#",
             icon: Settings,
-            // items: [
-            //     {
-            //         title: "Your Settings",
-            //         url: "/org/settings",
-            //     }
-            // ],
+            items: [
+                {
+                    title: "Your Settings",
+                    url: "/org/settings",
+                }
+            ],
         },
     ],
 }
 
 export function UserAppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    const { logOut } = useAuth();
     return (
-        <Sidebar collapsible="icon" {...props}>
+        <Sidebar collapsible="offcanvas"  {...props}>
             <SidebarHeader>
                 <div className={"relative h-10 w-full"}>
                     <Image
@@ -120,7 +126,7 @@ export function UserAppSidebar({ ...props }: React.ComponentProps<typeof Sidebar
                 <NavMain items={data.navMain} />
             </SidebarContent>
             <SidebarFooter>
-                <button className="flex flex-row items-center justify-between py-2 px-1.5 font-lato">Logout <LogOut/></button>
+                <button onClick={logOut} className="flex flex-row items-center justify-between cursor-pointer hover:bg-gray-300 rounded py-2 px-1.5 font-lato">Logout <LogOut /></button>
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>

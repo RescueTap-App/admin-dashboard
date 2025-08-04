@@ -1,4 +1,4 @@
-import DriversList from "@/components/customs/admin-dashboard/organizations/drivers/drivers-list";
+import DriversList from '@/components/customs/org-dashboard/organizations/drivers/drivers-list';
 import { Metadata } from 'next';
 
 

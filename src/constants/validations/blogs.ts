@@ -8,4 +8,12 @@ export const createBlogSchema = z.object({
     featureImage: z.string().nonempty("Feature  image is required"),
 })
 
+export const createCategorySchema = z.object({
+    name: z.string().min(1, "name is required"),
+    description: z.string().min(1, "description is required"),
+    isActive:z.boolean()
+})
+
+
 export type CreateBlogFormData = z.infer<typeof createBlogSchema>
+export type CreateCategoryFormData = z.infer<typeof createCategorySchema>

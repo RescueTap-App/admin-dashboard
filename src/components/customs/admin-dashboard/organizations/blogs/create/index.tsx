@@ -1,5 +1,6 @@
 "use client"
 
+import RichTextEditor from "@/components/shared/editor"
 import { UploadField } from "@/components/shared/file-uploader-extend"
 import { ReusableFormField } from "@/components/shared/forms/form-input"
 import { Button } from "@/components/ui/button"
@@ -39,10 +40,10 @@ export default function CreateBlogs() {
     })) ?? []
 
     return (
-        <div className="min-h-screen bg-gray-50 p-4">
+        <div className="min-h-screen bg-gray-50 px-2.5 sm:p-4">
             <div className="max-w-6xl mx-auto">
                 <div className="mb-6">
-                    <h1 className="text-2xl font-bold mb-2">Create New Blog</h1>
+                    <h1 className="text-2xl font-bold font-lato mb-2">Create New Blog</h1>
                 </div>
 
                 <Form {...form}>
@@ -50,7 +51,7 @@ export default function CreateBlogs() {
                         <Card className="rounded shadow">
                             <CardContent>
                                 <div className="gap-6">
-                                    <div className="grid grid-cols-3 space-y-4 gap-6">
+                                    <div className="grid grid-cols-1 lg:grid-cols-3 space-y-4 gap-6">
                                         <div className="md:col-span-2 flex flex-col gap-3">
                                             <ReusableFormField control={form.control} name="title" label="Blog Title *" placeholder="e.g. How to start a startup" />
                                             <ReusableFormField control={form.control} name="author" label="Author Name *" placeholder="John Doe" />
@@ -72,7 +73,7 @@ export default function CreateBlogs() {
                                             </div>
 
                                             {/* Blog Content */}
-                                            {/* <div>
+                                            <div>
                                                 <Controller
                                                     name="content"
                                                     control={form.control}
@@ -86,7 +87,7 @@ export default function CreateBlogs() {
                                                         />
                                                     )}
                                                 />
-                                            </div> */}
+                                            </div>
                                         </div>
 
                                         <div>

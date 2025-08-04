@@ -1,12 +1,14 @@
 import { useLoginMutation, useSendOtpMutation, useResetPasswordMutation, useVerifyOtpMutation } from "@/redux/features/auth-api";
-import { setCredentials } from "@/redux/slices/auth-slice";
+import { setCredentials, resetUser } from "@/redux/slices/auth-slice";
 import { LoginTypes, SendOtpTypes, ResetPasswordTypes, VerifyOtpTypes } from "@/types/auth.types";
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 export function useAuth() {
 
+    const router = useRouter()
     const dispatch = useDispatch()
     const [loginMutation, { isLoading: logingIn }] = useLoginMutation();
     const [sendOtpMutation, { isLoading: sendingOtp }] = useSendOtpMutation();
@@ -15,7 +17,8 @@ export function useAuth() {
 
     const login = async (crdentails: LoginTypes) => {
         try {
-            const res = await loginMutation(crdentails).unwrap()
+            const res = await loginMutation(crdentails).unwrap();
+
             dispatch(
                 setCredentials({
                     token: res.access_token,
@@ -26,7 +29,13 @@ export function useAuth() {
             sessionStorage.setItem("userId", res.user._id);
             sessionStorage.setItem("role", res.user.role);
             Cookies.set("token", res.access_token);
-            toast.success(res.messages || "Login successful")
+            toast.success(res.messages || "Login successful");
+
+            if (res.user.role === "admin") {
+                router.replace("/dashboard/users");
+            } else if (res.user.role === "organization") {
+                router.replace("/org");
+            }
             return res
         } catch (error: unknown) {
             const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to Login"
@@ -72,9 +81,19 @@ export function useAuth() {
         }
     }
 
-    const resendOtp = async () => {
+    const logOut = async () => {
+        // Clear cookies and session
+        Cookies.remove("token");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("userId");
+        sessionStorage.removeItem("role");
 
-    }
+        // Clear Redux/auth state if applicable
+        dispatch(resetUser());
+
+        // Redirect
+        router.replace("/auth/signup");
+    };
 
     return {
         login,
@@ -85,6 +104,6 @@ export function useAuth() {
         verifying,
         resetPassword,
         resetting,
-        resendOtp
+        logOut
     }
 }

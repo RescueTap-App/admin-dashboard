@@ -9,10 +9,14 @@ import { createDriverSchema, CreateDriverFormData } from "@/constants/validation
 import { ReusableFormField } from "@/components/shared/forms/form-input"
 import { UploadField } from "@/components/shared/file-uploader-extend"
 import useDrivers from "@/hooks/use-drivers"
+import { useSelector } from "react-redux"
+import { RootState } from "@/lib/store"
 
 export default function CreateDriver() {
-    
-    const { createDriver, creating } = useDrivers({})
+
+    const { createDriver, creating } = useDrivers({});
+    const { user } = useSelector((state: RootState) => state.auth);
+    const inviterId = user?._id as string;
     const form = useForm<CreateDriverFormData>({
         resolver: zodResolver(createDriverSchema),
         defaultValues: {
@@ -28,12 +32,12 @@ export default function CreateDriver() {
             vehicleModel: "",
             profileImage: "",
             vehicleImage: "",
-            password:""
+            password: ""
         },
     })
 
     const handleSubmit = async (data: CreateDriverFormData) => {
-        const res = await createDriver(data);
+        const res = await createDriver(data, inviterId);
         if (res) {
             form.reset();
         }
@@ -43,7 +47,7 @@ export default function CreateDriver() {
         <div className="min-h-screen bg-gray-50 p-4">
             <div className="max-w-6xl mx-auto">
                 <div className="mb-6">
-                    <h1 className="text-2xl font-bold mb-2">Register New Driver</h1>
+                    <h1 className="text-2xl font-bold mb-2 font-lato">Register New Driver</h1>
                     <p className="text-gray-600">Add a new driver</p>
                 </div>
 
@@ -103,6 +107,7 @@ export default function CreateDriver() {
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <ReusableFormField control={form.control} name="plateNumber" label="Plate Number *" placeholder="ABC-123-XY" />
                                             <ReusableFormField control={form.control} name="regNumber" label="Registration Number *" placeholder="REG-001" />
+                                            <ReusableFormField control={form.control} name="password" type="password" label="Password*" placeholder="Driver Passwprd" />
                                         </div>
                                     </div>
                                     <div>

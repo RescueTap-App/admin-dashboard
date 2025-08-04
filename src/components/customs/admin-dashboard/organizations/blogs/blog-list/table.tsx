@@ -280,7 +280,7 @@ export function BlogListTable({
 
     return (
         <React.Fragment>
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3 mb-4 max-w-full">
                 <SearchInput
                     value={globalFilter}
                     placeholder={"blogs"}

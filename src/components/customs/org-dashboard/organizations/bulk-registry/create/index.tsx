@@ -12,12 +12,18 @@ import useOrganization from "@/hooks/use-organization";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
 
+
 export default function BulkRegistration() {
+
     const { bulkOrgUpload, uploading } = useOrganization({})
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [showSuccess, setShowSuccess] = useState(false)
     const { user } = useSelector((state: RootState) => state.auth);
     const adminId = user?._id as string;
+    const [showSuccess, setShowSuccess] = useState<boolean>(false);
+    const [userData, setUserData] = useState({
+        users: 0,
+        logins: 0
+    });
 
     const onDrop = useCallback((acceptedFiles: File[]) => {
         const file = acceptedFiles[0];
@@ -44,14 +50,18 @@ export default function BulkRegistration() {
         const formData = new FormData();
         formData.append("file", selectedFile);
         const res = await bulkOrgUpload(formData, adminId);
-        if (res) {
+        if (res.status === "success") {
+            setUserData({
+                users: res?.data?.length || 0,
+                logins: res?.data?.length || 0
+            });
             setShowSuccess(true)
         }
     }
 
     if (showSuccess) {
         return (
-            <SuccessfulUpload />
+            <SuccessfulUpload users={userData?.users || 0} credentails={userData?.users || 0} goBack={() => setShowSuccess(false)} />
         )
     }
     return (

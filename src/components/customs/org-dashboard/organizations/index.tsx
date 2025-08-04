@@ -60,8 +60,8 @@ function UserDashboardOverview() {
             <DashboardOverview
                 organization={mockOrganization}
                 activities={mockActivities}
-                onVehicleRegistry={() => { router.push('/org/vehicle-registry') }}
-                onBulkRegistration={() => router.push("/org/bulk-registration")}
+                onVehicleRegistry={() => { router.push('/org/vehicles/registry') }}
+                onBulkRegistration={() => router.push("/org/bulk-registry/create")}
                 onRequestSlots={() => router.push("/org/vehicles/request-slot")}
             />
         </section>

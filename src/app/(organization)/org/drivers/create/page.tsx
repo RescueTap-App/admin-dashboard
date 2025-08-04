@@ -1,4 +1,4 @@
-import CreateDriver from "@/components/customs/admin-dashboard/organizations/drivers/create";
+import CreateDriver from '@/components/customs/org-dashboard/organizations/drivers/create';
 import { Metadata } from 'next';
 
 

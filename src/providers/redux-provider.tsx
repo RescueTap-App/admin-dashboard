@@ -13,7 +13,6 @@ import { disableConsoleLogsInProduction } from '@/lib/utils'
 disableConsoleLogsInProduction();
 
 function ReduxContent({ children }: PropsWithChildren) {
-    // useSocketEvents()
     return (
         <Fragment>
             <NextTopLoader

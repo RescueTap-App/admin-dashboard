@@ -82,8 +82,10 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, invite
     const bulkOrgUpload = async (formData: FormData, adminId: string) => {
         try {
             const res = await bulkOrgUploadMutation({ formData, adminId }).unwrap();
-            if (res) {
-                toast.success("Bulk upload successful");
+            if (res.status === "success") {
+                toast.success(res.message || "Bulk upload successful");
+            } else {
+                toast.message(`${res.message} or we found a duplicate credentials`)
             }
             return res;
         } catch (error: unknown) {

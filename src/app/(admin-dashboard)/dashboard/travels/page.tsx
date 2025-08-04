@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import DriverTravels from "@/components/customs/admin-dashboard/travels";
+import Travels from "@/components/customs/admin-dashboard/travels";
 import React from 'react'
 
 export const metadata: Metadata = {
@@ -9,6 +9,6 @@ export const metadata: Metadata = {
 
 export default function Page() {
     return (
-        <DriverTravels />
+        <Travels />
     )
 }

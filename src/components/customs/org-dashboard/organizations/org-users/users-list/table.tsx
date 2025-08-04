@@ -243,7 +243,7 @@ function DraggableRow({ row }: { row: Row<OrgUsersTypes> }) {
     )
 }
 
-export function DriversListTable({
+export function UsersListTable({
     data: initialData,
 }: {
     data: OrgUsersTypes[]

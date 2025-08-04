@@ -14,7 +14,7 @@ import useDrivers from "@/hooks/use-drivers"
 
 export default function CreateDriver() {
 
-    const { createDriver, creating } = useDrivers({})
+    const { createDriverAdmin, creatingDriverAdmin } = useDrivers({})
     const form = useForm<CreateDriverFormData>({
         resolver: zodResolver(createDriverSchema),
         defaultValues: {
@@ -35,7 +35,7 @@ export default function CreateDriver() {
     })
 
     const handleSubmit = async (data: CreateDriverFormData) => {
-        const res = await createDriver(data);
+        const res = await createDriverAdmin(data);
         if (res) {
             form.reset();
         }
@@ -45,7 +45,7 @@ export default function CreateDriver() {
         <div className="min-h-screen bg-gray-50 p-4">
             <div className="max-w-6xl mx-auto">
                 <div className="mb-6">
-                    <h1 className="text-2xl font-bold mb-2">Register New Driver</h1>
+                    <h1 className="text-2xl font-bold mb-2 font-lato">Register New Driver</h1>
                     <p className="text-gray-600">Add a new driver</p>
                 </div>
 
@@ -120,8 +120,8 @@ export default function CreateDriver() {
                         </Card>
 
                         <CardFooter className={"flex flex-row justify-end"}>
-                            <Button type="submit" className="max-w-md rounded bg-[#EF4136] hover:bg-[#EF4136]/50 text-white py-3" disabled={creating}>
-                                {creating ? "Processing..." : "Create Driver"}
+                            <Button type="submit" className="max-w-md rounded bg-[#EF4136] hover:bg-[#EF4136]/50 text-white py-3" disabled={creatingDriverAdmin}>
+                                {creatingDriverAdmin ? "Processing..." : "Create Driver"}
                             </Button>
                         </CardFooter>
                     </form>

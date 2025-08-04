@@ -7,7 +7,7 @@ import { IconPencil } from "@tabler/icons-react";
 import { IoMdTrash } from "react-icons/io";
 import { IoEllipsisVertical } from "react-icons/io5";
 import { HiOutlineDocumentMinus } from "react-icons/hi2";
-
+import Link from "next/link";
 
 interface BlogProps {
     blogId: string
@@ -17,14 +17,12 @@ export function BlobActions({ blogId }: BlogProps) {
     const [open, setOpen] = useState(false);
     const { deleteBlog, deletingBlog } = useBlogs({ blogId });
 
-
-    const onDeleteInventory = async () => {
+    const onDeleteBlog = async () => {
         const res = await deleteBlog(blogId);
         if (res) {
             setOpen(false)
         }
     };
-
 
     const handleDialogTrigger = (open: boolean) => {
         setTimeout(() => {
@@ -43,10 +41,12 @@ export function BlobActions({ blogId }: BlogProps) {
                     </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="bg-white shadow-md">
-                    <DropdownMenuItem className="text-green-500 cursor-pointer">
-                        <IconPencil className="h-4 w-4" />
-                        Edit
-                    </DropdownMenuItem>
+                    <Link href={`/dashboard/blogs/update/${blogId}`}>
+                        <DropdownMenuItem className="text-green-500 cursor-pointer">
+                            <IconPencil className="h-4 w-4" />
+                            Edit
+                        </DropdownMenuItem>
+                    </Link>
                     <DropdownMenuItem onClick={() => handleDialogTrigger(true)} className="text-red-500 cursor-pointer">
                         <IoMdTrash className="h-4 w-4" />
                         Delete
@@ -57,8 +57,9 @@ export function BlobActions({ blogId }: BlogProps) {
             <Dialog open={open} onOpenChange={setOpen}>
                 <DialogOverlay className="bg-[#1E272E70] backdrop-blur-sm" />
                 <DialogContent className={""}>
-                    <DialogHeader className={"px-2 border-b"}>
-                        <DialogTitle className={"flex flex-row items-center gap-3 text-xl text-black"}><HiOutlineDocumentMinus size={30} color={"red"} /> Delete Blog?</DialogTitle>
+                    <DialogHeader className={"px-2 border-b pb-2"}>
+                        <DialogTitle className={"flex flex-row items-center gap-3 text-xl text-black"}>
+                            <HiOutlineDocumentMinus size={30} color={"red"} /> Delete Blog?</DialogTitle>
                     </DialogHeader>
                     <DialogDescription className={"text-sm font-inter text-gray-700"}>
                         Are you sure you want to delete this Blog?
@@ -69,7 +70,7 @@ export function BlobActions({ blogId }: BlogProps) {
                             <Button variant={"outline"} className={"rounded font-inter"}>Close</Button>
                         </DialogClose>
                         <Button disabled={deletingBlog}
-                            onClick={onDeleteInventory}
+                            onClick={onDeleteBlog}
                             className={"bg-[#EF4136] hover:bg-[#EF4136]/50  text-white rounded font-lato"}
                         >
                             {deletingBlog ? "Deletig..." : "Delete Blog"}</Button>

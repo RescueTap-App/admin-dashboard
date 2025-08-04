@@ -89,10 +89,6 @@ const data = {
                     url: "/dashboard/blogs",
                 },
                 {
-                    title: "Blog Category",
-                    url: "/dashboard/blogs/category",
-                },
-                {
                     title: "Create Blog",
                     url: "/dashboard/blogs/create",
                 },
@@ -103,7 +99,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     return (
-        <Sidebar collapsible="icon" {...props}>
+        <Sidebar collapsible="offcanvas" {...props}>
             <SidebarHeader>
                 <div className={"relative h-10 w-full"}>
                     <Image
@@ -117,7 +113,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <NavMain items={data.navMain} />
             </SidebarContent>
             <SidebarFooter>
-                  <button className="flex flex-row items-center justify-between py-2 px-1.5 font-lato">Logout <LogOut/></button>
+                  <button className="flex flex-row items-center justify-between cursor-pointer hover:bg-gray-300 rounded py-2 px-1.5 font-lato">Logout <LogOut/></button>
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>

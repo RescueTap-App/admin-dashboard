@@ -13,7 +13,7 @@ import { RootState } from "@/lib/store";
 
 
 export default function InviteOrgUser() {
-    
+
     const { inviteOrgUser, inviting, } = useOrganization({})
     const { user } = useSelector((state: RootState) => state.auth);
     const inviterId = user?._id as string;
@@ -28,15 +28,18 @@ export default function InviteOrgUser() {
         },
     })
 
-    const handleSubmit = (data: InviteOrgSchamaFormData) => {
-        inviteOrgUser(data, inviterId);
+    const handleSubmit = async (data: InviteOrgSchamaFormData) => {
+        const res = await inviteOrgUser(data, inviterId);
+        if (res) {
+            form.reset()
+        }
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 p-4">
+        <div className="min-h-screen bg-gray-50 p-2 sm:p-4">
             <div className="max-w-6xl mx-auto">
                 <div className="mb-6">
-                    <h1 className="text-2xl font-bold mb-2">Invite a new user</h1>
+                    <h1 className="text-2xl font-bold font-lato mb-2">Invite a new user</h1>
                     <p className="text-gray-600">Fill in the details of the Organization user you intend to invite</p>
                 </div>
 

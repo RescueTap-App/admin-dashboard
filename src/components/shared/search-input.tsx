@@ -10,7 +10,7 @@ interface SearchProps {
 
 export default function SearchInput({ value, placeholder = " ", onChange }: SearchProps) {
     return (
-        <div className="relative">
+        <div className="relative w-full">
             <Input
                 type="text"
                 placeholder={`Search ${placeholder}`}
