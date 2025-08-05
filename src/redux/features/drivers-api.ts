@@ -42,6 +42,14 @@ export const driversApi = createApi({
             }),
             invalidatesTags: ['Drivers'],
         }),
+        updateDriverStatus: builder.mutation({
+            query: ({ id, data }: { id?: string, data: { status: string } }) => ({
+                url: `/drivers/${id}`,
+                method: 'PUT',
+                body: data,
+            }),
+            invalidatesTags: ['Drivers'],
+        }),
     }),
 });
 
@@ -51,6 +59,7 @@ export const {
     useCreateDriverMutation,
     useUpdateDriverMutation,
     useGetallTravelsQuery,
-    useCreateDriverAdminMutation
+    useCreateDriverAdminMutation,
+    useUpdateDriverStatusMutation
 } = driversApi;
 

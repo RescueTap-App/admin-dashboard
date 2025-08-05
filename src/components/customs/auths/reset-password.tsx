@@ -70,7 +70,7 @@ export default function ResetOldPassword() {
 
                 <div className="flex items-center gap-2">
                   <span>Remembered Password? / </span>
-                  <Link href={"/auth/signin"}
+                  <Link href={"/"}
                     className="hover:underline text-sm text-blue-600"
                   >
                     Signin

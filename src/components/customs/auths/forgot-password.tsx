@@ -60,7 +60,7 @@ export default function ForgotPassword() {
 
                                 <div className="flex items-center">
                                     <span>Back to / </span>
-                                    <Link href={"/auth/signup"}
+                                    <Link href={"/"}
                                         className={"text-blue-600 hover:underline"}
                                     >
                                         Sign In

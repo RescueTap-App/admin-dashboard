@@ -25,9 +25,9 @@ function BlogsList() {
                         <IconPlus /></Button>
                     </Link>
 
-                    <Link href={"/dashboard/blogs/category/create"}>
+                    <Link href={"/dashboard/blogs/category"}>
                         <Button className={"bg-[#EF4136] hover:bg-[#EF4136]/50 rounded"}>
-                        <span className={"hidden lg:inline"}>Add Category</span>
+                        <span className={"hidden lg:inline"}>Blog Categories</span>
                          <IconPlus /></Button>
                     </Link>
                 </div>

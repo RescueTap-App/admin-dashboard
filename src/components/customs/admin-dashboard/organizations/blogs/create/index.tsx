@@ -22,8 +22,8 @@ export default function CreateBlogs() {
             title: "",
             content: "",
             author: "",
-            categories: [],
             featureImage: "",
+            categories: []
         },
     })
 

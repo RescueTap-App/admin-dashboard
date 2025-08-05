@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/sidebar"
 import Image from "next/image"
 import { NavMain } from "./nav-main"
+import { useAuth } from "@/hooks/use-auth"
 
 const data = {
     navMain: [
@@ -42,17 +43,16 @@ const data = {
                     title: "Total Revenue",
                     url: "/dashboard/organizations/total-rev",
                 },
-                    {
+                {
                     title: "Vehicle Slots",
                     url: "/dashboard/organizations/vehicle-slots",
-                },
-
+                }
             ],
         },
         {
             title: "Drivers Mgt",
             url: "#",
-            icon:Car,
+            icon: Car,
             items: [
                 {
                     title: "Drivers List",
@@ -92,12 +92,17 @@ const data = {
                     title: "Create Blog",
                     url: "/dashboard/blogs/create",
                 },
+                {
+                    title: "Categories",
+                    url: "/dashboard/blogs/category",
+                },
             ],
         },
     ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+    const { logOut } = useAuth();
     return (
         <Sidebar collapsible="offcanvas" {...props}>
             <SidebarHeader>
@@ -113,7 +118,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <NavMain items={data.navMain} />
             </SidebarContent>
             <SidebarFooter>
-                  <button className="flex flex-row items-center justify-between cursor-pointer hover:bg-gray-300 rounded py-2 px-1.5 font-lato">Logout <LogOut/></button>
+                <button onClick={logOut} className="flex flex-row items-center justify-between cursor-pointer hover:bg-gray-300 rounded py-2 px-1.5 font-lato">Logout <LogOut /></button>
             </SidebarFooter>
             <SidebarRail />
         </Sidebar>

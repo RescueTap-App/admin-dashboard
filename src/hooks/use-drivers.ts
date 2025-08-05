@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { useGetallDriversQuery, useGetaDriverQuery, useGetallTravelsQuery, useCreateDriverAdminMutation, useCreateDriverMutation, useUpdateDriverMutation } from "@/redux/features/drivers-api"
+import { useGetallDriversQuery, useGetaDriverQuery, useGetallTravelsQuery, useCreateDriverAdminMutation, useUpdateDriverStatusMutation, useCreateDriverMutation, useUpdateDriverMutation } from "@/redux/features/drivers-api"
 import { useRouter } from "next/navigation";
 import { CreateDriverFormData, UpdateDriverFormData } from "@/constants/validations/drivers";
 
@@ -15,6 +15,7 @@ export default function useDrivers({ fetchAllDrivers, fetchTravels, fetchADriver
     const router = useRouter();
     const [createDriverMutation, { isLoading: creating }] = useCreateDriverMutation();
     const [createAdminDriverMutation, { isLoading: creatingDriverAdmin }] = useCreateDriverAdminMutation()
+    const [updateDriverStatus, { isLoading: updatingStatus }] = useUpdateDriverStatusMutation()
     const [updateDriverMutation, { isLoading: updating }] = useUpdateDriverMutation();
     const { data: all_drivers, isLoading: loadingDrivers } = useGetallDriversQuery(undefined, {
         skip: !fetchAllDrivers,
@@ -50,7 +51,20 @@ export default function useDrivers({ fetchAllDrivers, fetchTravels, fetchADriver
             console.log(error)
         }
     };
-
+    
+    const updateStatus = async (data: { status: string }) => {
+        try {
+            const res = await updateDriverStatus({ data, id: driverId }).unwrap();
+            if (res) {
+                toast.success("Driver Blicklisted");
+            }
+            return res;
+        } catch (error: unknown) {
+            const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to blacklist driver"
+            toast.error(errorMessage)
+            console.log(error)
+        }
+    };
     const createDriverAdmin = async (data: CreateDriverFormData) => {
         try {
             const res = await createAdminDriverMutation({ data }).unwrap();
@@ -91,6 +105,8 @@ export default function useDrivers({ fetchAllDrivers, fetchTravels, fetchADriver
         creating,
         updateDriver,
         updating,
+        updateStatus,
+        updatingStatus,
         createDriverAdmin,
         creatingDriverAdmin
     }

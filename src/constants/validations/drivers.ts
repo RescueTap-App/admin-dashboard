@@ -28,7 +28,7 @@ export const createDriverSchema = z.object({
 
 export const updateDriverSchema = z.object({
     driverName: z.string().optional(),
-    status: z.enum(["Active", "Inactive"]).optional(),
+    status: z.enum(["Active", "Blacklist"]).optional(),
     vehicle: z.string().optional(),
     image: z.string().url().optional(),
     driverId: z.string().optional(),

@@ -2,7 +2,6 @@
 
 import { useSearchParams } from 'next/navigation';
 import StatsCard from "./stats-card";
-// import TotalOrganizations from "./total-org";
 import RevenueBrakedown from './total-revenue';
 import VehicleRegistry from './vehicle-registry';
 import OrganizationAnalytics from './org-analytics';

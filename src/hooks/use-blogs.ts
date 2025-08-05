@@ -89,9 +89,7 @@ export default function useBlogs({
     const updateBlog = async (data: BlogDataTypes) => {
         try {
             const res = await updateBlogMutation({ id: blogId, data }).unwrap();
-            if (res) {
-                toast.success("Blog updated successfully");
-            }
+            toast.success("Blog updated successfully");
             return res;
         } catch (error: unknown) {
             const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to update blog"
@@ -103,9 +101,7 @@ export default function useBlogs({
     const deleteBlog = async (id: string) => {
         try {
             const res = await deleteBlogMutation({ id }).unwrap();
-            if (res) {
-                toast.success("Blog deleted successfully");
-            }
+            toast.success("Blog deleted successfully");
             return res
         } catch (error: unknown) {
             const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to delete blog"

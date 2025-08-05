@@ -1,13 +1,12 @@
-import Organizations from "@/components/customs/admin-dashboard/organizations";
-import { Metadata } from 'next';
+import RevenueBrakedown from "@/components/customs/admin-dashboard/organizations/total-revenue";
+import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Rescue Tap | Organizations",
+    title: "Rescue Tap | Total Revenue",
     description: "Rescue Tap instantly let's you share your location send emergency alerts and stay connected with the people who matter most, because safety starts with awarenes",
-};
-
+}; 
 export default function Page() {
     return (
-        <Organizations />
+        <RevenueBrakedown />
     )
 }

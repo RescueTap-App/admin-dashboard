@@ -10,7 +10,7 @@ import CreateCategory from "../create"
 import { CategoryTable } from './table'
 
 function CategoryList() {
-    
+
     const { all_categories } = useBlogs({ fetchAllCategories: true });
 
     return (

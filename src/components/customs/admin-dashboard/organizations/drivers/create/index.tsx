@@ -10,10 +10,8 @@ import { ReusableFormField } from "@/components/shared/forms/form-input"
 import { UploadField } from "@/components/shared/file-uploader-extend"
 import useDrivers from "@/hooks/use-drivers"
 
-
-
 export default function CreateDriver() {
-
+    
     const { createDriverAdmin, creatingDriverAdmin } = useDrivers({})
     const form = useForm<CreateDriverFormData>({
         resolver: zodResolver(createDriverSchema),
@@ -30,7 +28,7 @@ export default function CreateDriver() {
             vehicleModel: "",
             profileImage: "",
             vehicleImage: "",
-            password:""
+            password: ""
         },
     })
 
@@ -105,6 +103,7 @@ export default function CreateDriver() {
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <ReusableFormField control={form.control} name="plateNumber" label="Plate Number *" placeholder="ABC-123-XY" />
                                             <ReusableFormField control={form.control} name="regNumber" label="Registration Number *" placeholder="REG-001" />
+                                            <ReusableFormField control={form.control} name="password" type="password" label="Password*" placeholder="Driver Password" />
                                         </div>
                                     </div>
                                     <div>
