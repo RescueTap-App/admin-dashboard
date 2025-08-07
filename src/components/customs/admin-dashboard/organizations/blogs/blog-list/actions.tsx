@@ -14,6 +14,7 @@ interface BlogProps {
     categoryId?: string[]
 }
 export function BlobActions({ blogId }: BlogProps) {
+    
     const [open, setOpen] = useState(false);
     const { deleteBlog, deletingBlog } = useBlogs({ blogId });
 

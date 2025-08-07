@@ -28,17 +28,25 @@ const data = {
             icon: Car,
             isActive: true,
             items: [
-                {
-                    title: "All Vehicles",
-                    url: "/org/vehicles",
-                },
-                {
-                    title: "Register Vehicle",
-                    url: "/org/vehicles/register",
-                },
+                // {
+                //     title: "All Vehicles",
+                //     url: "/org/vehicles",
+                // },
+                // {
+                //     title: "Register Vehicle",
+                //     url: "/org/vehicles/register",
+                // },
                 {
                     title: "Request Slots",
                     url: "/org/vehicles/request-slot",
+                },
+                {
+                    title: "Drivers List",
+                    url: "/org/drivers",
+                },
+                {
+                    title: "Create Driver",
+                    url: "/org/drivers/create",
                 },
             ],
         },
@@ -48,14 +56,10 @@ const data = {
             icon: Users,
             items: [
                 {
-                    title: "Drivers List",
-                    url: "/org/drivers",
+                    title: "Users List",
+                    url: "/org/users",
                 },
                 {
-                    title: "Create Driver",
-                    url: "/org/drivers/create",
-                },
-                 {
                     title: "Invite User",
                     url: "/org/invite",
                 },
