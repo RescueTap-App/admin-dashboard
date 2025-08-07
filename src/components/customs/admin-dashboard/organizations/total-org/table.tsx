@@ -28,9 +28,9 @@ import {
     IconChevronsLeft,
     IconChevronsRight,
     IconCircleCheckFilled,
-    IconDotsVertical,
+    // IconDotsVertical,
     IconGripVertical,
-    IconLoader,
+    IconInfoCircle,
 } from "@tabler/icons-react"
 import {
     ColumnDef,
@@ -47,15 +47,14 @@ import {
     useReactTable,
     VisibilityState,
 } from "@tanstack/react-table"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
+    // DropdownMenuItem,
+    // DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Label } from "@/components/ui/label"
@@ -76,6 +75,8 @@ import {
 } from "@/components/ui/table"
 import { OrganizationTableType } from "@/types/organization.types"
 import SearchInput from "@/components/shared/search-input";
+import Image from "next/image";
+import { Badge } from "@/components/ui/badge";
 
 
 function DragHandle({ id }: { id: string }) {
@@ -101,7 +102,7 @@ const columns: ColumnDef<OrganizationTableType>[] = [
     {
         id: "drag",
         header: () => null,
-        cell: ({ row }) => <DragHandle id={row.original.id} />,
+        cell: ({ row }) => <DragHandle id={row.original._id} />,
     },
     {
         id: "select",
@@ -130,126 +131,103 @@ const columns: ColumnDef<OrganizationTableType>[] = [
         enableHiding: true,
     },
     {
-        accessorKey: "organization",
-        header: "Organizations",
+        accessorKey: "profileImage",
+        header: "Profile",
+        cell: ({ row }) => (
+            <div className="w-16 h-16 relative">
+                <Image src={row.original.profileImage || "/icons/avatar.svg"}
+                    alt={"Profile Image"}
+                    fill
+                    fetchPriority="high"
+                    className={"object-contain object-center border rounded-full border-orange-600/50"} />
+            </div>
+        ),
+    },
+    {
+        accessorKey: "organizationName",
+        header: "Organization Name",
         cell: ({ row }) => (
             <div className="w-32">
                 <p className="text-muted-foreground px-1.5">
-                    {row.original.organization}
+                    {row.original.organizationName || "No Organization Name"}
                 </p>
             </div>
         ),
     },
     {
-        accessorKey: "category",
-        header: "Category",
+        accessorKey: "email",
+        header: "Email",
         cell: ({ row }) => (
             <div className="w-32">
                 <p className="text-muted-foreground px-1.5">
-                    {row.original.category}
+                    {row.original.email || "Not Specified"}
                 </p>
             </div>
         ),
     },
     {
-        accessorKey: "slotsTaken",
-        header: "Slots Taken",
+        accessorKey: "phoneNumber",
+        header: "Phone Number",
         cell: ({ row }) => (
             <div className="w-32">
                 <p className="text-muted-foreground px-1.5">
-                    {row.original.slotsTaken}
+                    {row.original.phoneNumber || "Not Specified"}
                 </p>
             </div>
         ),
     },
     {
-        accessorKey: "slotsAlloted",
-        header: "Slots Alloted",
+        accessorKey: "address",
+        header: "Address",
         cell: ({ row }) => (
             <div className="w-32">
                 <p className="text-muted-foreground px-1.5">
-                    {row.original.slotsAlloted}
+                    {row.original.address || "Not Specified"}
                 </p>
             </div>
         ),
     },
     {
-        accessorKey: "adminEmail",
-        header: "Admin Email",
+        accessorKey: "verified",
+        header: "Verification Status",
         cell: ({ row }) => (
-            <div className="w-fit">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.adminEmail}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "dateCreated",
-        header: "Date Created",
-        cell: ({ row }) => (
-            <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
-                    {format(new Date(row.original.dateCreated), 'MMM d, yyyy')}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "dueDate",
-        header: "Due Date",
-        cell: ({ row }) => (
-            <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
-                    {format(new Date(row.original.dueDate), 'MMM d, yyyy')}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }) => (
-            <Badge variant="outline" className="text-muted-foreground px-1.5">
-                {row.original.status === "Active" ? (
+            <Badge variant="outline" className="text-muted-foreground px-1.5 flex flex-row items-center">
+                {row.original.verified === true ? (
                     <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
                 ) : (
-                    <IconLoader />
+                    <IconInfoCircle className={"fill-amber-500 text-white"} />
                 )}
-                {row.original.status}
+                {row.original.verified === true ? "Verified" : "Not Verified"}
             </Badge>
         ),
     },
     {
-        id: "actions",
-        header: "Actions",
-        cell: () => (
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button
-                        variant="ghost"
-                        className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-                        size="icon"
-                    >
-                        <IconDotsVertical />
-                        <span className="sr-only">Open menu</span>
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-32">
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                    <DropdownMenuItem>Make a copy</DropdownMenuItem>
-                    <DropdownMenuItem>Favorite</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+        accessorKey: "createdAt",
+        header: "Date Created",
+        cell: ({ row }) => (
+            <div className="w-32">
+                <p className="text-muted-foreground px-1.5">
+                    {format(new Date(row.original.createdAt), 'MMM d, yyyy')}
+                </p>
+            </div>
+        ),
+    },
+    {
+        accessorKey: "updatedAt",
+        header: "Last Update",
+        cell: ({ row }) => (
+            <div className="w-32">
+                <p className="text-muted-foreground px-1.5">
+                    {format(new Date(row.original.updatedAt), 'MMM d, yyyy')}
+                </p>
+            </div>
         ),
     },
 ]
 
 function DraggableRow({ row }: { row: Row<OrganizationTableType> }) {
     const { transform, transition, setNodeRef, isDragging } = useSortable({
-        id: row.original.id,
+        id: row.original._id,
     })
 
     return (
@@ -298,7 +276,7 @@ export function TotalOrganizationTable({
     )
 
     const dataIds = React.useMemo<UniqueIdentifier[]>(
-        () => data?.map(({ id }) => id) || [],
+        () => data?.map(({ _id }) => _id) || [],
         [data]
     )
 
@@ -307,7 +285,7 @@ export function TotalOrganizationTable({
             setData(initialData);
         }
     }, [initialData]);
-    
+
     const table = useReactTable({
         data,
         columns,
@@ -319,7 +297,7 @@ export function TotalOrganizationTable({
             columnFilters,
             pagination,
         },
-        getRowId: (row) => row.id.toString(),
+        getRowId: (row) => row._id.toString(),
         enableRowSelection: true,
         onRowSelectionChange: setRowSelection,
         onSortingChange: setSorting,
@@ -440,7 +418,7 @@ export function TotalOrganizationTable({
                     </SortableContext>
                 </DndContext>
             </div>
-             <div className="flex items-center justify-between px-4 pt-3">
+            <div className="flex items-center justify-between px-4 pt-3">
                 <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
                     {table.getFilteredSelectedRowModel().rows.length} of{" "}
                     {table.getFilteredRowModel().rows.length} row(s) selected.

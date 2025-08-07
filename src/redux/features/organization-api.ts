@@ -16,7 +16,14 @@ export const organizationApi = createApi({
             }),
             invalidatesTags: ['Organization'],
         }),
-
+        getOrgs: builder.query({
+            query: () => `/users/fetch/organizations`,
+            providesTags: ['Organization'],
+        }),
+        getOrgById: builder.query({
+            query: (id: string) => `/users/${id}`,
+            providesTags: ['Organization'],
+        }),
         inviteOrgUser: builder.mutation({
             query: ({ data, inviterId }: { data: OrgUserInviteData; inviterId: string }) => ({
                 url: `/users/member/invite/${inviterId}`,
@@ -25,7 +32,6 @@ export const organizationApi = createApi({
             }),
             invalidatesTags: ['Users'],
         }),
-
         bulkOrgUpload: builder.mutation({
             query: ({ formData, adminId }: { formData: FormData; adminId: string }) => ({
                 url: `/users/organization/${adminId}/invite/bulk`,
@@ -34,17 +40,14 @@ export const organizationApi = createApi({
             }),
             invalidatesTags: ['Users'],
         }),
-
         getOrgDrivers: builder.query({
             query: (inviterId: string) => `/users/organization/${inviterId}/drivers`,
             providesTags: ['Drivers'],
         }),
-
         getOrgUsers: builder.query({
             query: (inviterId: string) => `/users/organization/${inviterId}/users`,
             providesTags: ['Users'],
         }),
-
         registerDriver: builder.mutation({
             query: ({ data, inviterId }: { data: DriverRegistrationData; inviterId: string }) => ({
                 url: `users/${inviterId}/drivers`,
@@ -53,7 +56,6 @@ export const organizationApi = createApi({
             }),
             invalidatesTags: ['Drivers'],
         }),
-
         getallDrivers: builder.query({
             query: () => `/users/getAllDrivers`,
             providesTags: ['Drivers'],
@@ -69,4 +71,6 @@ export const {
     useGetOrgUsersQuery,
     useRegisterDriverMutation,
     useGetallDriversQuery,
+    useGetOrgsQuery,
+    useGetOrgByIdQuery
 } = organizationApi;

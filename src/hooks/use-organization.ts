@@ -8,6 +8,8 @@ import {
     useGetOrgUsersQuery,
     useRegisterDriverMutation,
     useGetallDriversQuery,
+    useGetOrgsQuery,
+    useGetOrgByIdQuery
 } from "@/redux/features/organization-api";
 import { toast } from "sonner";
 import { OrganizationRegistrationData, OrgUserInviteData } from '@/types/organization.types';
@@ -18,9 +20,11 @@ interface OrgProps {
     fetchAllUsers?: boolean;
     fetchAllDrivers?: boolean;
     inviterId?: string;
+    orgId?: string;
+    fetchAllOrgs?: boolean,
 }
 
-export default function useOrganization({ fetchAllUsers, fetchAllDrivers, inviterId }: OrgProps) {
+export default function useOrganization({ fetchAllUsers, fetchAllDrivers, fetchAllOrgs, inviterId, orgId }: OrgProps) {
     const router = useRouter();
     const { data: allDrivers, isLoading: loadingDrivers } = useGetallDriversQuery(undefined, {
         skip: !fetchAllDrivers,
@@ -42,8 +46,18 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, invite
         refetchOnMountOrArgChange: true,
         refetchOnReconnect: true
     });
-
-
+    const { data: organizations } = useGetOrgsQuery(undefined, {
+        skip: !fetchAllOrgs,
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true,
+        refetchOnReconnect: true
+    });
+    const { data: singleOrganization } = useGetOrgByIdQuery(orgId!, {
+        skip: !fetchAllOrgs || !orgId,
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true,
+        refetchOnReconnect: true
+    });
     const [createOrganizationMutation, { isLoading: creating }] = useCreateOrganizationMutation();
     const [inviteOrgUserMutation, { isLoading: inviting }] = useInviteOrgUserMutation();
     const [bulkOrgUploadMutation, { isLoading: uploading }] = useBulkOrgUploadMutation();
@@ -121,6 +135,8 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, invite
 
         // Queries
         allDrivers,
+        organizations,
+        singleOrganization,
         loadingDrivers,
         orgUsers,
         orgDrivers

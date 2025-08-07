@@ -1,14 +1,16 @@
 
 export type OrganizationTableType = {
-  id: string;
-  organization: string;
-  category: string;
-  slotsTaken: number;
-  slotsAlloted: number
-  status: string;
-  adminEmail: string;
-  dateCreated: Date;
-  dueDate: Date
+  _id: string;
+  lastName: string
+  firstName: string;
+  email: string;
+  phoneNumber: string;
+  profileImage: string
+  address: string;
+  verified:boolean;
+  organizationName: string;
+  createdAt: Date;
+  updatedAt: Date
 }
 
 export type RevenueTypes = {
@@ -74,16 +76,16 @@ export type OrgUserInviteData = {
 };
 
 export type OrgUsersTypes = {
-  _id:string;
+  _id: string;
   firstName: string;
   lastName: string;
-  email:string;
+  email: string;
   phoneNumber: string;
   profileImage: string;
-  address:string;
-  verified:boolean;
-  role:string;
+  address: string;
+  verified: boolean;
+  role: string;
   password: string;
-  createdAt:Date;
-  updatedAt:Date;
+  createdAt: Date;
+  updatedAt: Date;
 }
