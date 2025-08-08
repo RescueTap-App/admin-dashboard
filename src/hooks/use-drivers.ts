@@ -1,5 +1,13 @@
 import { toast } from "sonner";
-import { useGetallDriversQuery, useGetaDriverQuery, useGetallTravelsQuery, useCreateDriverAdminMutation, useUpdateDriverStatusMutation, useCreateDriverMutation, useUpdateDriverMutation } from "@/redux/features/drivers-api"
+import {
+    useGetallDriversQuery,
+    useGetaDriverQuery,
+    useGetallTravelsQuery,
+    useCreateDriverAdminMutation,
+    useUpdateDriverStatusMutation,
+    useCreateDriverMutation,
+    useUpdateDriverMutation
+} from "@/redux/features/drivers-api"
 import { useRouter } from "next/navigation";
 import { CreateDriverFormData, UpdateDriverFormData } from "@/constants/validations/drivers";
 
@@ -17,6 +25,8 @@ export default function useDrivers({ fetchAllDrivers, fetchTravels, fetchADriver
     const [createAdminDriverMutation, { isLoading: creatingDriverAdmin }] = useCreateDriverAdminMutation()
     const [updateDriverStatus, { isLoading: updatingStatus }] = useUpdateDriverStatusMutation()
     const [updateDriverMutation, { isLoading: updating }] = useUpdateDriverMutation();
+
+
     const { data: all_drivers, isLoading: loadingDrivers } = useGetallDriversQuery(undefined, {
         skip: !fetchAllDrivers,
         refetchOnFocus: true,
@@ -51,7 +61,7 @@ export default function useDrivers({ fetchAllDrivers, fetchTravels, fetchADriver
             console.log(error)
         }
     };
-    
+
     const updateStatus = async (data: { status: string }) => {
         try {
             const res = await updateDriverStatus({ data, id: driverId }).unwrap();
@@ -70,7 +80,7 @@ export default function useDrivers({ fetchAllDrivers, fetchTravels, fetchADriver
             const res = await createAdminDriverMutation({ data }).unwrap();
             if (res) {
                 toast.success("Driver created successfully");
-                router.push("/dasboard/drivers")
+                router.push("/dashboard/drivers")
             }
             return res;
         } catch (error: unknown) {

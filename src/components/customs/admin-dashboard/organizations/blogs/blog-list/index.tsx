@@ -21,14 +21,14 @@ function BlogsList() {
                 <div className={"flex flex-row items-center gap-3"}>
                     <Link href={"/dashboard/blogs/create"}>
                         <Button className={"bg-[#EF4136] hover:bg-[#EF4136]/50 rounded"}>
-                        <span className={"hidden lg:inline"}>Create Blog </span>
-                        <IconPlus /></Button>
+                            <span className={"hidden lg:inline"}>Create Blog </span>
+                            <IconPlus /></Button>
                     </Link>
 
                     <Link href={"/dashboard/blogs/category"}>
                         <Button className={"bg-[#EF4136] hover:bg-[#EF4136]/50 rounded"}>
-                        <span className={"hidden lg:inline"}>Blog Categories</span>
-                         <IconPlus /></Button>
+                            <span className={"hidden lg:inline"}>Blog Categories</span>
+                            <IconPlus /></Button>
                     </Link>
                 </div>
             </CardHeader>

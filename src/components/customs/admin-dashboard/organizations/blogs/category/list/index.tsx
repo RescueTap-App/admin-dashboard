@@ -8,9 +8,12 @@ import { IconPlus } from '@tabler/icons-react'
 import { Suspense } from 'react'
 import CreateCategory from "../create"
 import { CategoryTable } from './table'
+import { useState } from "react"
+
 
 function CategoryList() {
-
+    
+    const [open, setOpen] = useState(false)
     const { all_categories } = useBlogs({ fetchAllCategories: true });
 
     return (
@@ -21,7 +24,7 @@ function CategoryList() {
                     <p className={"text-sm pt-2"}>List of all Created Category</p>
                 </div>
 
-                <Drawer>
+                <Drawer open={open} onOpenChange={setOpen}>
                     <DrawerTrigger>
                         <Button className={"bg-[#EF4136] hover:bg-[#EF4136]/50 rounded"}>
                             <span className="hidden lg:inline">Create New Category</span>
@@ -30,7 +33,7 @@ function CategoryList() {
                     </DrawerTrigger>
                     <DrawerContent className="max-w-lg mx-auto">
                         <DrawerTitle className="sr-only">Create Category</DrawerTitle>
-                        <CreateCategory />
+                        <CreateCategory setOpen={setOpen} />
                     </DrawerContent>
                 </Drawer>
 

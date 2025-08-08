@@ -11,8 +11,10 @@ import useBlogs from "@/hooks/use-blogs"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
 
-export default function CreateCategory() {
-
+interface Props {
+    setOpen: (open: boolean) => void;
+}
+export default function CreateCategory({ setOpen }: Props) {
     const { createCategory, creatingCategory } = useBlogs({ fetchAllCategories: true });
     const form = useForm<CreateCategoryFormData>({
         resolver: zodResolver(createCategorySchema),
@@ -26,7 +28,8 @@ export default function CreateCategory() {
     const handleSubmit = async (data: CreateCategoryFormData) => {
         const res = await createCategory(data)
         if (res) {
-            form.reset()
+            form.reset();
+            setOpen(false);
         }
     }
 
