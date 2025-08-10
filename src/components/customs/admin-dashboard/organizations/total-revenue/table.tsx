@@ -1,6 +1,33 @@
 "use client"
 
-import * as React from "react"
+import SearchInput from "@/components/shared/search-input";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import { Label } from "@/components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { formatCurrency } from "@/lib/utils";
+import { RevenueTypes } from "@/types/organization.types";
 import {
     closestCenter,
     DndContext,
@@ -11,16 +38,15 @@ import {
     useSensors,
     type DragEndEvent,
     type UniqueIdentifier,
-} from "@dnd-kit/core"
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
-import { format } from 'date-fns';
+} from "@dnd-kit/core";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
     arrayMove,
     SortableContext,
     useSortable,
     verticalListSortingStrategy,
-} from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import {
     IconChevronDown,
     IconChevronLeft,
@@ -28,10 +54,9 @@ import {
     IconChevronsLeft,
     IconChevronsRight,
     IconCircleCheckFilled,
-    IconDotsVertical,
     IconGripVertical,
     IconInfoCircle,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -46,41 +71,13 @@ import {
     SortingState,
     useReactTable,
     VisibilityState,
-} from "@tanstack/react-table"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Label } from "@/components/ui/label"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
-import { RevenueTypes } from "@/types/organization.types"
-import { formatNumber } from "@/lib/utils";
-import SearchInput from "@/components/shared/search-input";
+} from "@tanstack/react-table";
+import { format } from 'date-fns';
+import * as React from "react";
+import { RevenueActions } from "./actions";
 
 
 
-
-// Create a separate component for the drag handle
 function DragHandle({ id }: { id: string }) {
     const { attributes, listeners } = useSortable({
         id,
@@ -104,7 +101,7 @@ const columns: ColumnDef<RevenueTypes>[] = [
     {
         id: "drag",
         header: () => null,
-        cell: ({ row }) => <DragHandle id={row.original.id} />,
+        cell: ({ row }) => <DragHandle id={row.original._id} />,
     },
     {
         id: "select",
@@ -134,11 +131,11 @@ const columns: ColumnDef<RevenueTypes>[] = [
     },
     {
         accessorKey: "header",
-        header: "Organizations",
-     cell: ({ row }) => (
+        header: "Organization",
+        cell: ({ row }) => (
             <div className="w-32">
                 <p className="text-muted-foreground px-1.5">
-                    {row.original.organization}
+                    {row.original.organizationName || "Not Specfied"}
                 </p>
             </div>
         ),
@@ -149,7 +146,7 @@ const columns: ColumnDef<RevenueTypes>[] = [
         cell: ({ row }) => (
             <div className="w-32">
                 <p className="text-muted-foreground px-1.5">
-                    {row.original.period}
+                    {row.original.period || "No Period"}
                 </p>
             </div>
         ),
@@ -160,7 +157,7 @@ const columns: ColumnDef<RevenueTypes>[] = [
         cell: ({ row }) => (
             <div className="w-32">
                 <p className="text-muted-foreground px-1.5">
-                    {formatNumber(row.original.amount)}
+                    {formatCurrency(row.original.amount || 0)}
                 </p>
             </div>
         ),
@@ -171,7 +168,7 @@ const columns: ColumnDef<RevenueTypes>[] = [
         cell: ({ row }) => (
             <div className="w-32">
                 <p className="text-muted-foreground px-1.5">
-                    {format(new Date(row.original.billingDate), 'MMM d, yyyy')}
+                    {format(new Date(row.original.createdAt), 'MMM d, yyyy')}
                 </p>
             </div>
         ),
@@ -186,36 +183,22 @@ const columns: ColumnDef<RevenueTypes>[] = [
                 ) : (
                     <IconInfoCircle className={"fill-amber-500 text-white"} />
                 )}
-                {row.original.status}
+                {row.original.status === "paid" ? "Active" : "Pending"}
             </Badge>
         ),
     },
     {
         id: "actions",
         header: "Actions",
-        cell: () => (
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button
-                        variant="ghost"
-                        className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-                        size="icon"
-                    >
-                        <IconDotsVertical />
-                        <span className="sr-only">Open menu</span>
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-32">
-                    <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
+        cell: ({ row }) => (
+            <RevenueActions orgId={row.original._id} />
         ),
     },
 ]
 
 function DraggableRow({ row }: { row: Row<RevenueTypes> }) {
     const { transform, transition, setNodeRef, isDragging } = useSortable({
-        id: row.original.id,
+        id: row.original._id,
     })
 
     return (
@@ -264,7 +247,7 @@ export function TotalRevenueTable({
     )
 
     const dataIds = React.useMemo<UniqueIdentifier[]>(
-        () => data?.map(({ id }) => id) || [],
+        () => data?.map(({ _id }) => _id) || [],
         [data]
     )
 
@@ -286,7 +269,7 @@ export function TotalRevenueTable({
             columnFilters,
             pagination,
         },
-        getRowId: (row) => row.id.toString(),
+        getRowId: (row) => row._id.toString(),
         enableRowSelection: true,
         onRowSelectionChange: setRowSelection,
         onSortingChange: setSorting,
@@ -441,7 +424,7 @@ export function TotalRevenueTable({
                     </SortableContext>
                 </DndContext>
             </div>
-             <div className="flex items-center justify-between px-4 pt-3">
+            <div className="flex items-center justify-between px-4 pt-3">
                 <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
                     {table.getFilteredSelectedRowModel().rows.length} of{" "}
                     {table.getFilteredRowModel().rows.length} row(s) selected.

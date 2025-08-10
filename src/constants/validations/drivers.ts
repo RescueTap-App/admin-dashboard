@@ -6,9 +6,7 @@ export const createDriverSchema = z.object({
     email: z.email("Invalid email address"),
     phoneNumber: z
         .string()
-        .min(10, "Phone number is too short")
-        .max(14, "Phone number is too long")
-        .regex(/^234\d{10}$/, "Phone number must be in Nigerian format (e.g., 2348012345678)"),
+        .regex(/^0\d{10}$/, "Phone number must start with 0 and be exactly 11 digits"),
     address: z.string().min(1, "Address is required"),
     driverType: z.enum(["residential", "commercial"]),
     plateNumber: z.string().min(1, "Plate number is required"),

@@ -6,9 +6,7 @@ export const createOrganizationSchema = z.object({
   lastName: z.string().min(1, "Last name is required"),
   phoneNumber: z
     .string()
-    .min(7, "Phone number is too short")
-    .max(15, "Phone number is too long")
-    .regex(/^\d+$/, "Phone number must contain only digits"),
+    .regex(/^0\d{10}$/, "Phone number must start with 0 and be exactly 11 digits"),
   email: z.email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   subscriptionPlan: z
@@ -33,9 +31,9 @@ export const inviteOrgSchema = z.object({
   email: z.email("Invalid email address"),
   phoneNumber: z
     .string()
-    .min(10, "Phone number is too short")
-    .max(14, "Phone number is too long")
-    .regex(/^234\d{10}$/, "Phone number must be in Nigerian format (e.g., 2348012345678)"),
+    .min(10, "Phone number must be at least 10 digits")
+    .max(15, "Phone number must be less than 15 digits")
+    .regex(/^\d+$/, "Phone number must contain only digits"),
 });
 
 export type InviteOrgSchamaFormData = z.infer<typeof inviteOrgSchema>;

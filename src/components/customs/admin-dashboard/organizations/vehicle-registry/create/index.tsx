@@ -75,7 +75,8 @@ export function VehicleRegistration() {
                                         name={"phoneNumber"}
                                         label=""
                                         type="number"
-                                        placeholder="+123 9033229944"
+                                        inputMode="numeric"
+                                        placeholder="09011111111"
                                     />
                                 </div>
 

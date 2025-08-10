@@ -14,12 +14,12 @@ export type OrganizationTableType = {
 }
 
 export type RevenueTypes = {
-  id: string;
-  organization: string;
+  _id: string;
+  organizationName: string;
   period: string;
   amount: number;
   status: "paid" | "pending"
-  billingDate: Date
+  createdAt: Date
 }
 
 export type VehicleRegistryTypes = {

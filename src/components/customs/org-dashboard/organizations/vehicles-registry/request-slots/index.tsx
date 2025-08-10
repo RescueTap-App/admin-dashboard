@@ -46,7 +46,6 @@ export function RequestSlots() {
                     <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
                         <div>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
                                 <ReusableFormField
                                     control={form.control}
                                     name="numberOfSlots"

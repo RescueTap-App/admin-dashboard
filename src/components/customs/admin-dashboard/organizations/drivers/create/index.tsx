@@ -11,7 +11,7 @@ import { UploadField } from "@/components/shared/file-uploader-extend"
 import useDrivers from "@/hooks/use-drivers"
 
 export default function CreateDriver() {
-    
+
     const { createDriverAdmin, creatingDriverAdmin } = useDrivers({})
     const form = useForm<CreateDriverFormData>({
         resolver: zodResolver(createDriverSchema),
@@ -62,7 +62,14 @@ export default function CreateDriver() {
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <ReusableFormField control={form.control} name="email" label="Email Address *" type="email" placeholder="johndoe@example.com" />
-                                            <ReusableFormField control={form.control} name="phoneNumber" label="Phone Number *" placeholder="2348012345678" />
+                                            <ReusableFormField
+                                                control={form.control}
+                                                name="phoneNumber"
+                                                label="Phone Number *"
+                                                type="number"
+                                                inputMode="numeric"
+                                                placeholder="09011111111"
+                                            />
                                         </div>
                                         <ReusableFormField control={form.control} name="address" label="Residential Address *" placeholder={"Drivers residentail address"} fieldType="textarea" className="min-h-20 resize-none" />
                                         <ReusableFormField
