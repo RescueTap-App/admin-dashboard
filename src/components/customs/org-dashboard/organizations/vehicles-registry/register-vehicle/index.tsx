@@ -47,7 +47,6 @@ export function VehicleRegistration() {
                         </CardHeader>
                         <div className="space-y-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
                                 <ReusableFormField
                                     control={form.control}
                                     name={"firstName"}
@@ -76,7 +75,7 @@ export function VehicleRegistration() {
                                     label="Phone Number *"
                                     type="number"
                                     inputMode="numeric"
-                                    placeholder="+234 xxx xxx xxxx"
+                                    placeholder="09011111111"
                                 />
                             </div>
 
