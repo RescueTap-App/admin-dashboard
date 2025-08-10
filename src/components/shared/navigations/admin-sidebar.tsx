@@ -35,18 +35,18 @@ const data = {
                     title: "Create Organizations",
                     url: "/dashboard/organizations/create",
                 },
-                {
-                    title: "Active Organizations",
-                    url: "/dashboard/organizations/active",
-                },
+                // {
+                //     title: "Active Organizations",
+                //     url: "/dashboard/organizations/active",
+                // },
                 {
                     title: "Total Revenue",
                     url: "/dashboard/organizations/total-rev",
                 },
-                {
-                    title: "Vehicle Slots",
-                    url: "/dashboard/organizations/vehicle-slots",
-                }
+                // {
+                //     title: "Vehicle Slots",
+                //     url: "/dashboard/organizations/vehicle-slots",
+                // }
             ],
         },
         {
