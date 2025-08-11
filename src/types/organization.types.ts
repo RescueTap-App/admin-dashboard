@@ -7,7 +7,7 @@ export type OrganizationTableType = {
   phoneNumber: string;
   profileImage: string
   address: string;
-  verified:boolean;
+  verified: boolean;
   organizationName: string;
   createdAt: Date;
   updatedAt: Date
@@ -43,7 +43,13 @@ export interface Activity {
 
 export interface Organization {
   id: string
-  name: string
+  organizationName: string;
+  profileImage: string;
+  firstName: string;
+  address: string;
+  verified: boolean;
+  email: string;
+  lastName: string;
   type: "Residential" | "Commercial"
   vehicleSlots: {
     used: number
@@ -52,6 +58,8 @@ export interface Organization {
   activeVisitors: number
   qrStickers: number
   vehiclePasses: number
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 

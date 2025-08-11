@@ -53,8 +53,6 @@ import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
     DropdownMenuContent,
-    // DropdownMenuItem,
-    // DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Label } from "@/components/ui/label"
@@ -77,6 +75,7 @@ import { OrganizationTableType } from "@/types/organization.types"
 import SearchInput from "@/components/shared/search-input";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
+// import { TotalOrgActions } from "./actions";
 
 
 function DragHandle({ id }: { id: string }) {
@@ -223,6 +222,13 @@ const columns: ColumnDef<OrganizationTableType>[] = [
             </div>
         ),
     },
+    // {
+    //     accessorKey: "actions",
+    //     header: "Actions",
+    //     cell: ({ row }) => (
+    //         <TotalOrgActions orgId={row.original._id} />
+    //     ),
+    // }
 ]
 
 function DraggableRow({ row }: { row: Row<OrganizationTableType> }) {

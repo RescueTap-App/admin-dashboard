@@ -1,15 +1,18 @@
-import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Users, QrCode, Car } from "lucide-react"
-import type { Organization, Activity } from "@/types/organization.types"
-import { CiExport } from "react-icons/ci";
-import { IoIosArrowRoundForward } from "react-icons/io";
+import { Card, CardContent } from "@/components/ui/card"
+import { DriverListTypes } from "@/types/drivers.types"
+import type { Organization } from "@/types/organization.types"
+import { Car, QrCode, Users } from "lucide-react"
 import Image from "next/image"
+import { Suspense } from "react"
+import { CiExport } from "react-icons/ci"
+import { IoIosArrowRoundForward } from "react-icons/io"
+import { DriversListTable } from "../drivers/drivers-list/table"
+
 
 interface DashboardOverviewProps {
     organization: Organization
-    activities: Activity[]
+    activities: DriverListTypes[]
     onVehicleRegistry: () => void
     onBulkRegistration: () => void
     onRequestSlots: () => void
@@ -28,7 +31,7 @@ export function DashboardOverview({
                 <div className="flex items-center justify-center flex-col gap-3 mb-4 mx-auto">
                     <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center relative">
                         <Image
-                            src={"/icons/org-icon.svg"}
+                            src={organization?.profileImage || "/icons/org-icon.svg"}
                             alt={"Building Logo"}
                             fetchPriority="high"
                             height={50}
@@ -36,8 +39,9 @@ export function DashboardOverview({
                             className="object-contain object-center" />
                     </div>
                     <div className={"flex flex-col items-center"}>
-                        <div className="font-semibold text-gray-900">{organization.name}</div>
-                        <div className="text-sm text-gray-500">{organization.type} Estate - Apo, Abuja</div>
+                        <div className="font-semibold text-gray-900">{organization?.firstName} & {organization?.lastName}</div>
+                        <div className="text-sm text-gray-500">{organization?.organizationName}</div>
+                        <div className="text-sm text-gray-500">{organization?.email}</div>
                     </div>
                 </div>
 
@@ -50,7 +54,7 @@ export function DashboardOverview({
                                 <Car className="w-8 h-8 text-blue-500 mx-auto mb-2" />
                             </div>
                             <div className="text-2xl font-bold text-blue-600">
-                                {organization.vehicleSlots.used} of {organization.vehicleSlots.total}
+                                10 of 100
                             </div>
                             <div className="text-sm text-gray-600">Vehicle Slots</div>
                             <div className="text-xs text-gray-500">48 slots left</div>
@@ -62,7 +66,7 @@ export function DashboardOverview({
                             <div className="rounded-full h-16 w-16 bg-green-500/50 mx-auto flex items-center justify-center">
                                 <Users className="w-8 h-8 text-green-500 mx-auto mb-2" />
                             </div>
-                            <div className="text-2xl font-bold text-green-600">{organization.activeVisitors}</div>
+                            <div className="text-2xl font-bold text-green-600">300</div>
                             <div className="text-sm text-gray-600">Active Visitors</div>
                             <div className="text-xs text-gray-500">Currently on Premises</div>
                         </CardContent>
@@ -73,7 +77,7 @@ export function DashboardOverview({
                             <div className="rounded-full h-16 w-16 bg-purple-500/50 mx-auto flex items-center justify-center">
                                 <QrCode className="w-8 h-8 text-purple-500 mx-auto mb-2" />
                             </div>
-                            <div className="text-2xl font-bold text-purple-600">{organization.qrStickers}</div>
+                            <div className="text-2xl font-bold text-purple-600">50</div>
                             <div className="text-sm text-gray-600">QR Stickers</div>
                             <div className="text-xs text-gray-500">Generated</div>
                         </CardContent>
@@ -85,7 +89,7 @@ export function DashboardOverview({
                                 <Car className="w-8 h-8 text-orange-500 mx-auto mb-2" />
                             </div>
 
-                            <div className="text-2xl font-bold text-orange-600">{organization.vehiclePasses}</div>
+                            <div className="text-2xl font-bold text-orange-600">20</div>
                             <div className="text-sm text-gray-600">Vehicle Passes</div>
                             <div className="text-xs text-gray-500">In Total</div>
                         </CardContent>
@@ -149,22 +153,9 @@ export function DashboardOverview({
 
                 <div className="text-sm text-gray-600 mb-4">Latest activities in your organization</div>
 
-                <div className="space-y-3">
-                    {activities.map((activity) => (
-                        <div key={activity.id} className="flex items-center justify-between py-2 border rounded px-2">
-                            <div className="flex items-center gap-2">
-                                <div className={"bg-green-600 rounded-full h-3 w-3"} />
-                                <div className="flex-1">
-                                    <div className="font-medium text-sm">{activity.description}</div>
-                                    <div className="text-xs text-gray-500">{activity.timestamp}</div>
-                                </div>
-                            </div>
-                            <Badge variant="secondary" className="text-xs">
-                                {activity.category}
-                            </Badge>
-                        </div>
-                    ))}
-                </div>
+                <Suspense>
+                    <DriversListTable data={activities || []} />
+                </Suspense>
             </div>
         </div>
     )

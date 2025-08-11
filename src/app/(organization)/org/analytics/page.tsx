@@ -1,3 +1,4 @@
+import UserDashboardOverview from "@/components/customs/org-dashboard/organizations";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,7 +8,7 @@ export const metadata: Metadata = {
 
 function Page() {
     return (
-        <div>Analytics</div>
+        <UserDashboardOverview/>
     )
 }
 
