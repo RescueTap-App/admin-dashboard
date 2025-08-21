@@ -96,18 +96,44 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, fetchA
     const bulkOrgUpload = async (formData: FormData, adminId: string) => {
         try {
             const res = await bulkOrgUploadMutation({ formData, adminId }).unwrap();
+
             if (res.status === "success") {
                 toast.success(res.message || "Bulk upload successful");
             } else {
-                toast.message(`${res.message} or we found a duplicate credentials`)
+                // If backend responds with errors array
+                if (res.errors && Array.isArray(res.errors)) {
+                    const errorList = res.errors
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        .map((e: any) => `${e.email || e.phoneNumber}: ${e.errors.join(", ")}`)
+                        .join("\n");
+
+                    toast.info(errorList); // show all errors
+                } else {
+                    toast.error(res.message || "Bulk upload failed");
+                }
             }
+
             return res;
-        } catch (error: unknown) {
-            const errorMessage = (error as { data?: { message: string } })?.data?.message || "Bulk upload failed"
-            toast.error(errorMessage)
-            console.log(error)
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            const backendError = error?.data;
+
+            if (backendError?.errors && Array.isArray(backendError.errors)) {
+                const errorList = backendError.errors
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    .map((e: any) => `${e.email || e.phoneNumber}: ${e.errors.join(", ")}`)
+                    .join("\n");
+
+                toast.info(errorList);
+            } else {
+                const errorMessage = backendError?.message || "Bulk upload failed";
+                toast.error(errorMessage);
+            }
+
+            console.log(error);
         }
     };
+
 
     const registerDriver = async (payload: DriverRegistrationData, inviterId: string) => {
         try {

@@ -6,7 +6,7 @@ interface DecodedToken {
     role?: string;
 }
 
-const PUBLIC_ROUTES = ["/auth/signup", "/auth/forgot-password", "/auth/new-password", "/auth/verify-otp", "/"];
+const PUBLIC_ROUTES = ["/", "/auth/forgot-password", "/auth/new-password", "/auth/verify-otp", "/"];
 const ADMIN_PROTECTED = ["/dashboard"];
 const ORG_PROTECTED = ["/org"];
 
@@ -18,7 +18,7 @@ export function middleware(request: NextRequest) {
         // Block protected routes if unauthenticated
         if (ADMIN_PROTECTED.some((path) => pathname.startsWith(path)) ||
             ORG_PROTECTED.some((path) => pathname.startsWith(path))) {
-            return NextResponse.redirect(new URL("/auth/signup", request.url));
+            return NextResponse.redirect(new URL("/", request.url));
         }
         return NextResponse.next();
     }
@@ -28,7 +28,7 @@ export function middleware(request: NextRequest) {
         decoded = jwtDecode<DecodedToken>(token);
     } catch (err) {
         console.error("Invalid token", err);
-        return NextResponse.redirect(new URL("/auth/signup", request.url));
+        return NextResponse.redirect(new URL("/", request.url));
     }
 
     const { exp, role } = decoded;
@@ -36,7 +36,7 @@ export function middleware(request: NextRequest) {
 
     // Expired token
     if (exp && exp < now) {
-        const res = NextResponse.redirect(new URL("/auth/signup", request.url));
+        const res = NextResponse.redirect(new URL("/", request.url));
         res.cookies.delete("token");
         return res;
     }
