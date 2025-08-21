@@ -33,7 +33,7 @@ export default function UpdateDriver({ driverId }: UpdateProps) {
             insuranceInformation: "",
             profilePicture: "",
             image: "",
-            password: "",
+            // password: "",
         },
     });
 
@@ -52,7 +52,7 @@ export default function UpdateDriver({ driverId }: UpdateProps) {
                 insuranceInformation: driver.insuranceInformation || "",
                 profilePicture: driver.profilePicture || "",
                 image: driver.image || "",
-                password: "",
+                // password: "",
             });
         }
     }, [driver, form]);
@@ -86,7 +86,7 @@ export default function UpdateDriver({ driverId }: UpdateProps) {
                                         <ReusableFormField control={form.control} name="licenseNumber" label="License Number" placeholder="D1234567890" />
                                         <ReusableFormField control={form.control} name="emergencyContactName" label="Emergency Contact Name" placeholder="Jane Doe" />
                                         <ReusableFormField control={form.control} name="insuranceInformation" label="Insurance Information" placeholder="Policy 1234ABC" />
-                                        <ReusableFormField control={form.control} name="password" label="Password" type="password" placeholder="Update password (optional)" />
+                                        {/* <ReusableFormField control={form.control} name="password" label="Password" type="password" placeholder="Update password (optional)" /> */}
                                     </div>
                                     <div>
                                         <UploadField
