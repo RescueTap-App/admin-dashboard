@@ -12,13 +12,22 @@ const ORG_PROTECTED = ["/org"];
 
 export function middleware(request: NextRequest) {
     const token = request.cookies.get("token")?.value;
-    const { pathname } = request.nextUrl;
+    const { pathname, search } = request.nextUrl;
+
+    // Helper to build redirect with intended URL
+    const redirectToAuth = () => {
+        const redirectUrl = new URL("/", request.url);
+        redirectUrl.searchParams.set("redirect", pathname + search);
+        return NextResponse.redirect(redirectUrl);
+    };
 
     if (!token) {
         // Block protected routes if unauthenticated
-        if (ADMIN_PROTECTED.some((path) => pathname.startsWith(path)) ||
-            ORG_PROTECTED.some((path) => pathname.startsWith(path))) {
-            return NextResponse.redirect(new URL("/", request.url));
+        if (
+            ADMIN_PROTECTED.some((path) => pathname.startsWith(path)) ||
+            ORG_PROTECTED.some((path) => pathname.startsWith(path))
+        ) {
+            return redirectToAuth();
         }
         return NextResponse.next();
     }
@@ -28,7 +37,7 @@ export function middleware(request: NextRequest) {
         decoded = jwtDecode<DecodedToken>(token);
     } catch (err) {
         console.error("Invalid token", err);
-        return NextResponse.redirect(new URL("/", request.url));
+        return redirectToAuth();
     }
 
     const { exp, role } = decoded;
@@ -36,7 +45,7 @@ export function middleware(request: NextRequest) {
 
     // Expired token
     if (exp && exp < now) {
-        const res = NextResponse.redirect(new URL("/", request.url));
+        const res = redirectToAuth();
         res.cookies.delete("token");
         return res;
     }
@@ -65,5 +74,5 @@ export function middleware(request: NextRequest) {
 export const config = {
     matcher: [
         "/((?!_next/static|_next/image|favicon.ico).*)"
-    ],
+    ]
 };

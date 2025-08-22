@@ -9,7 +9,11 @@ import {
     useGetallBlogsQuery,
     useGetallCategoryQuery,
     useUpdateBlogMutation,
-    useUpdateCategoryMutation
+    useUpdateCategoryMutation,
+    useCreateTipsMutation,
+    useEditTipsMutation,
+    useDeleteTipMutation,
+    useGetallTipsQuery
 } from "@/redux/features/blogs-api";
 import { BlogDataTypes } from "@/types/blogs.types";
 import { useRouter } from "next/navigation";
@@ -20,6 +24,7 @@ interface BlogProps {
     fetchABlog?: boolean;
     blogId?: string;
     fetchAllCategories?: boolean;
+    fetchAllTips?: boolean;
     fetchACategory?: boolean;
     categoryId?: string;
 }
@@ -30,16 +35,27 @@ export default function useBlogs({
     blogId,
     fetchAllCategories,
     fetchACategory,
+    fetchAllTips,
     categoryId
 }: BlogProps) {
     const router = useRouter();
     const [createBlogMutation, { isLoading: creatingBlog }] = useCreateBlogMutation();
     const [updateBlogMutation, { isLoading: updatingBlog }] = useUpdateBlogMutation();
     const [deleteBlogMutation, { isLoading: deletingBlog }] = useDeleteBlogMutation();
+    const [createTipMutation, { isLoading: creatingTip }] = useCreateTipsMutation();
+    const [editTipMutation, { isLoading: editingTips }] = useEditTipsMutation();
+    const [deleteTipMutation, { isLoading: deletingTips }] = useDeleteTipMutation();
 
     const [createCategoryMutation, { isLoading: creatingCategory }] = useCreateCategoryMutation();
     const [updateCategoryMutation, { isLoading: updatingCategory }] = useUpdateCategoryMutation();
     const [deleteCategoryMutation, { isLoading: deletingCategory }] = useDeleteCategoryMutation();
+
+    const { data: tips, isLoading: loadingtips } = useGetallTipsQuery(undefined, {
+        skip: !fetchAllTips,
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true,
+        refetchOnReconnect: true
+    });
 
     const { data: all_blogs, isLoading: loadingBlogs } = useGetallBlogsQuery(undefined, {
         skip: !fetchAllBlogs,
@@ -124,6 +140,7 @@ export default function useBlogs({
         }
     };
 
+
     const updateCategory = async (data: CreateCategoryFormData,) => {
         try {
             const res = await updateCategoryMutation({ id: categoryId, data }).unwrap();
@@ -137,6 +154,7 @@ export default function useBlogs({
             console.log(error)
         }
     };
+
 
     const deleteCategory = async (id: string) => {
         try {
@@ -152,8 +170,57 @@ export default function useBlogs({
         }
     };
 
+    const createTips = async (content: string) => {
+        try {
+            const res = await createTipMutation({ content }).unwrap();
+            if (res) {
+                toast.success("Tip created successfully");
+            }
+            return res;
+        } catch (error: unknown) {
+            const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to create tip"
+            toast.error(errorMessage)
+            console.log(error)
+        }
+    };
+
+    const updateTips = async (id: string, data: { content: string }) => {
+        try {
+            const res = await editTipMutation({ id, data }).unwrap();
+            if (res) {
+                toast.success("Tip updated successfully");
+            }
+            return res;
+        } catch (error: unknown) {
+            const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to update tip"
+            toast.error(errorMessage)
+            console.log(error)
+        }
+    };
+
+    const deleteTips = async (id: string) => {
+        try {
+            const res = await deleteTipMutation({ id }).unwrap();
+            if (res) {
+                toast.success("Tip deleted successfully");
+            }
+            return res
+        } catch (error: unknown) {
+            const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to delete tip"
+            toast.error(errorMessage)
+            console.log(error)
+        }
+    };
+
     return {
-        // Blogs
+        createTips,
+        creatingTip,
+        deleteTips,
+        deletingTips,
+        updateTips,
+        editingTips,
+        tips,
+        loadingtips,
         all_blogs,
         loadingBlogs,
         blog,

@@ -19,8 +19,15 @@ export type BlogDataTypes = {
 }
 
 export type CategoryDataType = {
-    _id:string;
+    _id: string;
     name: string
     description: string
     isActive: boolean
+}
+
+export type TipListTypes = {
+    _id: string;
+    content: string;
+    createdAt: Date;
+    updatedAt:Date;
 }

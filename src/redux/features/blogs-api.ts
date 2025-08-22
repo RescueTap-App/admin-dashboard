@@ -6,7 +6,7 @@ import { CreateCategoryFormData } from '@/constants/validations/blogs';
 export const blogsApi = createApi({
     reducerPath: 'blogsApi',
     baseQuery: customBaseQueryWithReauth,
-    tagTypes: ['Category', 'Blogs'],
+    tagTypes: ['Category', 'Blogs', 'Tips'],
     endpoints: (builder) => ({
         createCategory: builder.mutation({
             query: ({ data }: { data: CreateCategoryFormData }) => ({
@@ -72,6 +72,37 @@ export const blogsApi = createApi({
             }),
             invalidatesTags: ['Blogs'],
         }),
+        getallTips: builder.query({
+            query: () => `/tips`,
+            providesTags: ['Tips'],
+        }),
+        getTipById: builder.query({
+            query: (id: string) => `/tips/${id}`,
+            providesTags: ['Tips'],
+        }),
+        createTips: builder.mutation({
+            query: ({ content }: { content: string }) => ({
+                url: `/tips`,
+                method: "POST",
+                body: { content }, 
+            }),
+            invalidatesTags: ['Tips'],
+        }),
+        editTips: builder.mutation({
+            query: ({ id, data }: { id?: string, data: { content: string } }) => ({
+                url: `/tips/${id}`,
+                method: "PUT",
+                body: data
+            }),
+            invalidatesTags: ['Tips'],
+        }),
+        deleteTip: builder.mutation({
+            query: ({ id }: { id?: string }) => ({
+                url: `/tips/${id}`,
+                method: "DELETE"
+            }),
+            invalidatesTags: ['Tips'],
+        }),
     }),
 });
 
@@ -85,6 +116,11 @@ export const {
     useGetallBlogsQuery,
     useGetallCategoryQuery,
     useUpdateCategoryMutation,
-    useUpdateBlogMutation
+    useUpdateBlogMutation,
+    useCreateTipsMutation,
+    useEditTipsMutation,
+    useDeleteTipMutation,
+    useGetallTipsQuery,
+    useGetTipByIdQuery
 } = blogsApi;
 
