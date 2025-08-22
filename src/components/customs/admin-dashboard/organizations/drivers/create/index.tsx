@@ -28,7 +28,6 @@ export default function CreateDriver() {
             vehicleModel: "",
             profileImage: "",
             vehicleImage: "",
-            password: ""
         },
     })
 
@@ -110,7 +109,7 @@ export default function CreateDriver() {
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <ReusableFormField control={form.control} name="plateNumber" label="Plate Number *" placeholder="ABC-123-XY" />
                                             <ReusableFormField control={form.control} name="regNumber" label="Registration Number *" placeholder="REG-001" />
-                                            <ReusableFormField control={form.control} name="password" type="password" label="Password*" placeholder="Driver Password" />
+                                            {/* <ReusableFormField control={form.control} name="password" type="password" label="Password*" placeholder="Driver Password" /> */}
                                         </div>
                                     </div>
                                     <div>

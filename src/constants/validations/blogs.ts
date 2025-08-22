@@ -14,6 +14,10 @@ export const createCategorySchema = z.object({
     isActive: z.boolean()
 })
 
+export const createTipSchema = z.object({
+    content: z.string().min(10, "Please type more")
+})
 
+export type createTipSchemaType = z.infer<typeof createTipSchema>
 export type CreateBlogFormData = z.infer<typeof createBlogSchema>
 export type CreateCategoryFormData = z.infer<typeof createCategorySchema>

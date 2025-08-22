@@ -4,20 +4,21 @@ import { LoginTypes, SendOtpTypes, ResetPasswordTypes, VerifyOtpTypes } from "@/
 import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import Cookies from "js-cookie";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export function useAuth() {
 
-    const router = useRouter()
-    const dispatch = useDispatch()
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const dispatch = useDispatch();
     const [loginMutation, { isLoading: logingIn }] = useLoginMutation();
     const [sendOtpMutation, { isLoading: sendingOtp }] = useSendOtpMutation();
     const [resetMutation, { isLoading: resetting }] = useResetPasswordMutation();
     const [verifyMutation, { isLoading: verifying }] = useVerifyOtpMutation()
 
-    const login = async (crdentails: LoginTypes) => {
+    const login = async (credentials: LoginTypes) => {
         try {
-            const res = await loginMutation(crdentails).unwrap();
+            const res = await loginMutation(credentials).unwrap();
 
             dispatch(
                 setCredentials({
@@ -25,24 +26,34 @@ export function useAuth() {
                     user: res.user,
                 })
             );
+
             sessionStorage.setItem("token", res.access_token);
             sessionStorage.setItem("userId", res.user._id);
             sessionStorage.setItem("role", res.user.role);
             Cookies.set("token", res.access_token);
+
             toast.success(res.messages || "Login successful");
 
-            if (res.user.role === "admin") {
+            // check for redirect param
+            const redirectUrl = searchParams?.get("redirect");
+
+            if (redirectUrl) {
+                router.replace(redirectUrl);
+            } else if (res.user.role === "admin") {
                 router.replace("/dashboard/users");
             } else if (res.user.role === "organization") {
                 router.replace("/org");
             }
-            return res
+
+            return res;
         } catch (error: unknown) {
-            const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to Login"
-            toast.error(errorMessage)
-            console.log(error)
+            const errorMessage =
+                (error as { data?: { message: string } })?.data?.message ||
+                "Failed to Login";
+            toast.error(errorMessage);
+            console.log(error);
         }
-    }
+    };
 
     const sendOtp = async (crdentails: SendOtpTypes) => {
         try {

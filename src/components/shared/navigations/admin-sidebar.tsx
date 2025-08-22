@@ -80,7 +80,7 @@ const data = {
             ],
         },
         {
-            title: "Blog Mgt",
+            title: "Blog & Tips",
             url: "#",
             icon: BookAudioIcon,
             items: [
@@ -96,6 +96,14 @@ const data = {
                     title: "Categories",
                     url: "/dashboard/blogs/category",
                 },
+                {
+                    title: "Tip List",
+                    url: "/dashboard/blogs/tips"
+                },
+                {
+                    title: "Create Tips",
+                    url: "/dashboard/blogs/tips/create"
+                }
             ],
         },
     ],
