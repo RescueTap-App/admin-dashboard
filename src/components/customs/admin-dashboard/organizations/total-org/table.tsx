@@ -146,7 +146,7 @@ const columns: ColumnDef<OrganizationTableType>[] = [
         accessorKey: "organizationName",
         header: "Organization Name",
         cell: ({ row }) => (
-            <div className="w-32">
+            <div className="max-w-fit">
                 <p className="text-muted-foreground px-1.5">
                     {row.original.organizationName || "No Organization Name"}
                 </p>
@@ -157,7 +157,7 @@ const columns: ColumnDef<OrganizationTableType>[] = [
         accessorKey: "email",
         header: "Email",
         cell: ({ row }) => (
-            <div className="w-32">
+            <div className="max-w-fit">
                 <p className="text-muted-foreground px-1.5">
                     {row.original.email || "Not Specified"}
                 </p>
@@ -168,7 +168,7 @@ const columns: ColumnDef<OrganizationTableType>[] = [
         accessorKey: "phoneNumber",
         header: "Phone Number",
         cell: ({ row }) => (
-            <div className="w-32">
+            <div className="max-w-fit">
                 <p className="text-muted-foreground px-1.5">
                     {row.original.phoneNumber || "Not Specified"}
                 </p>
@@ -179,8 +179,8 @@ const columns: ColumnDef<OrganizationTableType>[] = [
         accessorKey: "address",
         header: "Address",
         cell: ({ row }) => (
-            <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+            <div className="max-w-fit">
+                <p className="text-muted-foreground px-1.5 line-clamp-2">
                     {row.original.address || "Not Specified"}
                 </p>
             </div>
