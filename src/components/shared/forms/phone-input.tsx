@@ -66,7 +66,7 @@ export function PhoneInput({
                                 )}>
                                     <SelectValue>
                                         <div className="flex flex-row items-center gap-1 whitespace-nowrap">
-                                            <span>{selectedCountry.flag}</span>
+                                            <span className="text-xs">{selectedCountry.flag}</span>
                                             <span className="text-xs">{selectedCountry.dialCode}</span>
                                         </div>
                                     </SelectValue>

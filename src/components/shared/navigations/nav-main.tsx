@@ -56,7 +56,7 @@ export function NavMain({
                                                 <item.icon />
                                             </span>
                                         )}
-                                        <span className={`text-sm 2xl:text-xl font-roboto font-light ${isActive && "text-[#EF4136]"}`}>
+                                        <span className={`text-sm 2xl:text-xl font-roboto whitespace-nowrap font-light ${isActive && "text-[#EF4136]"}`}>
                                             {item.title}
                                         </span>
                                         <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
