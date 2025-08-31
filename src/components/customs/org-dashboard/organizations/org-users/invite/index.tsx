@@ -10,11 +10,15 @@ import { ReusableFormField } from "@/components/shared/forms/form-input"
 import useOrganization from "@/hooks/use-organization"
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
+import { useState } from "react";
+import { countryCodes } from "@/constants/country-codes";
+import { PhoneInput } from "@/components/shared/forms/phone-input"
 
 
 export default function InviteOrgUser() {
 
     const { inviteOrgUser, inviting, } = useOrganization({})
+    const [selectedCountryCode, setSelectedCountryCode] = useState(countryCodes[0])
     const { user } = useSelector((state: RootState) => state.auth);
     const inviterId = user?._id as string;
 
@@ -29,9 +33,20 @@ export default function InviteOrgUser() {
     })
 
     const handleSubmit = async (data: InviteOrgSchamaFormData) => {
-        const res = await inviteOrgUser(data, inviterId);
+        // Combine country code with phone number
+        let cleanPhoneNumber = data.phoneNumber;
+        if (cleanPhoneNumber.startsWith('0')) {
+            cleanPhoneNumber = cleanPhoneNumber.substring(1);
+        }
+        const fullPhoneNumber = selectedCountryCode.dialCode.replace('+', '') + cleanPhoneNumber
+        const userData = {
+            ...data,
+            phoneNumber: fullPhoneNumber
+        }
+
+        const res = await inviteOrgUser(userData, inviterId);
         if (res) {
-            form.reset()
+            form.reset();
         }
     }
 
@@ -58,13 +73,13 @@ export default function InviteOrgUser() {
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <ReusableFormField control={form.control} name="email" label="Email Address *" type="email" placeholder="johndoe@example.com" />
-                                            <ReusableFormField
+                                            <PhoneInput
                                                 control={form.control}
                                                 name="phoneNumber"
                                                 label="Phone Number *"
-                                                type="number"
-                                                inputMode="numeric"
-                                                placeholder="09011111111" />
+                                                placeholder="Enter phone number"
+                                                onCountryChange={setSelectedCountryCode}
+                                            />
                                         </div>
                                     </div>
                                 </div>

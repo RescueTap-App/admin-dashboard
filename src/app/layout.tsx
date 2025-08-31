@@ -42,7 +42,7 @@ export default function RootLayout({
         className={`${inter.variable} ${lato.variable} ${roboto.variable} ${roboto_mono.variable} antialiased scroll-smooth`}
       >
         <ReduxProvider>
-            {children}
+          {children}
         </ReduxProvider>
       </body>
     </html>

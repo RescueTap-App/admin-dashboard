@@ -50,7 +50,7 @@ export function NavMain({
                                 <CollapsibleTrigger asChild>
                                     <SidebarMenuButton tooltip={item.title} className={"py-5"}>
                                         {item.icon && (
-                                            <span className={`text-2xl xl:text-2xl 2xl:text-3xl ml-1 ${isActive
+                                            <span className={`text-2xl xl:text-2xl 2xl:text-3xl  ${isActive
                                                 ? "text-[#EF4136] active:bg-gray-900"
                                                 : "text-gray-700"}`}>
                                                 <item.icon />

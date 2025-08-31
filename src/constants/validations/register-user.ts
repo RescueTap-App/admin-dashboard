@@ -7,7 +7,13 @@ export const userSchema = z.object({
     email: z.email("Invalid email address"),
     phoneNumber: z
         .string()
-        .regex(/^0\d{10}$/, "Phone number must start with 0 and be exactly 11 digits"),
+        .min(1, "Phone number is required")
+        .regex(/^\d+$/, "Phone number must contain only digits")
+        .min(7, "Phone number must be at least 7 digits")
+        .max(12, "Phone number must not exceed 12 digits")
+        .refine((value) => !value.startsWith('0'), {
+            message: "Phone number should not start with 0"
+        }),
     address: z.string().min(1, "Address is required"),
     verified: z.boolean(),
 });

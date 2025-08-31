@@ -28,14 +28,6 @@ const data = {
             icon: Car,
             isActive: true,
             items: [
-                // {
-                //     title: "All Vehicles",
-                //     url: "/org/vehicles",
-                // },
-                // {
-                //     title: "Register Vehicle",
-                //     url: "/org/vehicles/register",
-                // },
                 {
                     title: "Request Slots",
                     url: "/org/vehicles/request-slot",
@@ -116,7 +108,7 @@ const data = {
 export function UserAppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { logOut } = useAuth();
     return (
-        <Sidebar collapsible="offcanvas"  {...props}>
+        <Sidebar collapsible="icon"  {...props}>
             <SidebarHeader>
                 <div className={"relative h-10 w-full"}>
                     <Image

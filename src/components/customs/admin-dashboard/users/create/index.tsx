@@ -7,10 +7,17 @@ import { Form } from "@/components/ui/form"
 import { Card, CardContent, CardHeader, CardFooter, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ReusableFormField } from "@/components/shared/forms/form-input"
+import { PhoneInput } from "@/components/shared/forms/phone-input"
+import { countryCodes } from "@/constants/country-codes"
 import useUsers from "@/hooks/use-users"
+import { useState } from "react"
+
+
 
 export default function CreateUser() {
     const { createUser, creating } = useUsers({})
+    const [selectedCountryCode, setSelectedCountryCode] = useState(countryCodes[0])
+
     const form = useForm<CreateUserFormData>({
         resolver: zodResolver(userSchema),
         defaultValues: {
@@ -24,10 +31,25 @@ export default function CreateUser() {
     })
 
     const handleSubmit = async (data: CreateUserFormData) => {
-        const res = await createUser(data)
+        // Clean the phone number to ensure no leading 0
+        let cleanPhoneNumber = data.phoneNumber;
+        if (cleanPhoneNumber.startsWith('0')) {
+            cleanPhoneNumber = cleanPhoneNumber.substring(1);
+        }
+
+        // Combine country code with phone number
+        const fullPhoneNumber = selectedCountryCode.dialCode.replace('+', '') + cleanPhoneNumber
+
+        const userData = {
+            ...data,
+            phoneNumber: fullPhoneNumber
+        }
+
+        const res = await createUser(userData)
         if (res) {
             form.reset();
         }
+        // toast.message(JSON.stringify(userData))
     }
 
     return (
@@ -40,9 +62,9 @@ export default function CreateUser() {
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
-                        <Card className="rounded shadow">
+                        <Card className="rounded shadow overflow-hidden">
                             <CardHeader>
-                                <CardTitle>User Information</CardTitle>
+                                <CardTitle className="font-lato text-xl font-bold">User Information</CardTitle>
                             </CardHeader>
                             <CardContent>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -65,11 +87,12 @@ export default function CreateUser() {
                                         type="email"
                                         placeholder="johndoe@example.com"
                                     />
-                                    <ReusableFormField
+                                    <PhoneInput
                                         control={form.control}
                                         name="phoneNumber"
                                         label="Phone Number *"
-                                        placeholder="2348012345678"
+                                        placeholder="e.g., 8073952126 (without leading 0)"
+                                        onCountryChange={setSelectedCountryCode}
                                     />
                                     <ReusableFormField
                                         control={form.control}

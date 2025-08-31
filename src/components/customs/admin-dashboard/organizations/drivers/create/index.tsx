@@ -9,10 +9,14 @@ import { createDriverSchema, CreateDriverFormData } from "@/constants/validation
 import { ReusableFormField } from "@/components/shared/forms/form-input"
 import { UploadField } from "@/components/shared/file-uploader-extend"
 import useDrivers from "@/hooks/use-drivers"
+import { countryCodes } from "@/constants/country-codes"
+import { useState } from "react"
+import { PhoneInput } from "@/components/shared/forms/phone-input"
 
 export default function CreateDriver() {
 
     const { createDriverAdmin, creatingDriverAdmin } = useDrivers({})
+    const [selectedCountryCode, setSelectedCountryCode] = useState(countryCodes[0])
     const form = useForm<CreateDriverFormData>({
         resolver: zodResolver(createDriverSchema),
         defaultValues: {
@@ -32,7 +36,19 @@ export default function CreateDriver() {
     })
 
     const handleSubmit = async (data: CreateDriverFormData) => {
-        const res = await createDriverAdmin(data);
+        // Combine country code with phone number
+        let cleanPhoneNumber = data.phoneNumber;
+        if (cleanPhoneNumber.startsWith('0')) {
+            cleanPhoneNumber = cleanPhoneNumber.substring(1);
+        }
+        const fullPhoneNumber = selectedCountryCode.dialCode.replace('+', '') + data.phoneNumber
+
+        const driverData = {
+            ...data,
+            phoneNumber: fullPhoneNumber
+        }
+
+        const res = await createDriverAdmin(driverData);
         if (res) {
             form.reset();
         }
@@ -61,16 +77,22 @@ export default function CreateDriver() {
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <ReusableFormField control={form.control} name="email" label="Email Address *" type="email" placeholder="johndoe@example.com" />
-                                            <ReusableFormField
+                                            <PhoneInput
                                                 control={form.control}
                                                 name="phoneNumber"
                                                 label="Phone Number *"
-                                                type="number"
-                                                inputMode="numeric"
-                                                placeholder="09011111111"
+                                                placeholder="Enter phone number"
+                                                onCountryChange={setSelectedCountryCode}
                                             />
                                         </div>
-                                        <ReusableFormField control={form.control} name="address" label="Residential Address *" placeholder={"Drivers residentail address"} fieldType="textarea" className="min-h-20 resize-none" />
+                                        <ReusableFormField
+                                            control={form.control}
+                                            name="address"
+                                            label="Residential Address *"
+                                            placeholder={"Drivers residentail address"}
+                                            fieldType="textarea"
+                                            className="min-h-20 resize-none rounded" />
+
                                         <ReusableFormField
                                             control={form.control}
                                             name="driverType"
