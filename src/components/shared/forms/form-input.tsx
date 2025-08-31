@@ -88,7 +88,7 @@ export function ReusableFormField({
                                 >
                                     <SelectTrigger
                                         className={cn(
-                                            className,
+                                            className + " text-xs font-lato h-12",
                                             icon && "pl-10",
                                             disabled && "bg-gray-100"
                                         )}
@@ -97,7 +97,7 @@ export function ReusableFormField({
                                     </SelectTrigger>
                                     <SelectContent>
                                         {options.map((option) => (
-                                            <SelectItem key={option.value} value={option.value}>
+                                            <SelectItem key={option.value} value={option.value} className="text-sm">
                                                 {option.label}
                                             </SelectItem>
                                         ))}
