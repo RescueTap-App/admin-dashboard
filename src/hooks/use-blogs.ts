@@ -13,7 +13,8 @@ import {
     useCreateTipsMutation,
     useEditTipsMutation,
     useDeleteTipMutation,
-    useGetallTipsQuery
+    useGetallTipsQuery,
+    useSendTestTipMutation
 } from "@/redux/features/blogs-api";
 import { BlogDataTypes } from "@/types/blogs.types";
 import { useRouter } from "next/navigation";
@@ -45,7 +46,7 @@ export default function useBlogs({
     const [createTipMutation, { isLoading: creatingTip }] = useCreateTipsMutation();
     const [editTipMutation, { isLoading: editingTips }] = useEditTipsMutation();
     const [deleteTipMutation, { isLoading: deletingTips }] = useDeleteTipMutation();
-
+    const [sendTestTipMutation, { isLoading: sendingTestTip }] = useSendTestTipMutation();
     const [createCategoryMutation, { isLoading: creatingCategory }] = useCreateCategoryMutation();
     const [updateCategoryMutation, { isLoading: updatingCategory }] = useUpdateCategoryMutation();
     const [deleteCategoryMutation, { isLoading: deletingCategory }] = useDeleteCategoryMutation();
@@ -184,6 +185,20 @@ export default function useBlogs({
         }
     };
 
+    const sendTestTip = async (content: string) => {
+        try {
+            const res = await sendTestTipMutation({ content }).unwrap();
+            if (res) {
+                toast.success("Test tip sent successfully");
+            }
+            return res;
+        } catch (error: unknown) {
+            const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to send test tip"
+            toast.error(errorMessage)
+            console.log(error)
+        }
+    };
+
     const updateTips = async (id: string, data: { content: string }) => {
         try {
             const res = await editTipMutation({ id, data }).unwrap();
@@ -219,6 +234,8 @@ export default function useBlogs({
         deletingTips,
         updateTips,
         editingTips,
+        sendTestTip,
+        sendingTestTip,
         tips,
         loadingtips,
         all_blogs,

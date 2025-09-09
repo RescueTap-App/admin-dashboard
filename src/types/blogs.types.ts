@@ -29,5 +29,6 @@ export type TipListTypes = {
     _id: string;
     content: string;
     createdAt: Date;
-    updatedAt:Date;
+    updatedAt: Date;
+    sentAt?: Date;
 }

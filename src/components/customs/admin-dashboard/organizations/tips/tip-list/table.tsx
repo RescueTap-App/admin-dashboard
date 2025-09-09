@@ -71,6 +71,7 @@ import {
 import { TipListTypes } from "@/types/blogs.types"
 import SearchInput from "@/components/shared/search-input";
 import { TipActions } from "./actions";
+import { Badge } from "@/components/ui/badge";
 
 
 function DragHandle({ id }: { id: string }) {
@@ -131,6 +132,7 @@ const columns: ColumnDef<TipListTypes>[] = [
             <div className="max-w-fit">
                 <p className="text-muted-foreground px-1.5">
                     #{row.original._id.slice(0, 7)}
+                    {row.original.sentAt ? <Badge variant="destructive" className="text-white ml-2 px-1.5">Test Tip</Badge> : ""}
                 </p>
             </div>
         ),
