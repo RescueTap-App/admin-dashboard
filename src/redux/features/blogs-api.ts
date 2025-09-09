@@ -84,9 +84,16 @@ export const blogsApi = createApi({
             query: ({ content }: { content: string }) => ({
                 url: `/tips`,
                 method: "POST",
-                body: { content }, 
+                body: { content },
             }),
             invalidatesTags: ['Tips'],
+        }),
+        sendTestTip: builder.mutation({
+            query: ({ content }: { content: string }) => ({
+                url: `/tips/send-test`,
+                method: "POST",
+                body: { content },
+            }),
         }),
         editTips: builder.mutation({
             query: ({ id, data }: { id?: string, data: { content: string } }) => ({
@@ -118,6 +125,7 @@ export const {
     useUpdateCategoryMutation,
     useUpdateBlogMutation,
     useCreateTipsMutation,
+    useSendTestTipMutation,
     useEditTipsMutation,
     useDeleteTipMutation,
     useGetallTipsQuery,
