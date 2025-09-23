@@ -134,7 +134,7 @@ const columns: ColumnDef<RevenueTypes>[] = [
         header: "Organization",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.organizationName || "Not Specfied"}
                 </p>
             </div>
@@ -145,7 +145,7 @@ const columns: ColumnDef<RevenueTypes>[] = [
         header: "Period",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.period || "No Period"}
                 </p>
             </div>
@@ -156,7 +156,7 @@ const columns: ColumnDef<RevenueTypes>[] = [
         header: "Amount",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {formatCurrency(row.original.amount || 0)}
                 </p>
             </div>
@@ -167,7 +167,7 @@ const columns: ColumnDef<RevenueTypes>[] = [
         header: "Billing Date",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {format(new Date(row.original.createdAt), 'MMM d, yyyy')}
                 </p>
             </div>
@@ -391,7 +391,7 @@ export function TotalRevenueTable({
                                     <TableRow key={headerGroup.id}>
                                         {headerGroup.headers.map((header) => {
                                             return (
-                                                <TableHead key={header.id} colSpan={header.colSpan}>
+                                                <TableHead key={header.id} colSpan={header.colSpan} className="font-nunito">
                                                     {header.isPlaceholder
                                                         ? null
                                                         : flexRender(

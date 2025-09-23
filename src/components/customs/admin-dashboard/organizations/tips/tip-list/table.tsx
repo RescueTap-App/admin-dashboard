@@ -130,7 +130,7 @@ const columns: ColumnDef<TipListTypes>[] = [
         header: "ID",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     #{row.original._id.slice(0, 7)}
                     {row.original.sentAt ? <Badge variant="destructive" className="text-white ml-2 px-1.5">Test Tip</Badge> : ""}
                 </p>
@@ -142,7 +142,7 @@ const columns: ColumnDef<TipListTypes>[] = [
         header: "Tip Text",
         cell: ({ row }) => (
             <div className="max-w-lg whitespace-normal break-words line-clamp-3">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.content}
                 </p>
             </div>
@@ -154,7 +154,7 @@ const columns: ColumnDef<TipListTypes>[] = [
         header: "Date Created",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {format(new Date(row.original.createdAt), 'MMM d, yyyy')}
                 </p>
             </div>
@@ -165,7 +165,7 @@ const columns: ColumnDef<TipListTypes>[] = [
         header: "Last update",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {format(new Date(row.original.updatedAt), 'MMM d, yyyy')}
                 </p>
             </div>
@@ -340,7 +340,7 @@ export function TipsListTable({
                                     <TableRow key={headerGroup.id}>
                                         {headerGroup.headers.map((header) => {
                                             return (
-                                                <TableHead key={header.id} colSpan={header.colSpan}>
+                                                <TableHead key={header.id} colSpan={header.colSpan} className="font-nunito">
                                                     {header.isPlaceholder
                                                         ? null
                                                         : flexRender(

@@ -41,7 +41,7 @@ export default function CreateDriver() {
         if (cleanPhoneNumber.startsWith('0')) {
             cleanPhoneNumber = cleanPhoneNumber.substring(1);
         }
-        const fullPhoneNumber = selectedCountryCode.dialCode.replace('+', '') + data.phoneNumber
+        const fullPhoneNumber = selectedCountryCode.dialCode.replace('+', '') + cleanPhoneNumber
 
         const driverData = {
             ...data,

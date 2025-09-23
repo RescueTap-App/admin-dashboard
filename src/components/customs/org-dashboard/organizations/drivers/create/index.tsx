@@ -13,6 +13,7 @@ import { useSelector } from "react-redux"
 import { RootState } from "@/lib/store"
 import { useState } from "react"
 import { countryCodes } from "@/constants/country-codes"
+import { PhoneInput } from "@/components/shared/forms/phone-input"
 
 export default function CreateDriver() {
 
@@ -35,7 +36,6 @@ export default function CreateDriver() {
             vehicleModel: "",
             profileImage: "",
             vehicleImage: "",
-            // password: ""
         },
     })
 
@@ -81,13 +81,12 @@ export default function CreateDriver() {
                                         </div>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <ReusableFormField control={form.control} name="email" label="Email Address *" type="email" placeholder="johndoe@example.com" />
-                                            <ReusableFormField
+                                            <PhoneInput
                                                 control={form.control}
                                                 name="phoneNumber"
                                                 label="Phone Number *"
-                                                type="number"
-                                                inputMode="numeric"
-                                                placeholder="09011111111"
+                                                placeholder="Enter phone number"
+                                                onCountryChange={setSelectedCountryCode}
                                             />
                                         </div>
                                         <ReusableFormField control={form.control} name="address" label="Residential Address *" placeholder={"Drivers residentail address"} fieldType="textarea" className="min-h-20 resize-none" />

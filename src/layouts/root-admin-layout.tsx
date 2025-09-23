@@ -48,7 +48,7 @@ export default function RootAdminNavigationLayout({ children }: { children: Reac
                             <BreadcrumbList>
                                 <BreadcrumbItem>
                                     <BreadcrumbLink asChild>
-                                        <Link href="/">Home</Link>
+                                        <Link href="/" className='font-nunito'>Home</Link>
                                     </BreadcrumbLink>
                                 </BreadcrumbItem>
 
@@ -57,10 +57,10 @@ export default function RootAdminNavigationLayout({ children }: { children: Reac
                                         <BreadcrumbSeparator />
                                         <BreadcrumbItem>
                                             {idx === breadcrumbPaths.length - 1 ? (
-                                                <BreadcrumbPage>{item.name}</BreadcrumbPage>
+                                                <BreadcrumbPage className='font-nunito'>{item.name}</BreadcrumbPage>
                                             ) : (
                                                 <BreadcrumbLink asChild>
-                                                    <Link href={item.href}>{item.name}</Link>
+                                                    <Link href={item.href} className='font-nunito'>{item.name}</Link>
                                                 </BreadcrumbLink>
                                             )}
                                         </BreadcrumbItem>

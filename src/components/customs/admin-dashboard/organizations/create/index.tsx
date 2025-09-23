@@ -1,16 +1,19 @@
 "use client"
 
 import { ReusableFormField } from "@/components/shared/forms/form-input";
+import { PhoneInput } from "@/components/shared/forms/phone-input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
+import { countryCodes } from "@/constants/country-codes";
 import { createOrganizationSchema, createOrganizationSchemaType } from "@/constants/validations/organization";
 import useOrganization from "@/hooks/use-organization";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 
 function CreateOrganization() {
-
+    const [selectedCountryCode, setSelectedCountryCode] = useState(countryCodes[0])
     const { createOrganization, creating } = useOrganization({});
     const form = useForm<createOrganizationSchemaType>({
         resolver: zodResolver(createOrganizationSchema),
@@ -29,7 +32,18 @@ function CreateOrganization() {
     });
 
     const handleSubmit = (data: createOrganizationSchemaType) => {
-        createOrganization(data)
+        // Combine country code with phone number
+        let cleanPhoneNumber = data.phoneNumber;
+        if (cleanPhoneNumber.startsWith('0')) {
+            cleanPhoneNumber = cleanPhoneNumber.substring(1);
+        }
+        const fullPhoneNumber = selectedCountryCode.dialCode.replace('+', '') + cleanPhoneNumber
+
+        const organizationData = {
+            ...data,
+            phoneNumber: fullPhoneNumber
+        }
+        createOrganization(organizationData)
     };
 
     return (
@@ -67,14 +81,12 @@ function CreateOrganization() {
                                 type="text"
                                 placeholder="Enter last name"
                             />
-
-                            <ReusableFormField
+                            <PhoneInput
                                 control={form.control}
                                 name="phoneNumber"
                                 label="Phone Number *"
-                                type="text"
-                                inputMode={"numeric"}
                                 placeholder="Enter phone number"
+                                onCountryChange={setSelectedCountryCode}
                             />
 
                             <ReusableFormField

@@ -2,19 +2,17 @@ import { z } from "zod"
 
 // Zod schemas for form validation
 export const visitorsSchema = z.object({
-    firstName: z.string().min(2, "First name must be at least 2 characters"),
-    lastName: z.string().min(2, "Last name must be at least 2 characters"),
-    purposeOfVisit: z.string().min(2, "Purpose of visit must be at least 2 characters"),
-    phoneNumber: z
+    name: z.string().min(2, "Name must be at least 2 characters"),
+    purpose: z.string().min(2, "Purpose must be at least 2 characters"),
+    phone: z
         .string()
-        .regex(/^0\d{10}$/, "Phone number must start with 0 and be exactly 11 digits"),
-    residentialAddress: z.string().min(10, "Please enter a complete address"),
-    hostName: z.string().min(2, "Host Name must be at least 2 characters"),
-    hostPhone: z.string().min(2, "Host Phone must be at least 2 characters"),
-    date: z.date("Date is required."),
-    time: z.string().min(3, "Please enter a valid time"),
-    vehiclePlateNumber: z.string().optional(),
-    notes: z.string().optional()
+        .min(10, "Phone number must be at least 10 digits")
+        .max(15, "Phone number must not exceed 15 digits")
+        .regex(/^\d+$/, "Phone number must contain only digits"),
+    email: z.email("Please enter a valid email address"),
+    startTime: z.date(),
+    endTime: z.date(),
+    vehicleNumber: z.string().min(2, "Vehicle number must be at least 2 characters"),
 })
 
 export type VisitorsSchemaFormDataType = z.infer<typeof visitorsSchema>

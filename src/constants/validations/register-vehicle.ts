@@ -7,7 +7,9 @@ export const vehicleRegistrationSchema = z.object({
   email: z.email("Please enter a valid email address"),
   phoneNumber: z
     .string()
-    .regex(/^0\d{10}$/, "Phone number must start with 0 and be exactly 11 digits"),
+    .min(10, "Phone number must be at least 10 digits")
+    .max(15, "Phone number must not exceed 15 digits")
+    .regex(/^\d+$/, "Phone number must contain only digits"),
   residentialAddress: z.string().min(10, "Please enter a complete address"),
   brand: z.string().min(2, "Brand must be at least 2 characters"),
   model: z.string().min(2, "Model must be at least 2 characters"),

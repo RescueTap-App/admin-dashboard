@@ -140,9 +140,9 @@ const columns: ColumnDef<VehicleRegistryTypes>[] = [
     {
         accessorKey: "header",
         header: "Organizations",
-     cell: ({ row }) => (
+        cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.organization}
                 </p>
             </div>
@@ -153,7 +153,7 @@ const columns: ColumnDef<VehicleRegistryTypes>[] = [
         header: "Driver Info",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.driverInfo}
                 </p>
             </div>
@@ -164,7 +164,7 @@ const columns: ColumnDef<VehicleRegistryTypes>[] = [
         header: "Vehicle Model",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.vehicleModel}
                 </p>
             </div>
@@ -175,7 +175,7 @@ const columns: ColumnDef<VehicleRegistryTypes>[] = [
         header: "Reg.Number",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.regNumber}
                 </p>
             </div>
@@ -186,7 +186,7 @@ const columns: ColumnDef<VehicleRegistryTypes>[] = [
         header: "Type",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.type}
                 </p>
             </div>
@@ -390,7 +390,7 @@ export function VehicleRegistryTable({
                                     <TableRow key={headerGroup.id}>
                                         {headerGroup.headers.map((header) => {
                                             return (
-                                                <TableHead key={header.id} colSpan={header.colSpan}>
+                                                <TableHead key={header.id} colSpan={header.colSpan} className="font-nunito">
                                                     {header.isPlaceholder
                                                         ? null
                                                         : flexRender(
@@ -423,7 +423,7 @@ export function VehicleRegistryTable({
                     </SortableContext>
                 </DndContext>
             </div>
-             <div className="flex items-center justify-between px-4 pt-3">
+            <div className="flex items-center justify-between px-4 pt-3">
                 <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
                     {table.getFilteredSelectedRowModel().rows.length} of{" "}
                     {table.getFilteredRowModel().rows.length} row(s) selected.

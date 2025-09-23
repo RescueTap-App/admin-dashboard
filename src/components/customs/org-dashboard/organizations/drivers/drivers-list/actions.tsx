@@ -15,7 +15,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import useDrivers from "@/hooks/use-drivers"
-import { formatDriverForQR, generateAndDownloadQR } from "@/lib/utils"
+import { formatDriverForQR, generateAndDownloadDriverQR } from "@/lib/utils"
 import { IconDotsVertical } from "@tabler/icons-react"
 import Link from "next/link"
 import { useState } from "react"
@@ -37,7 +37,7 @@ export function DriversActions({ driverId }: DriverProps) {
     const handleDownloadQR = () => {
         if (!driver) return
         const formatted = formatDriverForQR(driver)
-        generateAndDownloadQR(formatted)
+        generateAndDownloadDriverQR(formatted)
     }
 
     const isBlacklisted = driver?.status?.toLowerCase() === "blacklist"

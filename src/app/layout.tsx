@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { Inter, Lato, Roboto, Roboto_Mono } from "next/font/google";
+import { Inter, Lato, Roboto, Roboto_Mono, Nunito, Poppins } from "next/font/google";
 import "./globals.css";
 import ReduxProvider from "@/providers/redux-provider";
-
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,6 +25,18 @@ const roboto_mono = Roboto_Mono({
   variable: "--font-roboto-mono",
   weight: ["400", "700"],
 });
+
+const nunito = Nunito({
+  subsets: ["latin"],
+  variable: "--font-nunito",
+  weight: ["400", "700"],
+});
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  variable: "--font-poppins",
+  weight: ["400", "700"],
+});
 export const metadata: Metadata = {
   title: "Rescue Tap",
   description: "Rescue Tap instantly let's you share your location send emergency alerts and stay connected with the people who matter most, because safety starts with awarenes",
@@ -39,7 +50,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${lato.variable} ${roboto.variable} ${roboto_mono.variable} antialiased scroll-smooth`}
+        className={`${inter.variable} ${lato.variable} ${roboto.variable} ${roboto_mono.variable} ${nunito.variable} ${poppins.variable} antialiased scroll-smooth`}
       >
         <ReduxProvider>
           {children}

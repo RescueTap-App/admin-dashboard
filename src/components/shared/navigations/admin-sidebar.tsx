@@ -19,6 +19,7 @@ import Image from "next/image"
 import { NavMain } from "./nav-main"
 import { useAuth } from "@/hooks/use-auth"
 
+
 const data = {
     navMain: [
         {
@@ -35,18 +36,10 @@ const data = {
                     title: "Create Organizations",
                     url: "/dashboard/organizations/create",
                 },
-                // {
-                //     title: "Active Organizations",
-                //     url: "/dashboard/organizations/active",
-                // },
                 {
                     title: "Total Revenue",
                     url: "/dashboard/organizations/total-rev",
                 },
-                // {
-                //     title: "Vehicle Slots",
-                //     url: "/dashboard/organizations/vehicle-slots",
-                // }
             ],
         },
         {

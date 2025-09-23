@@ -146,8 +146,8 @@ const columns: ColumnDef<OrganizationTableType>[] = [
         accessorKey: "organizationName",
         header: "Organization Name",
         cell: ({ row }) => (
-            <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+            <div className="w-fit">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.organizationName || "No Organization Name"}
                 </p>
             </div>
@@ -157,8 +157,8 @@ const columns: ColumnDef<OrganizationTableType>[] = [
         accessorKey: "email",
         header: "Email",
         cell: ({ row }) => (
-            <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+            <div className="w-fit">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.email || "Not Specified"}
                 </p>
             </div>
@@ -169,7 +169,7 @@ const columns: ColumnDef<OrganizationTableType>[] = [
         header: "Phone Number",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.phoneNumber || "Not Specified"}
                 </p>
             </div>
@@ -180,7 +180,7 @@ const columns: ColumnDef<OrganizationTableType>[] = [
         header: "Address",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.address || "Not Specified"}
                 </p>
             </div>
@@ -205,7 +205,7 @@ const columns: ColumnDef<OrganizationTableType>[] = [
         header: "Date Created",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {format(new Date(row.original.createdAt), 'MMM d, yyyy')}
                 </p>
             </div>
@@ -216,7 +216,7 @@ const columns: ColumnDef<OrganizationTableType>[] = [
         header: "Last Update",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {format(new Date(row.original.updatedAt), 'MMM d, yyyy')}
                 </p>
             </div>
@@ -391,7 +391,7 @@ export function TotalOrganizationTable({
                                     <TableRow key={headerGroup.id}>
                                         {headerGroup.headers.map((header) => {
                                             return (
-                                                <TableHead key={header.id} colSpan={header.colSpan}>
+                                                <TableHead key={header.id} colSpan={header.colSpan} className="font-nunito">
                                                     {header.isPlaceholder
                                                         ? null
                                                         : flexRender(

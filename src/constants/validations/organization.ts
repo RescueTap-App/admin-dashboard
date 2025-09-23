@@ -6,7 +6,9 @@ export const createOrganizationSchema = z.object({
   lastName: z.string().min(1, "Last name is required"),
   phoneNumber: z
     .string()
-    .regex(/^0\d{10}$/, "Phone number must start with 0 and be exactly 11 digits"),
+    .min(10, "Phone number must be at least 10 digits")
+    .max(15, "Phone number must not exceed 15 digits")
+    .regex(/^\d+$/, "Phone number must contain only digits"),
   email: z.email("Invalid email address"),
   password: z.string().min(6, "Password must be at least 6 characters"),
   subscriptionPlan: z

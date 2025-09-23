@@ -1,56 +1,6 @@
-import * as React from "react"
-import {
-    closestCenter,
-    DndContext,
-    KeyboardSensor,
-    MouseSensor,
-    TouchSensor,
-    useSensor,
-    useSensors,
-    type DragEndEvent,
-    type UniqueIdentifier,
-} from "@dnd-kit/core"
-import {
-    arrayMove,
-    SortableContext,
-    useSortable,
-    verticalListSortingStrategy,
-} from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
-import {
-    IconChevronLeft,
-    IconChevronRight,
-    IconChevronsLeft,
-    IconChevronsRight,
-    IconGripVertical,
-} from "@tabler/icons-react"
-import {
-    ColumnDef,
-    ColumnFiltersState,
-    flexRender,
-    getCoreRowModel,
-    getFacetedRowModel,
-    getFacetedUniqueValues,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    Row,
-    SortingState,
-    useReactTable,
-    VisibilityState,
-} from "@tanstack/react-table"
+import SearchInput from "@/components/shared/search-input"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-    Drawer,
-    DrawerClose,
-    DrawerContent,
-    DrawerDescription,
-    DrawerFooter,
-    DrawerHeader,
-    DrawerTitle,
-    DrawerTrigger,
-} from "@/components/ui/drawer"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import {
@@ -68,10 +18,53 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { useIsMobile } from "@/hooks/use-mobile"
 import { ActiveVisitorsLogTableTypes } from "@/types/visitors.types"
+import {
+    closestCenter,
+    DndContext,
+    KeyboardSensor,
+    MouseSensor,
+    TouchSensor,
+    useSensor,
+    useSensors,
+    type DragEndEvent,
+    type UniqueIdentifier,
+} from "@dnd-kit/core"
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
+import {
+    arrayMove,
+    SortableContext,
+    useSortable,
+    verticalListSortingStrategy,
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import {
+    IconChevronLeft,
+    IconChevronRight,
+    IconChevronsLeft,
+    IconChevronsRight,
+    IconCircleCheckFilled,
+    IconGripVertical,
+    IconInfoCircle,
+} from "@tabler/icons-react"
+import {
+    ColumnDef,
+    ColumnFiltersState,
+    flexRender,
+    getCoreRowModel,
+    getFacetedRowModel,
+    getFacetedUniqueValues,
+    getFilteredRowModel,
+    getPaginationRowModel,
+    getSortedRowModel,
+    Row,
+    SortingState,
+    useReactTable,
+    VisibilityState,
+} from "@tanstack/react-table"
+import { format } from "date-fns"
+import * as React from "react"
 import { VisitorsLogActions } from "./actions"
-import SearchInput from "@/components/shared/search-input"
 
 function DragHandle({ id }: { id: string }) {
     const { attributes, listeners } = useSortable({
@@ -96,7 +89,7 @@ const columns: ColumnDef<ActiveVisitorsLogTableTypes>[] = [
     {
         id: "drag",
         header: () => null,
-        cell: ({ row }) => <DragHandle id={row.original.id} />,
+        cell: ({ row }) => <DragHandle id={row.original._id} />,
     },
     {
         id: "select",
@@ -125,30 +118,23 @@ const columns: ColumnDef<ActiveVisitorsLogTableTypes>[] = [
         enableHiding: true,
     },
     {
-        accessorKey: "header",
+        accessorKey: "name",
         header: "Vsitor Name",
-        cell: ({ row }) => {
-            return <TableCellViewer item={row.original} />
-        },
-        enableHiding: false,
-    },
-    {
-        accessorKey: "tagNumber",
-        header: "Tag Number",
         cell: ({ row }) => (
-            <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.tagNumber}
+            <div className="w-fit mr-5">
+                <p className="text-muted-foreground px-1.5 font-lato">
+                    {row.original.name}
                 </p>
             </div>
         ),
+        enableHiding: false,
     },
     {
         accessorKey: "phone",
         header: "Phone",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.phone}
                 </p>
             </div>
@@ -159,52 +145,77 @@ const columns: ColumnDef<ActiveVisitorsLogTableTypes>[] = [
         header: "Purpose",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato line-clamp-2">
                     {row.original.purpose}
                 </p>
             </div>
         ),
     },
     {
-        accessorKey: "hostName",
-        header: "Host Name",
+        accessorKey: "vehicleNumber",
+        header: "Vehicle Number",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.hostName}
+                <p className="text-muted-foreground px-1.5 font-lato">
+                    {row.original.vehicleNumber}
                 </p>
             </div>
         ),
     },
     {
-        accessorKey: "regNumber",
-        header: "Reg.Number",
+        accessorKey: "status",
+        header: "Status",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.regNumber}
-                </p>
+                <Badge variant="outline" className="text-muted-foreground px-1.5">
+                    {row.original.status === 'pending' ? (
+                        <React.Fragment>
+                            <IconInfoCircle className={"fill-amber-500 text-white"} />
+                            <span>Pending</span>
+                        </React.Fragment>
+                    ) : row.original.status === 'expired' ? (
+                        <React.Fragment>
+                            <IconInfoCircle className={"fill-red-500 text-white"} />
+                            <span>Expired</span>
+                        </React.Fragment>
+                    ) : row.original.status === 'checked_out' ? (
+                        <React.Fragment>
+                            <IconCircleCheckFilled className={"fill-green-500 text-white"} />
+                            <span>Checked out</span>
+                        </React.Fragment>
+                    ) : row.original.status === 'checked_in' ? (
+                        <React.Fragment>
+                            <IconCircleCheckFilled className={"fill-green-500 text-white"} />
+                            <span>Checked in</span>
+                        </React.Fragment>
+                    ) : (
+                        <React.Fragment>
+                            <IconInfoCircle className={"fill-red-500 text-white"} />
+                            <span>Canceled</span>
+                        </React.Fragment>
+                    )}
+                </Badge>
             </div>
         ),
     },
     {
-        accessorKey: "check_in_time",
+        accessorKey: "startTime",
         header: "Check-In-Time",
         cell: ({ row }) => (
-            <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.check_in_time}
+            <div className="max-w-fit">
+                <p className="text-muted-foreground px-1.5 font-lato">
+                    {format(new Date(row.original.startTime), 'MMM d, yyyy hh:mm a')}
                 </p>
             </div>
         ),
     },
     {
-        accessorKey: "check_out_time",
+        accessorKey: "endTime",
         header: "Check-Out-Time",
         cell: ({ row }) => (
-            <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
-                    {row.original.check_out_time}
+            <div className="max-w-fit">
+                <p className="text-muted-foreground px-1.5 font-lato">
+                    {format(new Date(row.original.endTime), 'MMM d, yyyy hh:mm a')}
                 </p>
             </div>
         ),
@@ -214,14 +225,14 @@ const columns: ColumnDef<ActiveVisitorsLogTableTypes>[] = [
         id: "id",
         header: "Actions",
         cell: ({ row }) => (
-            <VisitorsLogActions visitorId={row.original.id} />
+            <VisitorsLogActions data={row.original} />
         ),
     },
 ]
 
 function DraggableRow({ row }: { row: Row<ActiveVisitorsLogTableTypes> }) {
     const { transform, transition, setNodeRef, isDragging } = useSortable({
-        id: row.original.id,
+        id: row.original._id,
     })
 
     return (
@@ -270,7 +281,7 @@ export function ActiveVisitorsLogTable({
     )
 
     const dataIds = React.useMemo<UniqueIdentifier[]>(
-        () => data?.map(({ id }) => id) || [],
+        () => data?.map(({ _id }) => _id) || [],
         [data]
     )
 
@@ -292,7 +303,7 @@ export function ActiveVisitorsLogTable({
             columnFilters,
             pagination,
         },
-        getRowId: (row) => row.id.toString(),
+        getRowId: (row) => row._id.toString(),
         enableRowSelection: true,
         onRowSelectionChange: setRowSelection,
         onSortingChange: setSorting,
@@ -348,7 +359,7 @@ export function ActiveVisitorsLogTable({
                                     <TableRow key={headerGroup.id}>
                                         {headerGroup.headers.map((header) => {
                                             return (
-                                                <TableHead key={header.id} colSpan={header.colSpan}>
+                                                <TableHead key={header.id} colSpan={header.colSpan} className="font-nunito">
                                                     {header.isPlaceholder
                                                         ? null
                                                         : flexRender(
@@ -462,32 +473,3 @@ export function ActiveVisitorsLogTable({
     )
 }
 
-function TableCellViewer({ item }: { item: ActiveVisitorsLogTableTypes }) {
-    const isMobile = useIsMobile()
-    return (
-        <Drawer direction={isMobile ? "bottom" : "right"}>
-            <DrawerTrigger asChild>
-                <Button variant="link" className="text-foreground w-fit px-0 text-left">
-                    {item.visitorsName}
-                </Button>
-            </DrawerTrigger>
-            <DrawerContent>
-                <DrawerHeader className="gap-1">
-                    <DrawerTitle>{item.visitorsName}</DrawerTitle>
-                    <DrawerDescription>
-                        Showing total visitors for the last 6 months
-                    </DrawerDescription>
-                </DrawerHeader>
-                <div>
-                    Content of Drawer
-                </div>
-                <DrawerFooter>
-                    <Button>Submit</Button>
-                    <DrawerClose asChild>
-                        <Button variant="outline">Done</Button>
-                    </DrawerClose>
-                </DrawerFooter>
-            </DrawerContent>
-        </Drawer>
-    )
-}

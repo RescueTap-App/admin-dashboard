@@ -139,7 +139,7 @@ export const columns: ColumnDef<DriverApplication>[] = [
         accessorKey: "driverId.driverName",
         header: "Driver Name",
         cell: ({ row }) => (
-            <p className="text-muted-foreground px-1.5">
+            <p className="text-muted-foreground px-1.5 font-lato">
                 {row.original.driverId.driverName}
             </p>
         ),
@@ -148,7 +148,7 @@ export const columns: ColumnDef<DriverApplication>[] = [
         accessorKey: "driverId.emailAddress",
         header: "Email",
         cell: ({ row }) => (
-            <p className="text-muted-foreground px-1.5">
+            <p className="text-muted-foreground px-1.5 font-lato">
                 {row.original.driverId.emailAddress}
             </p>
         ),
@@ -157,7 +157,7 @@ export const columns: ColumnDef<DriverApplication>[] = [
         accessorKey: "driverId.vehicleType",
         header: "Vehicle Type",
         cell: ({ row }) => (
-            <p className="text-muted-foreground px-1.5">
+            <p className="text-muted-foreground px-1.5 font-lato">
                 {row.original.driverId.vehicleType}
             </p>
         ),
@@ -166,7 +166,7 @@ export const columns: ColumnDef<DriverApplication>[] = [
         accessorKey: "driverId.vehicleModel",
         header: "Vehicle Model",
         cell: ({ row }) => (
-            <p className="text-muted-foreground px-1.5">
+            <p className="text-muted-foreground px-1.5 font-lato">
                 {row.original.driverId.vehicleModel}
             </p>
         ),
@@ -175,7 +175,7 @@ export const columns: ColumnDef<DriverApplication>[] = [
         accessorKey: "driverId.licenseNumber",
         header: "License No.",
         cell: ({ row }) => (
-            <p className="text-muted-foreground px-1.5">
+            <p className="text-muted-foreground px-1.5 font-lato">
                 {row.original.driverId.licenseNumber}
             </p>
         ),
@@ -184,7 +184,7 @@ export const columns: ColumnDef<DriverApplication>[] = [
         accessorKey: "driverId.registrationDate",
         header: "Registration Date",
         cell: ({ row }) => (
-            <p className="text-muted-foreground px-1.5">
+            <p className="text-muted-foreground px-1.5 font-lato">
                 {format(new Date(row.original.driverId.registrationDate), "MMM d, yyyy")}
             </p>
         ),
@@ -351,7 +351,7 @@ export function TravelsTable({
                                     <TableRow key={headerGroup.id}>
                                         {headerGroup.headers.map((header) => {
                                             return (
-                                                <TableHead key={header.id} colSpan={header.colSpan}>
+                                                <TableHead key={header.id} colSpan={header.colSpan} className="font-nunito">
                                                     {header.isPlaceholder
                                                         ? null
                                                         : flexRender(

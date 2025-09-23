@@ -34,7 +34,7 @@ interface ReusableFormFieldProps {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     control: Control<any>;
     name: string;
-    type?: "text" | "file" | "number" | "radio" | "url" | "email" | "password";
+    type?: "text" | "file" | "number" | "radio" | "url" | "email" | "password" | "datetime-local";
     inputMode?: "numeric" | "text";
     label?: string;
     description?: string;
@@ -78,6 +78,11 @@ export function ReusableFormField({
 
                     <FormControl>
                         <div className="relative w-full">
+                            {icon && (
+                                <div className={"absolute left-3 top-1/2 -translate-y-1/2 text-black"}>
+                                    {icon}
+                                </div>
+                            )}
                             {fieldType === "textarea" ? (
                                 <Textarea {...field} placeholder={placeholder} className={className} />
                             ) : fieldType === "select" ? (

@@ -152,7 +152,7 @@ const columns: ColumnDef<BlogListTypes>[] = [
         header: "Author",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.author}
                 </p>
             </div>
@@ -163,7 +163,7 @@ const columns: ColumnDef<BlogListTypes>[] = [
         header: "Published",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {format(new Date(row.original.createdAt), 'MMM d, yyyy')}
                 </p>
             </div>
@@ -305,7 +305,7 @@ export function BlogListTable({
                                     <TableRow key={headerGroup.id}>
                                         {headerGroup.headers.map((header) => {
                                             return (
-                                                <TableHead key={header.id} colSpan={header.colSpan}>
+                                                <TableHead key={header.id} colSpan={header.colSpan} className="font-nunito">
                                                     {header.isPlaceholder
                                                         ? null
                                                         : flexRender(
