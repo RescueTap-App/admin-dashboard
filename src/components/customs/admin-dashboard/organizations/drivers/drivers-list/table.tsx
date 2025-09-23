@@ -146,7 +146,7 @@ const columns: ColumnDef<DriverListTypes>[] = [
         header: "First Name",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.firstName}
                 </p>
             </div>
@@ -157,7 +157,7 @@ const columns: ColumnDef<DriverListTypes>[] = [
         header: "Last Name",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.lastName}
                 </p>
             </div>
@@ -168,7 +168,7 @@ const columns: ColumnDef<DriverListTypes>[] = [
         header: "Email",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.email}
                 </p>
             </div>
@@ -179,7 +179,7 @@ const columns: ColumnDef<DriverListTypes>[] = [
         header: "Driver Type",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.driverType}
                 </p>
             </div>
@@ -190,7 +190,7 @@ const columns: ColumnDef<DriverListTypes>[] = [
         header: "Plate Number",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.plateNumber}
                 </p>
             </div>
@@ -201,7 +201,7 @@ const columns: ColumnDef<DriverListTypes>[] = [
         header: "Reg.Number",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.regNumber}
                 </p>
             </div>
@@ -212,7 +212,7 @@ const columns: ColumnDef<DriverListTypes>[] = [
         header: "Vehicle Model",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.vehicleModel}
                 </p>
             </div>
@@ -223,7 +223,7 @@ const columns: ColumnDef<DriverListTypes>[] = [
         header: "Registration Date",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {format(new Date(row.original.registrationDate), 'MMM d, yyyy')}
                 </p>
             </div>
@@ -445,7 +445,7 @@ export function DriversListTable({
                                     <TableRow key={headerGroup.id}>
                                         {headerGroup.headers.map((header) => {
                                             return (
-                                                <TableHead key={header.id} colSpan={header.colSpan}>
+                                                <TableHead key={header.id} colSpan={header.colSpan} className="font-nunito">
                                                     {header.isPlaceholder
                                                         ? null
                                                         : flexRender(

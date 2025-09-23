@@ -31,6 +31,8 @@ import {
     IconShieldCheck,
     IconSteeringWheel,
     IconGripVertical,
+    IconCircleCheckFilled,
+    IconInfoCircle,
 } from "@tabler/icons-react"
 import {
     ColumnDef,
@@ -147,7 +149,7 @@ const columns: ColumnDef<UserListType>[] = [
         header: "First Name",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.firstName}
                 </p>
             </div>
@@ -158,7 +160,7 @@ const columns: ColumnDef<UserListType>[] = [
         header: "Last Name",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.lastName}
                 </p>
             </div>
@@ -169,7 +171,7 @@ const columns: ColumnDef<UserListType>[] = [
         header: "Email",
         cell: ({ row }) => (
             <div className="w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.email}
                 </p>
             </div>
@@ -180,7 +182,7 @@ const columns: ColumnDef<UserListType>[] = [
         header: "Registration Date",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {format(new Date(row.original.createdAt), 'MMM d, yyyy')}
                 </p>
             </div>
@@ -191,10 +193,24 @@ const columns: ColumnDef<UserListType>[] = [
         header: "Last Update",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {format(new Date(row.original.updatedAt), 'MMM d, yyyy')}
                 </p>
             </div>
+        ),
+    },
+    {
+        accessorKey: "verified",
+        header: "Verified",
+        cell: ({ row }) => (
+            <Badge variant="outline" className={`text-muted-foreground px-1.5 flex flex-row items-center capitalize ${row.original.verified ? "text-green-500 dark:text-green-400" : "text-amber-500 dark:text-amber-400"}`}>
+                {row.original.verified ? (
+                    <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
+                ) : (
+                    <IconInfoCircle className={"fill-amber-500 text-white"} />
+                )}
+                {row.original.verified ? "Verified" : "Unverified"}
+            </Badge>
         ),
     },
     {
@@ -432,7 +448,7 @@ export function UsersListTable({
                                     <TableRow key={headerGroup.id}>
                                         {headerGroup.headers.map((header) => {
                                             return (
-                                                <TableHead key={header.id} colSpan={header.colSpan}>
+                                                <TableHead key={header.id} colSpan={header.colSpan} className="font-nunito">
                                                     {header.isPlaceholder
                                                         ? null
                                                         : flexRender(
@@ -465,7 +481,7 @@ export function UsersListTable({
                     </SortableContext>
                 </DndContext>
             </div>
-             <div className="flex items-center justify-between px-4 pt-3">
+            <div className="flex items-center justify-between px-4 pt-3">
                 <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
                     {table.getFilteredSelectedRowModel().rows.length} of{" "}
                     {table.getFilteredRowModel().rows.length} row(s) selected.

@@ -129,7 +129,7 @@ const columns: ColumnDef<OrgUsersTypes>[] = [
         accessorKey: "profileImage",
         header: "Profile",
         cell: ({ row }) => (
-            <div className="w-24 h-24 relative">
+            <div className="w-16 h-16 relative">
                 <Image src={row.original.profileImage || "/icons/avatar.svg"}
                     alt={"Profile Image"}
                     fill
@@ -143,7 +143,7 @@ const columns: ColumnDef<OrgUsersTypes>[] = [
         header: "First Name",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.firstName}
                 </p>
             </div>
@@ -154,7 +154,7 @@ const columns: ColumnDef<OrgUsersTypes>[] = [
         header: "Last Name",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.lastName}
                 </p>
             </div>
@@ -165,7 +165,7 @@ const columns: ColumnDef<OrgUsersTypes>[] = [
         header: "Email",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.email}
                 </p>
             </div>
@@ -176,7 +176,7 @@ const columns: ColumnDef<OrgUsersTypes>[] = [
         header: "Phone Numer",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.phoneNumber}
                 </p>
             </div>
@@ -187,7 +187,7 @@ const columns: ColumnDef<OrgUsersTypes>[] = [
         header: "Address",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.address.slice(0, 15)}
                 </p>
             </div>
@@ -198,7 +198,7 @@ const columns: ColumnDef<OrgUsersTypes>[] = [
         header: "Registration Date",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {format(new Date(row.original.createdAt), 'MMM d, yyyy')}
                 </p>
             </div>
@@ -209,7 +209,7 @@ const columns: ColumnDef<OrgUsersTypes>[] = [
         header: "Last Update",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {format(new Date(row.original.updatedAt), 'MMM d, yyyy')}
                 </p>
             </div>
@@ -378,7 +378,7 @@ export function UsersListTable({
                                     <TableRow key={headerGroup.id}>
                                         {headerGroup.headers.map((header) => {
                                             return (
-                                                <TableHead key={header.id} colSpan={header.colSpan}>
+                                                <TableHead key={header.id} colSpan={header.colSpan} className="font-nunito">
                                                     {header.isPlaceholder
                                                         ? null
                                                         : flexRender(

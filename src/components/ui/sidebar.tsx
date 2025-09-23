@@ -273,7 +273,7 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      <PanelLeftIcon color={"#00778aff"} />
+      <PanelLeftIcon color={"#EF4136"} />
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   )

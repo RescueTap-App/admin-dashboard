@@ -380,7 +380,7 @@ export function DataTable({
                                 <TableRow key={headerGroup.id}>
                                     {headerGroup.headers.map((header) => {
                                         return (
-                                            <TableHead key={header.id} colSpan={header.colSpan}>
+                                            <TableHead key={header.id} colSpan={header.colSpan} className="font-nunito">
                                                 {header.isPlaceholder
                                                     ? null
                                                     : flexRender(
@@ -417,7 +417,7 @@ export function DataTable({
                     </Table>
                 </DndContext>
             </div>
-             <div className="flex items-center justify-between px-4 pt-3">
+            <div className="flex items-center justify-between px-4 pt-3">
                 <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
                     {table.getFilteredSelectedRowModel().rows.length} of{" "}
                     {table.getFilteredRowModel().rows.length} row(s) selected.

@@ -2,96 +2,78 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader } from '@/components/ui/card'
-import { ActiveVisitorsLogTableTypes } from "@/types/visitors.types"
 import { IconPlus } from '@tabler/icons-react'
 import Link from "next/link"
 import { ActiveVisitorsLogTable } from './table'
 import { Suspense } from "react"
-
-
-const mockVisitors: ActiveVisitorsLogTableTypes[] = [
-    {
-        id: 'org-001',
-        visitorsName: 'John Doe',
-        tagNumber: "BH-0001",
-        phone: "+2349900883377",
-        purpose: "Delivery",
-        regNumber: "AAC-002-XY",
-        hostName: 'John Cater',
-        check_in_time: "09:30AM",
-        check_out_time: "09:30PM"
-    },
-    {
-        id: 'org-002',
-        visitorsName: 'John Doe',
-        tagNumber: "BH-0001",
-        phone: "+2349900883377",
-        purpose: "Delivery",
-        regNumber: "AAC-002-XY",
-        hostName: 'John Cater',
-        check_in_time: "09:30AM",
-        check_out_time: "09:30PM"
-    },
-    {
-        id: 'org-003',
-        visitorsName: 'John Doe',
-        tagNumber: "BH-0001",
-        phone: "+2349900883377",
-        purpose: "Delivery",
-        regNumber: "AAC-002-XY",
-        hostName: 'John Cater',
-        check_in_time: "09:30AM",
-        check_out_time: "09:30PM"
-    },
-    {
-        id: 'org-004',
-        visitorsName: 'John Doe',
-        tagNumber: "BH-0001",
-        phone: "+2349900883377",
-        purpose: "Delivery",
-        regNumber: "AAC-002-XY",
-        hostName: 'John Cater',
-        check_in_time: "09:30AM",
-        check_out_time: "09:30PM"
-    },
-    {
-        id: 'org-005',
-        visitorsName: 'John Doe',
-        tagNumber: "BH-0001",
-        phone: "+2349900883377",
-        purpose: "Delivery",
-        regNumber: "AAC-002-XY",
-        hostName: 'John Cater',
-        check_in_time: "09:30AM",
-        check_out_time: "09:30PM"
-    },
-];
+import useVisitors from "@/hooks/use-visitors"
+import { useSelector } from "react-redux"
+import { RootState } from "@/lib/store"
 
 
 function ActiveVisitorsLog() {
-    return (
-        <Card className={"rounded mt-5 px-3 min-w-full shadow"}>
-            <CardHeader className='flex flex-row justify-between px-0'>
-                <div>
-                    <h1 className={"font-semibold text-xl"}>Visitors Logs</h1>
-                    <p className={"text-sm pt-2"}>History of all visitors who have checked in and out</p>
-                </div>
-                <div className={"flex flex-row justify-between gap-3"}>
-                    <Link href={"/org/visitors"}>
-                        <Button variant={"outline"} className={"borderborder-[#EF4136] rounded text-black"}>See Active Visitors  <IconPlus /></Button>
-                    </Link>
+    const { user } = useSelector((state: RootState) => state.auth);
+    const orgId = user?._id as string;
+    const { visitor } = useVisitors({ fetchVisitor: true, orgId });
 
-                    <Link href={"/org/visitors/generate-pass"}>
-                        <Button className={"bg-[#EF4136] hover:bg-[#EF4136]/50 rounded text-white"}>Generate Pass  <IconPlus /></Button>
-                    </Link>
-                </div>
-            </CardHeader>
-            <div className='overflow-x-auto md:max-w-md min-w-full'>
-                <Suspense>
-                    <ActiveVisitorsLogTable data={mockVisitors} />
-                </Suspense>
+    const stats = [
+        {
+            title: "Active Visitors",
+            value: visitor?.stats.activeVisitors
+        },
+        {
+            title: "Pending Arrivals",
+            value: visitor?.stats.pendingArrivals
+        },
+        {
+            title: "Today's Visits",
+            value: visitor?.stats.todaysVisits
+        },
+        {
+            title: "Total Visits",
+            value: visitor?.stats.totalVisits
+        }
+    ]
+
+    return (
+        <section className="mt-1 flex flex-col gap-5">
+            <div className="grid grid-cols-4 gap-4">
+                {stats.map((stat) => (
+                    <Card key={stat.title} className="rounded shadow flex flex-row justify-between items-center p-4">
+                        <h1 className="text-sm font-medium text-gray-600 font-poppins">{stat.title}</h1>
+                        <p className="text-sm font-bold text-gray-600 font-poppins">{stat.value}</p>
+                    </Card>
+                ))}
             </div>
-        </Card>
+
+            <div className="flex justify-start">
+                <Link href={"/org/visitors/verify"}>
+                    <Button className={"bg-[#EF4136] hover:bg-[#EF4136]/50 rounded text-white"}>
+                        Verify Visitor Code
+                        <IconPlus />
+                    </Button>
+                </Link>
+            </div>
+
+            <Card className={"rounded mt-5 px-3 min-w-full shadow"}>
+                <CardHeader className='flex flex-row justify-between px-0'>
+                    <div>
+                        <h1 className={"font-semibold text-xl"}>Visitors Logs</h1>
+                        <p className={"text-sm pt-2"}>History of all visitors who have checked in and out</p>
+                    </div>
+                    <div className={"flex flex-row justify-between gap-3"}>
+                        <Link href={"/org/visitors/generate-pass"}>
+                            <Button className={"bg-[#EF4136] hover:bg-[#EF4136]/50 rounded text-white"}><span className="hidden lg:inline">Generate Pass </span><IconPlus /></Button>
+                        </Link>
+                    </div>
+                </CardHeader>
+                <div className='overflow-x-auto md:max-w-md min-w-full'>
+                    <Suspense>
+                        <ActiveVisitorsLogTable data={visitor?.visitors || []} />
+                    </Suspense>
+                </div>
+            </Card>
+        </section>
     )
 }
 

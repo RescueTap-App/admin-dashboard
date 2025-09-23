@@ -5,7 +5,6 @@ import {
     Users,
     Car,
     Settings,
-    UserCog2,
     IdCardIcon,
     LogOut
 } from "lucide-react"
@@ -19,6 +18,8 @@ import {
 import Image from "next/image"
 import { NavMain } from "./nav-main"
 import { useAuth } from "@/hooks/use-auth"
+import { MdOutlineEngineering } from "react-icons/md";
+
 
 const data = {
     navMain: [
@@ -64,18 +65,22 @@ const data = {
         {
             title: "Visitors Registry",
             url: "#",
-            icon: UserCog2,
+            icon: MdOutlineEngineering,
             items: [
                 {
                     title: "All Visitors",
                     url: "/org/visitors",
                 },
+                // {
+                //     title: "Active Visitors",
+                //     url: "/org/visitors/active",
+                // },
                 {
-                    title: "Active Visitors",
-                    url: "/org/visitors/active",
+                    title: "Verify Visitor",
+                    url: "/org/visitors/verify",
                 },
                 {
-                    title: "Create Visitor",
+                    title: "Invite Visitor",
                     url: "/org/visitors/generate-pass",
                 },
             ],

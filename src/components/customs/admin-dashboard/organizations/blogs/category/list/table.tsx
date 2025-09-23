@@ -125,7 +125,7 @@ const columns: ColumnDef<CategoryDataType>[] = [
         header: "Name",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.name}
                 </p>
             </div>
@@ -136,7 +136,7 @@ const columns: ColumnDef<CategoryDataType>[] = [
         header: "Description",
         cell: ({ row }) => (
             <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.description}
                 </p>
             </div>
@@ -292,7 +292,7 @@ export function CategoryTable({
                                     <TableRow key={headerGroup.id}>
                                         {headerGroup.headers.map((header) => {
                                             return (
-                                                <TableHead key={header.id} colSpan={header.colSpan}>
+                                                <TableHead key={header.id} colSpan={header.colSpan} className="font-nunito">
                                                     {header.isPlaceholder
                                                         ? null
                                                         : flexRender(

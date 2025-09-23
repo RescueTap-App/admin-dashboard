@@ -86,14 +86,33 @@ export function formatDriverForQR(driver: { vehicleModel: string; _id: string; p
     vehicleName: driver.vehicleModel,
   }
 }
+export function formatVisitorForQR(visitor: { name: string; _id: string; phone: string; vehicleNumber: string; purpose: string; photoUrl: string; entryCode: string; status: string; startTime: string; endTime: string; createdAt: Date; updatedAt: Date; }) {
+  return {
+    entryCode: visitor.entryCode,
+    name: visitor.name,
+    id: visitor._id,
+    phone: visitor.phone,
+    vehicleNumber: visitor.vehicleNumber,
+    purpose: visitor.purpose,
+    status: visitor.status,
+    startTime: visitor.startTime,
+    endTime: visitor.endTime,
+  }
+}
 
-export async function generateAndDownloadQR(driverData: { name: string }) {
+
+export async function generateAndDownloadQR(data: { name: string }, type: 'driver' | 'visitor' = 'driver') {
   if (typeof window === "undefined") return // Prevent execution during SSR
 
   const QRCode = (await import("qrcodejs2")).default
 
   try {
-    const qrContent = JSON.stringify(driverData)
+    // For visitors, use entryCode as the main QR content for easy scanning
+    // For drivers, use the full JSON data
+    const qrContent = type === 'visitor' && 'entryCode' in data
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ? (data as any).entryCode
+      : JSON.stringify(data)
 
     const qrContainer = document.createElement("div")
     new QRCode(qrContainer, {
@@ -129,7 +148,7 @@ export async function generateAndDownloadQR(driverData: { name: string }) {
         const finalImageData = enhancedCanvas.toDataURL("image/png")
         const link = document.createElement("a")
         link.href = finalImageData
-        link.download = `qr-${driverData.name.replace(/\s+/g, "-").toLowerCase()}.png`
+        link.download = `qr-${data.name.replace(/\s+/g, "-").toLowerCase()}-${type}.png`
         document.body.appendChild(link)
         link.click()
         document.body.removeChild(link)
@@ -139,4 +158,14 @@ export async function generateAndDownloadQR(driverData: { name: string }) {
     console.error("QR Code generation error:", err)
     alert("Failed to generate QR code. Please try again.")
   }
+}
+
+// Legacy function for drivers (maintains backward compatibility)
+export async function generateAndDownloadDriverQR(driverData: { name: string }) {
+  return generateAndDownloadQR(driverData, 'driver')
+}
+
+// New function specifically for visitors
+export async function generateAndDownloadVisitorQR(visitorData: { name: string; entryCode: string }) {
+  return generateAndDownloadQR(visitorData, 'visitor')
 }

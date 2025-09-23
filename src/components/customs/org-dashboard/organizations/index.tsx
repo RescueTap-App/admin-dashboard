@@ -1,12 +1,10 @@
 "use client"
 
-import React from 'react'
-import { DashboardOverview } from './metric-overview'
-import { useRouter } from 'next/navigation'
 import useOrganization from "@/hooks/use-organization"
-import { useSelector } from 'react-redux'
 import { RootState } from '@/lib/store'
-
+import { useRouter } from 'next/navigation'
+import { useSelector } from 'react-redux'
+import { DashboardOverview } from './metric-overview'
 
 function UserDashboardOverview() {
     const { user } = useSelector((state: RootState) => state.auth);

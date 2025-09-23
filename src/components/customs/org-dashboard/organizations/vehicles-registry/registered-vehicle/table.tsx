@@ -129,7 +129,7 @@ const columns: ColumnDef<RegisteredVehicleTableTypes>[] = [
         header: "Owner",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.owner}
                 </p>
             </div>
@@ -140,7 +140,7 @@ const columns: ColumnDef<RegisteredVehicleTableTypes>[] = [
         header: "Vehicle",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.vehicle}
                 </p>
             </div>
@@ -151,7 +151,7 @@ const columns: ColumnDef<RegisteredVehicleTableTypes>[] = [
         header: "Reg.Number",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.regNumber}
                 </p>
             </div>
@@ -162,7 +162,7 @@ const columns: ColumnDef<RegisteredVehicleTableTypes>[] = [
         header: "Color",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.color}
                 </p>
             </div>
@@ -337,7 +337,7 @@ export function RegisteredVehicleTable({
                                     <TableRow key={headerGroup.id}>
                                         {headerGroup.headers.map((header) => {
                                             return (
-                                                <TableHead key={header.id} colSpan={header.colSpan}>
+                                                <TableHead key={header.id} colSpan={header.colSpan} className="font-nunito">
                                                     {header.isPlaceholder
                                                         ? null
                                                         : flexRender(
@@ -370,7 +370,7 @@ export function RegisteredVehicleTable({
                     </SortableContext>
                 </DndContext>
             </div>
-             <div className="flex items-center justify-between px-4 pt-3">
+            <div className="flex items-center justify-between px-4 pt-3">
                 <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
                     {table.getFilteredSelectedRowModel().rows.length} of{" "}
                     {table.getFilteredRowModel().rows.length} row(s) selected.

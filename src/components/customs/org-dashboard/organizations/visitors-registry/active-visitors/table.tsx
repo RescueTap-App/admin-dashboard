@@ -138,7 +138,7 @@ const columns: ColumnDef<ActiveVisitorsTableTypes>[] = [
         header: "Tag Number",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.tagNumber}
                 </p>
             </div>
@@ -149,7 +149,7 @@ const columns: ColumnDef<ActiveVisitorsTableTypes>[] = [
         header: "Phone",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.phone}
                 </p>
             </div>
@@ -160,7 +160,7 @@ const columns: ColumnDef<ActiveVisitorsTableTypes>[] = [
         header: "Purpose",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.purpose}
                 </p>
             </div>
@@ -171,7 +171,7 @@ const columns: ColumnDef<ActiveVisitorsTableTypes>[] = [
         header: "Host Name",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.hostName}
                 </p>
             </div>
@@ -182,7 +182,7 @@ const columns: ColumnDef<ActiveVisitorsTableTypes>[] = [
         header: "Reg.Number",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.regNumber}
                 </p>
             </div>
@@ -193,7 +193,7 @@ const columns: ColumnDef<ActiveVisitorsTableTypes>[] = [
         header: "Check-n-Time",
         cell: ({ row }) => (
             <div className="w-32">
-                <p className="text-muted-foreground px-1.5">
+                <p className="text-muted-foreground px-1.5 font-lato">
                     {row.original.regNumber}
                 </p>
             </div>
@@ -334,7 +334,7 @@ export function ActiveVisitorsTable({
                                     <TableRow key={headerGroup.id}>
                                         {headerGroup.headers.map((header) => {
                                             return (
-                                                <TableHead key={header.id} colSpan={header.colSpan}>
+                                                <TableHead key={header.id} colSpan={header.colSpan} className="font-nunito">
                                                     {header.isPlaceholder
                                                         ? null
                                                         : flexRender(
@@ -367,7 +367,7 @@ export function ActiveVisitorsTable({
                     </SortableContext>
                 </DndContext>
             </div>
-             <div className="flex items-center justify-between px-4 pt-3">
+            <div className="flex items-center justify-between px-4 pt-3">
                 <div className="text-muted-foreground hidden flex-1 text-sm lg:flex">
                     {table.getFilteredSelectedRowModel().rows.length} of{" "}
                     {table.getFilteredRowModel().rows.length} row(s) selected.
