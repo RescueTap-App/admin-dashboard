@@ -41,5 +41,11 @@ export const countryCodes: CountryCode[] = [
         code: "US",
         dialCode: "+1",
         flag: "🇺🇸"
+    },
+    {
+        name: "United Kingdom",
+        code: "GB",
+        dialCode: "+44",
+        flag: "🇬🇧"
     }
 ];
