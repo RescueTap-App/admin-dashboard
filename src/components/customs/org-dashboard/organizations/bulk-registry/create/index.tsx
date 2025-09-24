@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { BsFiletypeCsv, BsUpload } from "react-icons/bs";
@@ -11,11 +12,13 @@ import SuccessfulUpload from "./success-modal";
 import useOrganization from "@/hooks/use-organization";
 import { useSelector } from "react-redux";
 import { RootState } from "@/lib/store";
+import { countryCodes, CountryCode } from "@/constants/country-codes";
 
 
 export default function BulkRegistration() {
 
     const { bulkOrgUpload, uploading } = useOrganization({})
+    const [selectedCountryCode, setSelectedCountryCode] = useState(countryCodes[0])
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const { user } = useSelector((state: RootState) => state.auth);
     const adminId = user?._id as string;
@@ -49,7 +52,8 @@ export default function BulkRegistration() {
         }
         const formData = new FormData();
         formData.append("file", selectedFile);
-        const res = await bulkOrgUpload(formData, adminId);
+        const res = await bulkOrgUpload(formData, adminId, selectedCountryCode.dialCode);
+        console.log(formData, adminId, selectedCountryCode.dialCode)
         if (res.status === "success") {
             setUserData({
                 users: res?.data?.length || 0,
@@ -87,6 +91,48 @@ export default function BulkRegistration() {
                             <BsUpload className="w-4 h-4" />
                         </Button>
                     </div>
+
+                    {/* Country Code Selector */}
+                    <Card className="mb-6">
+                        <CardHeader>
+                            <CardTitle className="text-base font-lato">Select Country Code</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex items-center flex-col gap-4">
+                                <div className="flex-1">
+                                    <label className="text-sm font-medium text-gray-700 mb-2 block">
+                                        Country for phone numbers
+                                    </label>
+                                    <Select
+                                        value={selectedCountryCode.dialCode}
+                                        onValueChange={(value) => {
+                                            const country = countryCodes.find(c => c.dialCode === value);
+                                            if (country) setSelectedCountryCode(country);
+                                        }}
+                                    >
+                                        <SelectTrigger className="w-full min-w-full">
+                                            <SelectValue placeholder="Select a country" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {countryCodes.map((country: CountryCode) => (
+                                                <SelectItem key={country.code} value={country.dialCode}>
+                                                    <div className="flex items-center gap-2">
+                                                        <span>{country.flag}</span>
+                                                        <span>{country.name}</span>
+                                                        <span className="text-gray-500">({country.dialCode})</span>
+                                                    </div>
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                                <div className="text-sm text-gray-600 font-nunito">
+                                    <p>Selected: <span className="font-medium">{selectedCountryCode.flag} {selectedCountryCode.name} {selectedCountryCode.dialCode}</span></p>
+                                    <p className="text-xs mt-1">This will be applied to all phone numbers in the CSV</p>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </Card>
                     <Card className="mb-6 border-2 border-dashed border-gray-300">
                         <CardContent className="p-8" {...getRootProps()}>
                             <input {...getInputProps()} />

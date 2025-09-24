@@ -93,9 +93,9 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, fetchA
         }
     };
 
-    const bulkOrgUpload = async (formData: FormData, adminId: string) => {
+    const bulkOrgUpload = async (formData: FormData, adminId: string, countryCode: string) => {
         try {
-            const res = await bulkOrgUploadMutation({ formData, adminId }).unwrap();
+            const res = await bulkOrgUploadMutation({ formData, adminId, countryCode }).unwrap();
 
             if (res.status === "success") {
                 toast.success(res.message || "Bulk upload successful");
