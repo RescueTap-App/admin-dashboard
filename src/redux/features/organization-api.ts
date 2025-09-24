@@ -33,8 +33,8 @@ export const organizationApi = createApi({
             invalidatesTags: ['Users'],
         }),
         bulkOrgUpload: builder.mutation({
-            query: ({ formData, adminId }: { formData: FormData; adminId: string }) => ({
-                url: `/users/organization/${adminId}/invite/bulk`,
+            query: ({ formData, adminId, countryCode }: { formData: FormData; adminId: string; countryCode: string }) => ({
+                url: `/users/organization/${adminId}/invite/bulk/${countryCode}`,
                 method: 'POST',
                 body: formData,
             }),
