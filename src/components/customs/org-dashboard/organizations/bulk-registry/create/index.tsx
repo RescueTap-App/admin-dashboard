@@ -127,7 +127,7 @@ export default function BulkRegistration() {
                                     </Select>
                                 </div>
                                 <div className="text-sm text-gray-600 font-nunito">
-                                    <p>Selected: <span className="font-medium">{selectedCountryCode.flag} {selectedCountryCode.name} {selectedCountryCode.dialCode}</span></p>
+                                    <p>Selected: <span className="font-medium">{selectedCountryCode.flag} {selectedCountryCode.name} +{selectedCountryCode.dialCode}</span></p>
                                     <p className="text-xs mt-1">This will be applied to all phone numbers in the CSV</p>
                                 </div>
                             </div>
