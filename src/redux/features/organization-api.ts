@@ -37,6 +37,7 @@ export const organizationApi = createApi({
                 url: `/users/organization/${adminId}/invite/bulk/${countryCode}`,
                 method: 'POST',
                 body: formData,
+                timeout: 600000,
             }),
             invalidatesTags: ['Users'],
         }),
