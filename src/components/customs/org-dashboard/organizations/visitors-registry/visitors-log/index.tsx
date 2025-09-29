@@ -2,13 +2,13 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader } from '@/components/ui/card'
+import useVisitors from "@/hooks/use-visitors"
+import { RootState } from "@/lib/store"
 import { IconPlus } from '@tabler/icons-react'
 import Link from "next/link"
-import { ActiveVisitorsLogTable } from './table'
 import { Suspense } from "react"
-import useVisitors from "@/hooks/use-visitors"
 import { useSelector } from "react-redux"
-import { RootState } from "@/lib/store"
+import { ActiveVisitorsLogTable } from './table'
 
 
 function ActiveVisitorsLog() {
@@ -37,7 +37,7 @@ function ActiveVisitorsLog() {
 
     return (
         <section className="mt-1 flex flex-col gap-5">
-            <div className="grid grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {stats.map((stat) => (
                     <Card key={stat.title} className="rounded shadow flex flex-row justify-between items-center p-4">
                         <h1 className="text-sm font-medium text-gray-600 font-poppins">{stat.title}</h1>
