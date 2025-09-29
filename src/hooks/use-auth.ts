@@ -103,7 +103,7 @@ export function useAuth() {
         dispatch(resetUser());
 
         // Redirect
-        router.replace("/auth/signup");
+        router.replace("/");
     };
 
     return {

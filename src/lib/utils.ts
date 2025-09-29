@@ -2,7 +2,7 @@ import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 import { jwtVerify } from "jose";
 import { jwtDecode } from "jwt-decode";
-// import QRCode from "qrcodejs2"
+
 
 
 export function cn(...inputs: ClassValue[]) {
@@ -86,17 +86,27 @@ export function formatDriverForQR(driver: { vehicleModel: string; _id: string; p
     vehicleName: driver.vehicleModel,
   }
 }
-export function formatVisitorForQR(visitor: { name: string; _id: string; phone: string; vehicleNumber: string; purpose: string; photoUrl: string; entryCode: string; status: string; startTime: string; endTime: string; createdAt: Date; updatedAt: Date; }) {
+export function formatVisitorForQR(visitor: { name: string; _id: string; phone: string; vehicleNumber: string; purpose: string; photoUrl: string; entryCode: string; status: string; startTime: string; endTime: string; createdAt: Date; updatedAt: Date; tenantId?: { _id: string; firstName: string; lastName: string; phoneNumber: string; }; }) {
   return {
-    entryCode: visitor.entryCode,
+    _id: visitor._id,
+    tenantId: visitor.tenantId || {
+      _id: "",
+      firstName: "",
+      lastName: "",
+      phoneNumber: ""
+    },
     name: visitor.name,
-    id: visitor._id,
     phone: visitor.phone,
     vehicleNumber: visitor.vehicleNumber,
     purpose: visitor.purpose,
-    status: visitor.status,
     startTime: visitor.startTime,
     endTime: visitor.endTime,
+    entryCode: visitor.entryCode,
+    status: visitor.status,
+    photoUrl: visitor.photoUrl,
+    createdAt: visitor.createdAt,
+    updatedAt: visitor.updatedAt,
+    __v: 0
   }
 }
 
@@ -107,12 +117,8 @@ export async function generateAndDownloadQR(data: { name: string }, type: 'drive
   const QRCode = (await import("qrcodejs2")).default
 
   try {
-    // For visitors, use entryCode as the main QR content for easy scanning
-    // For drivers, use the full JSON data
-    const qrContent = type === 'visitor' && 'entryCode' in data
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ? (data as any).entryCode
-      : JSON.stringify(data)
+    // For both visitors and drivers, use the full JSON data
+    const qrContent = JSON.stringify(data)
 
     const qrContainer = document.createElement("div")
     new QRCode(qrContainer, {
@@ -168,4 +174,53 @@ export async function generateAndDownloadDriverQR(driverData: { name: string }) 
 // New function specifically for visitors
 export async function generateAndDownloadVisitorQR(visitorData: { name: string; entryCode: string }) {
   return generateAndDownloadQR(visitorData, 'visitor')
+}
+
+// Utility functions for formatting scanned data
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function formatJSONData(data: any, indent: number = 2): string {
+  try {
+    return JSON.stringify(data, null, indent)
+  } catch (error) {
+    console.error(error)
+    return String(data)
+  }
+}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function formatVisitorDisplayData(visitor: any) {
+  if (!visitor) return null
+
+  return {
+    id: visitor._id || 'N/A',
+    name: visitor.name || 'N/A',
+    phone: visitor.phone || 'N/A',
+    vehicleNumber: visitor.vehicleNumber || 'N/A',
+    purpose: visitor.purpose || 'N/A',
+    entryCode: visitor.entryCode || 'N/A',
+    status: visitor.status || 'N/A',
+    startTime: visitor.startTime ? new Date(visitor.startTime).toLocaleString() : 'N/A',
+    endTime: visitor.endTime ? new Date(visitor.endTime).toLocaleString() : 'N/A',
+    createdAt: visitor.createdAt ? new Date(visitor.createdAt).toLocaleString() : 'N/A',
+    tenantInfo: visitor.tenantId ? {
+      name: `${visitor.tenantId.firstName || ''} ${visitor.tenantId.lastName || ''}`.trim() || 'N/A',
+      phone: visitor.tenantId.phoneNumber || 'N/A'
+    } : null
+  }
+}
+
+export function getStatusColor(status: string): string {
+  switch (status?.toLowerCase()) {
+    case 'pending':
+      return 'bg-yellow-100 text-yellow-800 border-yellow-200'
+    case 'expired':
+      return 'bg-red-100 text-red-800 border-red-200'
+    case 'checked_in':
+      return 'bg-green-100 text-green-800 border-green-200'
+    case 'checked_out':
+      return 'bg-blue-100 text-blue-800 border-blue-200'
+    case 'canceled':
+      return 'bg-gray-100 text-gray-800 border-gray-200'
+    default:
+      return 'bg-gray-100 text-gray-800 border-gray-200'
+  }
 }

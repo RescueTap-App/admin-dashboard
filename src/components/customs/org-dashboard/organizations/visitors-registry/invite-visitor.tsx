@@ -3,18 +3,14 @@
 import { ReusableFormField } from "@/components/shared/forms/form-input"
 import { PhoneInput } from "@/components/shared/forms/phone-input"
 import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Form } from "@/components/ui/form"
 import { countryCodes } from "@/constants/country-codes"
 import { visitorsSchema, VisitorsSchemaFormDataType } from "@/constants/validations/register-visitor"
 import useVisitors from "@/hooks/use-visitors"
 import { RootState } from "@/lib/store"
-import { cn } from "@/lib/utils"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
@@ -34,8 +30,8 @@ export default function InviteVisitor() {
             purpose: "",
             phone: "",
             email: "",
-            startTime: new Date(),
-            endTime: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+            startTime: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
+            endTime: format(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), "yyyy-MM-dd'T'HH:mm"),
             vehicleNumber: "",
         },
     })
@@ -52,7 +48,7 @@ export default function InviteVisitor() {
             phone: fullPhoneNumber
         }
 
-        const res = await inviteVisitor({ ...userData, startTime: data.startTime.toISOString(), endTime: data.endTime.toISOString() }, tenantId);
+        const res = await inviteVisitor({ ...userData, startTime: data.startTime, endTime: data.endTime }, tenantId);
         if (res) {
             form.reset();
             router.push("/org/visitors");
@@ -115,73 +111,21 @@ export default function InviteVisitor() {
                                 <CardTitle>Check-in  Information</CardTitle>
                             </CardHeader>
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 gap-6">
-                                {/* Start Date */}
-                                <FormField
+                                <ReusableFormField
                                     control={form.control}
                                     name="startTime"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-col">
-                                            <FormLabel className="text-gray-600">Start Date</FormLabel>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <FormControl>
-                                                        <Button
-                                                            variant="outline"
-                                                            className={cn("pl-3 text-left 2xl:h-12 h-11 rounded font-normal", !field.value && "text-muted-foreground")}
-                                                        >
-                                                            {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                        </Button>
-                                                    </FormControl>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0" align="start">
-                                                    <Calendar
-                                                        mode="single"
-                                                        selected={field.value ? new Date(field.value) : undefined}
-                                                        onSelect={field.onChange}
-                                                        disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-                                                        autoFocus
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
+                                    label="Check-in Time *"
+                                    type="datetime-local"
+                                // className="transition-colors h-10"
                                 />
 
-                                {/* End Date */}
-                                <FormField
+                                {/* End Time Field */}
+                                <ReusableFormField
                                     control={form.control}
                                     name="endTime"
-                                    render={({ field }) => (
-                                        <FormItem className="flex flex-col">
-                                            <FormLabel className="text-gray-600">End Date</FormLabel>
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <FormControl>
-                                                        <Button
-                                                            variant="outline"
-                                                            className={cn("pl-3 text-left 2xl:h-12 h-11 rounded font-normal", !field.value && "text-muted-foreground")}
-                                                        >
-                                                            {field.value ? format(field.value, "PPP") : <span>Pick a date</span>}
-                                                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                                        </Button>
-                                                    </FormControl>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-auto p-0" align="start">
-                                                    <Calendar
-                                                        mode="single"
-                                                        selected={field.value ? new Date(field.value) : undefined}
-                                                        onSelect={field.onChange}
-                                                        disabled={(date) => date <= new Date(field.value)}
-                                                        autoFocus
-                                                        captionLayout="dropdown"
-                                                    />
-                                                </PopoverContent>
-                                            </Popover>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )}
+                                    label="Check-out Time *"
+                                    type="datetime-local"
+                                // className="transition-colors"
                                 />
                             </div>
 
@@ -203,7 +147,7 @@ export default function InviteVisitor() {
                             <div className="flex gap-3">
                                 <Button
                                     type="submit"
-                                    className="flex-1 bg-[#EF4136] hover:bg-[#EF4136]/50 text-white py-3 rounded"
+                                    className="flex-1 bg-[#EF4136] h-11 hover:bg-[#EF4136]/50 text-white py-3 rounded"
                                     disabled={form.formState.isSubmitting || invitingVisitor}
                                 >
                                     {form.formState.isSubmitting ? "Generating..." : "Generate Pass"}

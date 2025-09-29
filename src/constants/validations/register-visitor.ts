@@ -10,8 +10,8 @@ export const visitorsSchema = z.object({
         .max(15, "Phone number must not exceed 15 digits")
         .regex(/^\d+$/, "Phone number must contain only digits"),
     email: z.email("Please enter a valid email address"),
-    startTime: z.date(),
-    endTime: z.date(),
+    startTime: z.string().min(1, "Start time is required"),
+    endTime: z.string().min(1, "End time is required"),
     vehicleNumber: z.string().min(2, "Vehicle number must be at least 2 characters"),
 })
 
