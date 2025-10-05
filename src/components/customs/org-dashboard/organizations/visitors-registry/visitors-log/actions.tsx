@@ -41,7 +41,10 @@ export function VisitorsLogActions({ data }: { data: ActiveVisitorsLogTableTypes
     }
 
     const handleDownloadQR = () => {
-        const formatted = formatVisitorForQR(data)
+        const visitorData = {
+            entryCode: data.entryCode,
+        }
+        const formatted = formatVisitorForQR(visitorData)
         generateAndDownloadVisitorQR(formatted)
     }
 
