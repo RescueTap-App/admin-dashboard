@@ -86,27 +86,9 @@ export function formatDriverForQR(driver: { vehicleModel: string; _id: string; p
     vehicleName: driver.vehicleModel,
   }
 }
-export function formatVisitorForQR(visitor: { name: string; _id: string; phone: string; vehicleNumber: string; purpose: string; photoUrl: string; entryCode: string; status: string; startTime: string; endTime: string; createdAt: Date; updatedAt: Date; tenantId?: { _id: string; firstName: string; lastName: string; phoneNumber: string; }; }) {
+export function formatVisitorForQR(visitor: { entryCode: string; }) {
   return {
-    _id: visitor._id,
-    tenantId: visitor.tenantId || {
-      _id: "",
-      firstName: "",
-      lastName: "",
-      phoneNumber: ""
-    },
-    name: visitor.name,
-    phone: visitor.phone,
-    vehicleNumber: visitor.vehicleNumber,
-    purpose: visitor.purpose,
-    startTime: visitor.startTime,
-    endTime: visitor.endTime,
     entryCode: visitor.entryCode,
-    status: visitor.status,
-    photoUrl: visitor.photoUrl,
-    createdAt: visitor.createdAt,
-    updatedAt: visitor.updatedAt,
-    __v: 0
   }
 }
 
@@ -123,11 +105,11 @@ export async function generateAndDownloadQR(data: { name: string }, type: 'drive
     const qrContainer = document.createElement("div")
     new QRCode(qrContainer, {
       text: qrContent,
-      width: 1024,
-      height: 1024,
+      width: 512, // Reduced size for simpler codes
+      height: 512,
       colorDark: "#000000",
       colorLight: "#ffffff",
-      correctLevel: 2, // High error correction
+      correctLevel: 1, // Medium error correction (reduced from 2)
     })
 
     setTimeout(() => {
@@ -172,8 +154,12 @@ export async function generateAndDownloadDriverQR(driverData: { name: string }) 
 }
 
 // New function specifically for visitors
-export async function generateAndDownloadVisitorQR(visitorData: { name: string; entryCode: string }) {
-  return generateAndDownloadQR(visitorData, 'visitor')
+export async function generateAndDownloadVisitorQR(visitorData: { entryCode: string }) {
+  // Adapt visitorData to match the expected shape for generateAndDownloadQR
+  const data = {
+    name: visitorData.entryCode // Use entryCode as the name for QR filename
+  }
+  return generateAndDownloadQR(data, 'visitor')
 }
 
 // Utility functions for formatting scanned data

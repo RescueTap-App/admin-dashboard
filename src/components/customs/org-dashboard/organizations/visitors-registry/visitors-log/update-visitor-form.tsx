@@ -127,6 +127,24 @@ export function UpdateVisitorForm({ visitorData, onSubmit, onCancel }: UpdateVis
                                 type="datetime-local"
                                 className="transition-colors"
                             />
+
+                            <div className="col-span-2">
+                                <ReusableFormField
+                                    control={methods.control}
+                                    name="status"
+                                    label="Status *"
+                                    placeholder="Select status"
+                                    fieldType="select"
+                                    options={
+                                        [
+                                            { label: "Checked-in", value: "checked_in" },
+                                            { label: "Checked-out", value: "checked_out" },
+                                            // { label: "Expired", value: "expired" },
+                                            // { label: "Canceled", value: "canceled" }
+                                        ]
+                                    }
+                                />
+                            </div>
                         </div>
 
                         {/* Current Status Display */}

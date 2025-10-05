@@ -10,6 +10,7 @@ import { useState } from "react"
 import { toast } from "sonner"
 import ManualEntry from "./manual-entry"
 import QRScanner from "./qr-scanner"
+import VerificationDialog from "./verification-dialog"
 
 interface VisitorData {
     _id: string
@@ -49,6 +50,18 @@ export default function VisitorVerification() {
     const [copiedToClipboard, setCopiedToClipboard] = useState(false)
     const [verifyCode] = useVerifyCodeMutation()
 
+    // Dialog state
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [dialogData, setDialogData] = useState<{
+        success: boolean
+        message: string
+        visitor: VisitorData | null | undefined
+    }>({
+        success: false,
+        message: '',
+        visitor: null
+    })
+
     const handleVisitorScanned = (visitor: VisitorData) => {
         console.log('Visitor scanned:', visitor)
         setScannedVisitor(visitor)
@@ -56,12 +69,30 @@ export default function VisitorVerification() {
         toast.success(`Visitor ${visitor.name} scanned successfully!`)
     }
 
+    const handleVerificationComplete = (result: { success: boolean; message: string; visitor?: VisitorData | undefined }) => {
+        console.log('Verification complete:', result)
+        setDialogData({
+            success: result.success,
+            message: result.message,
+            visitor: result.visitor || null
+        })
+        setIsDialogOpen(true)
+
+        if (result.success) {
+            toast.success(result.message)
+        } else {
+            toast.error(result.message)
+        }
+    }
+
     const handleVerification = async (code: string) => {
         if (!code || code.length !== 6) {
-            setVerificationResult({
+            setDialogData({
                 success: false,
-                message: "Please enter a valid 6-digit code"
+                message: "Please enter a valid 6-digit code",
+                visitor: null
             })
+            setIsDialogOpen(true)
             return
         }
 
@@ -73,20 +104,23 @@ export default function VisitorVerification() {
                 data: { code }
             }).unwrap()
 
-            setVerificationResult({
+            setDialogData({
                 success: true,
-                message: "Visitor verified successfully!",
-                visitor: result
+                message: result.message || "Visitor verified successfully!",
+                visitor: result.visitor || result
             })
+            setIsDialogOpen(true)
 
             toast.success("Visitor verified successfully!")
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             const errorMessage = error?.data?.message || "Invalid or expired code"
-            setVerificationResult({
+            setDialogData({
                 success: false,
-                message: errorMessage
+                message: errorMessage,
+                visitor: null
             })
+            setIsDialogOpen(true)
 
             toast.error(errorMessage)
         } finally {
@@ -99,6 +133,15 @@ export default function VisitorVerification() {
         setScannedVisitor(null)
         setShowRawData(false)
         setCopiedToClipboard(false)
+    }
+
+    const handleDialogClose = () => {
+        setIsDialogOpen(false)
+        setDialogData({
+            success: false,
+            message: '',
+            visitor: null
+        })
     }
 
     const copyToClipboard = async (data: VisitorData) => {
@@ -160,6 +203,7 @@ export default function VisitorVerification() {
                     {activeTab === 'scan' ? (
                         <QRScanner
                             onVisitorScanned={handleVisitorScanned}
+                            onVerificationComplete={handleVerificationComplete}
                             isVerifying={isVerifying}
                         />
                     ) : (
@@ -332,6 +376,15 @@ export default function VisitorVerification() {
                     </AlertDescription>
                 </Alert>
             )}
+
+            {/* Verification Dialog */}
+            <VerificationDialog
+                isOpen={isDialogOpen}
+                onClose={handleDialogClose}
+                visitor={dialogData.visitor}
+                isSuccess={dialogData.success}
+                message={dialogData.message}
+            />
         </div>
     )
 }
