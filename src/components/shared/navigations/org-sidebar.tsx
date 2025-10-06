@@ -75,10 +75,10 @@ const data = {
                     title: "Verify Visitor",
                     url: "/org/visitors/verify",
                 },
-                // {
-                //     title: "Invite Visitor",
-                //     url: "/org/visitors/generate-pass",
-                // },
+                 {
+                     title: "Invite Visitor",
+                     url: "/org/visitors/generate-pass",
+                 },
             ],
         },
         {
