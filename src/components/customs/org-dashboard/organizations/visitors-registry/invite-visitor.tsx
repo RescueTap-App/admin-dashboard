@@ -15,6 +15,21 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useSelector } from "react-redux"
+import { toast } from "sonner"
+
+// Helper function to get timezone-aware ISO string
+const getLocalISOString = (date: Date): string => {
+    const localISOTime = new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+        .toISOString()
+        .slice(0, -1); // remove trailing 'Z'
+
+    const offsetMin = date.getTimezoneOffset();
+    const sign = offsetMin > 0 ? "-" : "+";
+    const pad = (n: number) => String(Math.floor(Math.abs(n))).padStart(2, "0");
+    const offset = `${sign}${pad(offsetMin / -60)}:${pad(offsetMin % 60)}`;
+
+    return `${localISOTime}${offset}`;
+};
 
 
 export default function InviteVisitor() {
@@ -43,12 +58,20 @@ export default function InviteVisitor() {
             cleanPhoneNumber = cleanPhoneNumber.substring(1);
         }
         const fullPhoneNumber = selectedCountryCode.dialCode.replace('+', '') + cleanPhoneNumber
+
+        // Convert datetime-local values to timezone-aware ISO strings
+        const startTimeISO = getLocalISOString(new Date(data.startTime));
+        const endTimeISO = getLocalISOString(new Date(data.endTime));
+
         const userData = {
             ...data,
-            phone: fullPhoneNumber
+            phone: fullPhoneNumber,
+            startTime: startTimeISO,
+            endTime: endTimeISO
         }
-
-        const res = await inviteVisitor({ ...userData, startTime: data.startTime, endTime: data.endTime }, tenantId);
+        console.log(userData)
+        toast.message(JSON.stringify(userData))
+        const res = await inviteVisitor(userData, tenantId);
         if (res) {
             form.reset();
             router.push("/org/visitors");

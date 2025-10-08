@@ -144,8 +144,8 @@ const columns: ColumnDef<ActiveVisitorsLogTableTypes>[] = [
         accessorKey: "purpose",
         header: "Purpose",
         cell: ({ row }) => (
-            <div className="w-32">
-                <p className="text-muted-foreground px-1.5 font-lato line-clamp-2">
+            <div className=" text-start">
+                <p className="text-muted-foreground px-1.5 font-lato truncate  whitespace-pre-wrap break-words min-w-[220px]">
                     {row.original.purpose}
                 </p>
             </div>
