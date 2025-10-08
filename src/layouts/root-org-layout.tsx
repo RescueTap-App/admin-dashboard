@@ -68,14 +68,16 @@ export default function RootOrgNavigationLayout({ children }: { children: React.
                             </BreadcrumbList>
                         </Breadcrumb>
                     </div>
-                    <div className='h-12 relative w-12 mr-2'>
-                        <Image
-                            src={"/icons/logo-icon.png"}
-                            fill fetchPriority="high"
-                            alt={"Logo"}
-                            className={"object-contain"}
-                        />
-                    </div>
+                    <Link href="/org">
+                        <div className='h-12 relative w-12 mr-2'>
+                            <Image
+                                src={"/icons/logo-icon.png"}
+                                fill fetchPriority="high"
+                                alt={"Logo"}
+                                className={"object-contain"}
+                            />
+                        </div>
+                    </Link>
                 </header>
                 <main className="flex flex-1 flex-col gap-4 px-2.5 sm:px-4 py-10 bg-[#F4F6F9]">
                     {children}

@@ -19,6 +19,7 @@ import Image from "next/image"
 import { NavMain } from "./nav-main"
 import { useAuth } from "@/hooks/use-auth"
 import { MdOutlineEngineering } from "react-icons/md";
+import Link from "next/link"
 
 
 const data = {
@@ -75,21 +76,10 @@ const data = {
                     title: "Verify Visitor",
                     url: "/org/visitors/verify",
                 },
-                // {
-                //     title: "Invite Visitor",
-                //     url: "/org/visitors/generate-pass",
-                // },
-            ],
-        },
-        {
-            title: "Analytics",
-            url: "#",
-            icon: IdCardIcon,
-            items: [
                 {
-                    title: "Your Analytics",
-                    url: "/org/analytics",
-                }
+                    title: "Invite Visitor",
+                    url: "/org/visitors/generate-pass",
+                },
             ],
         },
         {
@@ -111,13 +101,15 @@ export function UserAppSidebar({ ...props }: React.ComponentProps<typeof Sidebar
     return (
         <Sidebar collapsible="icon"  {...props}>
             <SidebarHeader>
-                <div className={"relative h-10 w-full"}>
-                    <Image
-                        src={"/icons/logo-text.png"}
-                        fill fetchPriority={"high"}
-                        alt={"Rescue Tap Logoo"}
-                        className={"object-contain object-center"} />
-                </div>
+                <Link href="/org">
+                    <div className={"relative h-10 w-full"}>
+                        <Image
+                            src={"/icons/logo-text.png"}
+                            fill fetchPriority={"high"}
+                            alt={"Rescue Tap Logoo"}
+                            className={"object-contain object-center"} />
+                    </div>
+                </Link>
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={data.navMain} />
