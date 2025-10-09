@@ -5,7 +5,6 @@ import {
     Users,
     Car,
     Settings,
-    IdCardIcon,
     LogOut
 } from "lucide-react"
 import {

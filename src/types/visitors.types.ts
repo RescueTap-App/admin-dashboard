@@ -36,7 +36,7 @@ export type VisitorDataTypes = {
     phone?: string;
     email?: string;
     name: string;
-    vehicleNumber: string;
+    vehicleNumber?: string;
     purpose: string;
     startTime: string;
     endTime: string;

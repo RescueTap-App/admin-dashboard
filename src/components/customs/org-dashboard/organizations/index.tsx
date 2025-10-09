@@ -10,17 +10,19 @@ function UserDashboardOverview() {
     const { user } = useSelector((state: RootState) => state.auth);
     const orgId = user?._id as string;
     const { singleOrganization, orgDrivers } = useOrganization({ fetchAllOrgs: true, fetchAllUsers: true, inviterId: orgId, orgId });
-    const { allVisitors } = useVisitors({ fetchAllVisitors: true })
+    const { visitor } = useVisitors({ fetchVisitor: true, orgId: orgId })
     const inviterId = user?._id as string;
     const { orgUsers } = useOrganization({ fetchAllUsers: true, inviterId });
 
     return (
-        <DashboardOverview
-            drivers={orgDrivers?.length || 0}
-            users={orgUsers?.length || 0}
-            visitors={allVisitors?.length || 0}
-            organization={singleOrganization}
-        />
+        <div>
+            <DashboardOverview
+                drivers={orgDrivers?.length || 0}
+                users={orgUsers?.length || 0}
+                visitors={visitor?.stats.totalVisits || 0}
+                organization={singleOrganization}
+            />
+        </div>
     )
 }
 
