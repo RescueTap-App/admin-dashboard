@@ -38,6 +38,7 @@ export default function InviteVisitor() {
     const { user } = useSelector((state: RootState) => state.auth);
     const tenantId = user?._id as string;
     const router = useRouter();
+
     const form = useForm<VisitorsSchemaFormDataType>({
         resolver: zodResolver(visitorsSchema),
         defaultValues: {
