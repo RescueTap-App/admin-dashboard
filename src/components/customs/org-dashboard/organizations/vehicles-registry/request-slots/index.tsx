@@ -22,7 +22,10 @@ export function RequestSlots() {
     const form = useForm<SlotRequestFormData>({
         resolver: zodResolver(slotRequestSchema),
         defaultValues: {
-            numberOfSlots: 0,
+            additionalUserSlots: 0,
+            additionalDriverSlots: 0,
+            organizationId: "",
+            subscriptionId: "",
             requesterName: "",
             urgency: "medium",
             justification: "",

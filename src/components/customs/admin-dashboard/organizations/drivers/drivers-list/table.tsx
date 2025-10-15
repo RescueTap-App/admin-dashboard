@@ -293,7 +293,7 @@ export function DriversListTable({
     const [globalFilter, setGlobalFilter] = React.useState('');
     const [pagination, setPagination] = React.useState({
         pageIndex: 0,
-        pageSize: 10,
+        pageSize: 5,
     })
     const sortableId = React.useId()
     const sensors = useSensors(
@@ -500,7 +500,7 @@ export function DriversListTable({
                                 />
                             </SelectTrigger>
                             <SelectContent side="top">
-                                {[10, 20, 30, 40, 50].map((pageSize) => (
+                                {[5, 10, 20, 30, 40, 50].map((pageSize) => (
                                     <SelectItem key={pageSize} value={`${pageSize}`}>
                                         {pageSize}
                                     </SelectItem>

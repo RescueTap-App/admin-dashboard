@@ -9,7 +9,8 @@ import {
     useRegisterDriverMutation,
     useGetallDriversQuery,
     useGetOrgsQuery,
-    useGetOrgByIdQuery
+    useGetOrgByIdQuery,
+    useGetAnalyticsQuery
 } from "@/redux/features/organization-api";
 import { toast } from "sonner";
 import { OrganizationRegistrationData, OrgUserInviteData } from '@/types/organization.types';
@@ -58,6 +59,14 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, fetchA
         refetchOnMountOrArgChange: true,
         refetchOnReconnect: true
     });
+
+    const { data: analytics } = useGetAnalyticsQuery(undefined, {
+        skip: !fetchAllOrgs,
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true,
+        refetchOnReconnect: true
+    });
+
     const [createOrganizationMutation, { isLoading: creating }] = useCreateOrganizationMutation();
     const [inviteOrgUserMutation, { isLoading: inviting }] = useInviteOrgUserMutation();
     const [bulkOrgUploadMutation, { isLoading: uploading }] = useBulkOrgUploadMutation();
@@ -165,6 +174,7 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, fetchA
         singleOrganization,
         loadingDrivers,
         orgUsers,
-        orgDrivers
+        orgDrivers,
+        analytics
     };
 }

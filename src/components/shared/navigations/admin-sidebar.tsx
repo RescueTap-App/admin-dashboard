@@ -40,6 +40,10 @@ const data = {
                     title: "Total Revenue",
                     url: "/dashboard/organizations/total-rev",
                 },
+                {
+                    title: "Request Slots",
+                    url: "/dashboard/organizations/request-slots",
+                },
             ],
         },
         {

@@ -1,6 +1,32 @@
 "use client"
 
-import * as React from "react"
+import SearchInput from "@/components/shared/search-input";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Label } from "@/components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table";
+import { OrganizationTableType } from "@/types/organization.types";
 import {
     closestCenter,
     DndContext,
@@ -11,16 +37,15 @@ import {
     useSensors,
     type DragEndEvent,
     type UniqueIdentifier,
-} from "@dnd-kit/core"
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
-import { format } from 'date-fns';
+} from "@dnd-kit/core";
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
 import {
     arrayMove,
     SortableContext,
     useSortable,
     verticalListSortingStrategy,
-} from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 import {
     IconChevronDown,
     IconChevronLeft,
@@ -31,7 +56,7 @@ import {
     // IconDotsVertical,
     IconGripVertical,
     IconInfoCircle,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 import {
     ColumnDef,
     ColumnFiltersState,
@@ -46,35 +71,9 @@ import {
     SortingState,
     useReactTable,
     VisibilityState,
-} from "@tanstack/react-table"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Label } from "@/components/ui/label"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableHead,
-    TableHeader,
-    TableRow,
-} from "@/components/ui/table"
-import { OrganizationTableType } from "@/types/organization.types"
-import SearchInput from "@/components/shared/search-input";
-import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
+} from "@tanstack/react-table";
+import { format } from 'date-fns';
+import * as React from "react";
 // import { TotalOrgActions } from "./actions";
 
 
@@ -130,25 +129,12 @@ const columns: ColumnDef<OrganizationTableType>[] = [
         enableHiding: true,
     },
     {
-        accessorKey: "profileImage",
-        header: "Profile",
-        cell: ({ row }) => (
-            <div className="w-16 h-16 relative">
-                <Image src={row.original.profileImage || "/icons/avatar.svg"}
-                    alt={"Profile Image"}
-                    fill
-                    fetchPriority="high"
-                    className={"object-contain object-center border rounded-full border-orange-600/50"} />
-            </div>
-        ),
-    },
-    {
         accessorKey: "organizationName",
         header: "Organization Name",
         cell: ({ row }) => (
             <div className="w-fit">
                 <p className="text-muted-foreground px-1.5 font-lato">
-                    {row.original.organizationName || "No Organization Name"}
+                    {row.original.organizationName || "No Name"}
                 </p>
             </div>
         ),
@@ -200,17 +186,7 @@ const columns: ColumnDef<OrganizationTableType>[] = [
             </Badge>
         ),
     },
-    {
-        accessorKey: "createdAt",
-        header: "Date Created",
-        cell: ({ row }) => (
-            <div className="w-32">
-                <p className="text-muted-foreground px-1.5 font-lato">
-                    {format(new Date(row.original.createdAt), 'MMM d, yyyy')}
-                </p>
-            </div>
-        ),
-    },
+
     {
         accessorKey: "updatedAt",
         header: "Last Update",
@@ -272,7 +248,7 @@ export function TotalOrganizationTable({
     const [globalFilter, setGlobalFilter] = React.useState('');
     const [pagination, setPagination] = React.useState({
         pageIndex: 0,
-        pageSize: 10,
+        pageSize: 5,
     })
     const sortableId = React.useId()
     const sensors = useSensors(
@@ -446,7 +422,7 @@ export function TotalOrganizationTable({
                                 />
                             </SelectTrigger>
                             <SelectContent side="top">
-                                {[10, 20, 30, 40, 50].map((pageSize) => (
+                                {[5, 10, 20, 30, 40, 50].map((pageSize) => (
                                     <SelectItem key={pageSize} value={`${pageSize}`}>
                                         {pageSize}
                                     </SelectItem>
