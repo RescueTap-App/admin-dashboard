@@ -1,15 +1,29 @@
-import { useGetUsersQuery, useCreateUserMutation } from "@/redux/features/users-api"
+import { useGetUsersQuery, useCreateUserMutation, useGetUserByIdQuery, useGetActiveSubcriptionQuery } from "@/redux/features/users-api"
 import { CreateUserFormData } from "@/constants/validations/register-user"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 
 interface UsersProps {
     fetchAllUsers?: boolean
+    userId?: string
 }
-export default function useUsers({ fetchAllUsers }: UsersProps) {
+export default function useUsers({ fetchAllUsers, userId }: UsersProps) {
 
     const router = useRouter();
     const [createUserMutation, { isLoading: creating }] = useCreateUserMutation();
+
+    const { data: userById, isLoading: loadingUserById } = useGetUserByIdQuery(userId!, {
+        skip: !fetchAllUsers || !userId,
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true,
+        refetchOnReconnect: true
+    })
+    const { data: activeSubscription, isFetching: fetchingSubscription } = useGetActiveSubcriptionQuery(userId!, {
+        skip: !fetchAllUsers || !userId,
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true,
+        refetchOnReconnect: true
+    })
     const { data: all_users, isLoading: loading_users } = useGetUsersQuery(undefined, {
         skip: !fetchAllUsers,
         refetchOnFocus: true,
@@ -36,6 +50,10 @@ export default function useUsers({ fetchAllUsers }: UsersProps) {
         all_users,
         loading_users,
         createUser,
-        creating
+        creating,
+        userById,
+        loadingUserById,
+        activeSubscription,
+        fetchingSubscription
     }
 }

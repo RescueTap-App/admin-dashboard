@@ -11,6 +11,10 @@ export const usersApi = createApi({
             query: () => `/users`,
             providesTags: ['Users'],
         }),
+        getUserById: builder.query({
+            query: (id: string) => `/users/${id}`,
+            providesTags: ['Users'],
+        }),
         createUser: builder.mutation({
             query: ({ data }: { data: CreateUserFormData }) => ({
                 url: '/users/createUser',
@@ -19,12 +23,16 @@ export const usersApi = createApi({
             }),
             invalidatesTags: ['Users'],
         }),
-
+        getActiveSubcription: builder.query({
+            query: (userId: string) => `/subscriptions/active/${userId}`
+        })
     }),
 });
 
 export const {
     useGetUsersQuery,
     useCreateUserMutation,
+    useGetUserByIdQuery,
+    useGetActiveSubcriptionQuery
 } = usersApi;
 

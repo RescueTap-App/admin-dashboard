@@ -7,7 +7,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { SlotRequestFormData, slotRequestSchema } from "@/constants/validations/register-vehicle"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
+import { Resolver, useForm } from "react-hook-form"
 
 
 const urgencyOptions = [
@@ -20,7 +20,7 @@ const urgencyOptions = [
 export function RequestSlots() {
 
     const form = useForm<SlotRequestFormData>({
-        resolver: zodResolver(slotRequestSchema),
+        resolver: zodResolver(slotRequestSchema) as Resolver<SlotRequestFormData>,
         defaultValues: {
             additionalUserSlots: 0,
             additionalDriverSlots: 0,
@@ -51,10 +51,17 @@ export function RequestSlots() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <ReusableFormField
                                     control={form.control}
-                                    name="numberOfSlots"
+                                    name="additionalUserSlots"
                                     label="Number of Additional Slots Needed *"
                                     type="number"
                                     placeholder="Enter number of slots"
+                                />
+                                <ReusableFormField
+                                    control={form.control}
+                                    name="additionalDriverSlots"
+                                    label="Number of Additional Driver Slots Needed *"
+                                    type="number"
+                                    placeholder="Enter number of driver slots"
                                 />
                                 <ReusableFormField
                                     control={form.control}
@@ -94,7 +101,7 @@ export function RequestSlots() {
                             name="justification"
                             type="text"
                             fieldType="textarea"
-                            label="Justification for Additional Slots *"
+                            label="Justification for Additional User and Driver Slots *"
                             placeholder="Please explain why you need additional vehicle slots..."
                             className="min-h-32 resize-none"
                         />

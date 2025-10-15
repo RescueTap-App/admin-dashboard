@@ -10,12 +10,16 @@ import {
     useGetallDriversQuery,
     useGetOrgsQuery,
     useGetOrgByIdQuery,
-    useGetAnalyticsQuery
+    useGetAnalyticsQuery,
+    useRequestSlotsMutation,
+    // useGetSlotsRequestsQuery,
+    // useGetASlotRequestQuery
 } from "@/redux/features/organization-api";
 import { toast } from "sonner";
 import { OrganizationRegistrationData, OrgUserInviteData } from '@/types/organization.types';
 import { DriverRegistrationData } from '@/types/drivers.types';
 import { useRouter } from "next/navigation";
+import { SlotRequestFormData } from "@/constants/validations/register-vehicle";
 
 interface OrgProps {
     fetchAllUsers?: boolean;
@@ -71,7 +75,7 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, fetchA
     const [inviteOrgUserMutation, { isLoading: inviting }] = useInviteOrgUserMutation();
     const [bulkOrgUploadMutation, { isLoading: uploading }] = useBulkOrgUploadMutation();
     const [registerDriverMutation, { isLoading: registring }] = useRegisterDriverMutation();
-
+    const [requestSlotsMutation, { isLoading: requesting }] = useRequestSlotsMutation();
 
     const createOrganization = async (data: OrganizationRegistrationData) => {
         try {
@@ -158,6 +162,21 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, fetchA
         }
     };
 
+
+    const requestSlots = async (data: SlotRequestFormData) => {
+        try {
+            const res = await requestSlotsMutation({ data }).unwrap();
+            if (res) {
+                toast.success("Slots requested successfully");
+            }
+            return res;
+        } catch (error: unknown) {
+            const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to request slots"
+            toast.error(errorMessage)
+            console.log(error)
+        }
+    };
+
     return {
         createOrganization,
         creating,
@@ -175,6 +194,8 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, fetchA
         loadingDrivers,
         orgUsers,
         orgDrivers,
-        analytics
+        analytics,
+        requestSlots,
+        requesting
     };
 }
