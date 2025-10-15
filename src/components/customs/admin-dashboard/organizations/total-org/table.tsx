@@ -74,7 +74,7 @@ import {
 } from "@tanstack/react-table";
 import { format } from 'date-fns';
 import * as React from "react";
-// import { TotalOrgActions } from "./actions";
+import { TotalOrgActions } from "./actions";
 
 
 function DragHandle({ id }: { id: string }) {
@@ -186,7 +186,6 @@ const columns: ColumnDef<OrganizationTableType>[] = [
             </Badge>
         ),
     },
-
     {
         accessorKey: "updatedAt",
         header: "Last Update",
@@ -198,13 +197,13 @@ const columns: ColumnDef<OrganizationTableType>[] = [
             </div>
         ),
     },
-    // {
-    //     accessorKey: "actions",
-    //     header: "Actions",
-    //     cell: ({ row }) => (
-    //         <TotalOrgActions orgId={row.original._id} />
-    //     ),
-    // }
+    {
+        accessorKey: "actions",
+        header: "Actions",
+        cell: ({ row }) => (
+            <TotalOrgActions orgId={row.original._id} />
+        ),
+    }
 ]
 
 function DraggableRow({ row }: { row: Row<OrganizationTableType> }) {

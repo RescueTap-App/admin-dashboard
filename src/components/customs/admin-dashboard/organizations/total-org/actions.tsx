@@ -23,7 +23,7 @@ export function TotalOrgActions({ orgId }: { orgId: string }) {
                     <Link href={`/dashboard/organizations/${orgId}`}>
                         <DropdownMenuItem>
                             <IconEye className="mr-2" />
-                            View Organization
+                            Manage
                         </DropdownMenuItem>
                     </Link>
                 </DropdownMenuContent>

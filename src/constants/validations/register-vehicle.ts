@@ -22,13 +22,13 @@ export const vehicleRegistrationSchema = z.object({
 export const slotRequestSchema = z.object({
   organizationId: z.string().min(1, "Organization ID is required"),
   subscriptionId: z.string().min(1, "Subscription ID is required"),
-  additionalUserSlots: z.number().min(1, "Additional user slots must be at least 1").max(100, "Maximum 100 slots per request"),
-  additionalDriverSlots: z.number().min(1, "Additional driver slots must be at least 1").max(100, "Maximum 100 slots per request"),
+  additionalUserSlots: z.coerce.number().min(1, "Additional user slots must be at least 1").max(100, "Maximum 100 slots per request"),
+  additionalDriverSlots: z.coerce.number().min(1, "Additional driver slots must be at least 1").max(100, "Maximum 100 slots per request"),
   requesterName: z
     .string()
     .min(2, "Requester name must be at least 2 characters"),
   urgency: z
-    .enum(["low", "medium", "high"])
+    .enum(["low", "medium", "high", "urgent"])
     .refine((val) => !!val, { message: "Please select an urgency level" }),
   justification: z
     .string()

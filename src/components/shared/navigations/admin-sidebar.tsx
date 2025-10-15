@@ -36,14 +36,14 @@ const data = {
                     title: "Create Organizations",
                     url: "/dashboard/organizations/create",
                 },
-                {
-                    title: "Total Revenue",
-                    url: "/dashboard/organizations/total-rev",
-                },
-                {
-                    title: "Request Slots",
-                    url: "/dashboard/organizations/request-slots",
-                },
+                // {
+                //     title: "Total Revenue",
+                //     url: "/dashboard/organizations/total-rev",
+                // },
+                // {
+                //     title: "Request Slots",
+                //     url: "/dashboard/organizations/request-slots",
+                // },
             ],
         },
         {

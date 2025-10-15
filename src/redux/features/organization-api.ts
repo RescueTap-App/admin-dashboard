@@ -68,7 +68,7 @@ export const organizationApi = createApi({
         }),
         requestSlots: builder.mutation({
             query: ({ data }: { data: SlotRequestFormData }) => ({
-                url: `/slots-requests`,
+                url: `/slot-requests`,
                 method: 'POST',
                 body: data,
             }),
