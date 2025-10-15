@@ -2,6 +2,7 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { customBaseQueryWithReauth } from '@/lib/custom-base-query';
 import { DriverRegistrationData } from '@/types/drivers.types';
 import { OrganizationRegistrationData, OrgUserInviteData } from '@/types/organization.types';
+import { SlotRequestFormData } from '@/constants/validations/register-vehicle';
 
 export const organizationApi = createApi({
     reducerPath: 'organizationApi',
@@ -61,6 +62,26 @@ export const organizationApi = createApi({
             query: () => `/users/getAllDrivers`,
             providesTags: ['Drivers'],
         }),
+        getAnalytics: builder.query({
+            query: () => `/users/analytics/dashboard`,
+            providesTags: ['Organization'],
+        }),
+        requestSlots: builder.mutation({
+            query: ({ data }: { data: SlotRequestFormData }) => ({
+                url: `/slots-requests`,
+                method: 'POST',
+                body: data,
+            }),
+            invalidatesTags: ['Organization'],
+        }),
+        getSlotsRequests: builder.query({
+            query: ({ status }: { status: "pending" | "approved" | "rejected" }) => `/slots-requests?status=${status}`,
+            providesTags: ['Organization'],
+        }),
+        getASlotRequest: builder.query({
+            query: (organizationId: string) => `/slots-requests/${organizationId}`,
+            providesTags: ['Organization'],
+        }),
     }),
 });
 
@@ -73,5 +94,9 @@ export const {
     useRegisterDriverMutation,
     useGetallDriversQuery,
     useGetOrgsQuery,
-    useGetOrgByIdQuery
+    useGetOrgByIdQuery,
+    useGetAnalyticsQuery,
+    useRequestSlotsMutation,
+    useGetSlotsRequestsQuery,
+    useGetASlotRequestQuery,
 } = organizationApi;

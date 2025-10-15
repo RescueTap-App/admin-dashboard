@@ -11,6 +11,10 @@ export type OrganizationTableType = {
   organizationName: string;
   createdAt: Date;
   updatedAt: Date
+  amount: number
+  slotsTaken: number
+  slotsAllocated: number
+  status: "paid" | "pending" | "expired"
 }
 
 export type RevenueTypes = {

@@ -59,13 +59,13 @@ export function UploadField({ control, name, label, buttonLabel = "Upload" }: Up
           </div>
         ) : value ? (
           <div className="relative group h-36 w-full">
-            <Image 
-                src={value || "/placeholder.svg"}
-                alt="Uploaded Image"
-                fill
-                fetchPriority={"high"}
-                className="object-contain object-center" />
-                
+            <Image
+              src={value || "/placeholder.svg"}
+              alt="Uploaded Image"
+              fill
+              fetchPriority={"high"}
+              className="object-contain object-center" />
+
             <button
               type="button"
               onClick={(e) => {
