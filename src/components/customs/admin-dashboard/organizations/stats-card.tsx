@@ -25,7 +25,7 @@ export default function StatsCard({ data }: { data: DashboardData }) {
     };
 
     return (
-        <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
             {/* Total Organizations */}
             <Card className="rounded py-2 border shadow-none border-[#DDDDDD] bg-white">
                 <CardHeader className="px-2 flex flex-row items-center justify-between">
