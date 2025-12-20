@@ -62,7 +62,10 @@ export default function Emergencies() {
     const socket = io("https://api.rescuetap.org")
     const { user } = useSelector((state: RootState) => state.auth);
     const phone = user?.phoneNumber || "";
-    const { data: payload } = useGetEmergenciesQuery(phone)
+    const { data: payload } = useGetEmergenciesQuery(phone, {
+        refetchOnFocus: true,
+        pollingInterval: 3000
+    })
     const searchParams = useSearchParams()
     const [currentCoords, setCurrentCoords] = useState({ latitude: 0, longitude: 0 })
 
