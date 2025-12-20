@@ -11,9 +11,13 @@ interface VisitorsProps {
     fetchTenant?: boolean;
     tenantId?: string;
     orgId?: string;
+    meta?: {
+        page: number;
+        limit: number;
+    }
 }
 
-export default function useVisitors({ fetchAllVisitors, fetchVisitor, visitorId, fetchTenant, tenantId, orgId }: VisitorsProps) {
+export default function useVisitors({ fetchAllVisitors, fetchVisitor, meta, visitorId, fetchTenant, tenantId, orgId }: VisitorsProps) {
     // const router = useRouter();
     const [inviteVisitorMutation, { isLoading: invitingVisitor }] = useInviteVisitorMutation();
     const [verifyCodeMutation, { isLoading: verifyingCode }] = useVerifyCodeMutation();
@@ -33,7 +37,7 @@ export default function useVisitors({ fetchAllVisitors, fetchVisitor, visitorId,
         refetchOnMountOrArgChange: true,
         refetchOnReconnect: true
     });
-    const { data: visitor } = useGetOrgVisitorsQuery(orgId!, {
+    const { data: visitor, isLoading: loadingVisitor } = useGetOrgVisitorsQuery({ orgId: orgId!, limit: meta?.limit || 10, page: meta?.page || 1 }, {
         skip: !fetchVisitor || !orgId,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true,
@@ -105,6 +109,7 @@ export default function useVisitors({ fetchAllVisitors, fetchVisitor, visitorId,
         allVisitors,
         tenantVisitors,
         visitor,
+        loadingVisitor,
         inviteVisitor,
         invitingVisitor,
         verifyCode,

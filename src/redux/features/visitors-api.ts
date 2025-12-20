@@ -1,15 +1,14 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { customBaseQueryWithReauth } from '@/lib/custom-base-query';
-import { VisitorDataTypes } from '@/types/visitors.types';
-
+import { VisitorDataTypes, VisitorsLogResponse } from '@/types/visitors.types';
 
 export const visitorsApi = createApi({
     reducerPath: 'visitorsApi',
     tagTypes: ['Visitors'],
     baseQuery: customBaseQueryWithReauth,
     endpoints: (builder) => ({
-        getOrgVisitors: builder.query({
-            query: (orgId: string) => `/visitors/organization/${orgId}/visitors`,
+        getOrgVisitors: builder.query<VisitorsLogResponse, { orgId: string, page: number, limit: number }>({
+            query: ({ orgId, limit, page }) => `/visitors/organization/${orgId}/visitors?limit=${limit}&page=${page}`,
             providesTags: ['Visitors'],
         }),
         getAllVisitors: builder.query({

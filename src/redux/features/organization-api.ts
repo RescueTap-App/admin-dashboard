@@ -82,6 +82,10 @@ export const organizationApi = createApi({
             query: (organizationId: string) => `/slots-requests/${organizationId}`,
             providesTags: ['Organization'],
         }),
+        getEmergencies: builder.query({
+            query: (phoneNumber: string) => `/users/emergency/contact/${phoneNumber}`,
+            providesTags: ['Organization'],
+        })
     }),
 });
 
@@ -99,4 +103,5 @@ export const {
     useRequestSlotsMutation,
     useGetSlotsRequestsQuery,
     useGetASlotRequestQuery,
+    useGetEmergenciesQuery
 } = organizationApi;

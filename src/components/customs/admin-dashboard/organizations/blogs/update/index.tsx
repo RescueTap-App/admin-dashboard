@@ -39,11 +39,11 @@ export default function UpdateBlogs({ blogId }: Props) {
     useEffect(() => {
         if (blog) {
             form.reset({
-            title: blog?.title || "",
-            content: blog?.content || "",
-            author: blog?.author || "",
-            categories: blog?.categories || [],
-            featureImage: blog?.featureImage || "",
+                title: blog?.title || "",
+                content: blog?.content || "",
+                author: blog?.author || "",
+                categories: blog?.categories || [],
+                featureImage: blog?.featureImage || "",
             });
         }
     }, [blog, form]);
@@ -55,7 +55,7 @@ export default function UpdateBlogs({ blogId }: Props) {
     })) ?? []
 
     return (
-         <div className="min-h-screen bg-gray-50 px-2.5 sm:p-4">
+        <div className="min-h-screen bg-gray-50 px-2.5 sm:p-4">
             <div className="max-w-6xl mx-auto">
                 <div className="mb-6">
                     <h1 className="text-2xl font-bold font-lato mb-2">Create New Blog</h1>
@@ -109,7 +109,7 @@ export default function UpdateBlogs({ blogId }: Props) {
                                                 control={form.control}
                                                 name="featureImage"
                                                 label="Feature Image *"
-                                                buttonLabel="Upload Blog Photo"
+                                            // buttonLabel="Upload Blog Photo"
                                             />
                                         </div>
                                     </div>

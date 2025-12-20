@@ -129,7 +129,7 @@ const columns: ColumnDef<OrgUsersTypes>[] = [
         accessorKey: "profileImage",
         header: "Profile",
         cell: ({ row }) => (
-            <div className="w-16 h-16 relative">
+            <div className="w-12 h-12 relative">
                 <Image src={row.original.profileImage || "/icons/avatar.svg"}
                     alt={"Profile Image"}
                     fill

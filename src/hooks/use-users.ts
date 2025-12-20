@@ -24,7 +24,7 @@ export default function useUsers({ fetchAllUsers, userId }: UsersProps) {
         refetchOnMountOrArgChange: true,
         refetchOnReconnect: true
     })
-    const { data: all_users, isLoading: loading_users } = useGetUsersQuery(undefined, {
+    const { data: all_users, isLoading: loading_users, isFetching: fetching_users } = useGetUsersQuery(undefined, {
         skip: !fetchAllUsers,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true,
@@ -49,6 +49,7 @@ export default function useUsers({ fetchAllUsers, userId }: UsersProps) {
     return {
         all_users,
         loading_users,
+        fetching_users,
         createUser,
         creating,
         userById,

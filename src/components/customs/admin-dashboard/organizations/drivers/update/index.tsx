@@ -93,7 +93,6 @@ export default function UpdateDriver({ driverId }: UpdateProps) {
                                             control={form.control}
                                             name="profilePicture"
                                             label="Profile Picture"
-                                            buttonLabel="Upload"
                                         />
                                     </div>
                                 </div>
@@ -117,7 +116,6 @@ export default function UpdateDriver({ driverId }: UpdateProps) {
                                             control={form.control}
                                             name="image"
                                             label="Vehicle Image"
-                                            buttonLabel="Upload Vehicle Image"
                                         />
                                     </div>
                                 </div>

@@ -101,3 +101,19 @@ export type OrgUsersTypes = {
   createdAt: Date;
   updatedAt: Date;
 }
+
+
+export type EmergencyListTypes = {
+  _id: string;
+  user: {
+    _id: string;
+    firstName: string;
+    lastName: string;
+  }
+  location: string;
+  timestamp: Date;
+  status: "active" | "pending" | "resolved" | "in_progress";
+  priority: "low" | "medium" | "high" | "critical";
+  createdAt: Date;
+  updatedAt: Date;
+}

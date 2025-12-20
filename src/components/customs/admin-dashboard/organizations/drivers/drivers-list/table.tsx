@@ -132,7 +132,7 @@ const columns: ColumnDef<DriverListTypes>[] = [
         accessorKey: "profileImage",
         header: "Profile",
         cell: ({ row }) => (
-            <div className="w-16 h-16 relative">
+            <div className="w-14 h-14 relative">
                 <Image src={row.original.profileImage || "/icons/avatar.svg"}
                     alt={"Profile Image"}
                     fill
@@ -143,34 +143,14 @@ const columns: ColumnDef<DriverListTypes>[] = [
     },
     {
         accessorKey: "firstName",
-        header: "First Name",
+        header: "Name",
         cell: ({ row }) => (
-            <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5 font-lato">
+            <div className="flex flex-col gap-1">
+                <h1 className="text-muted-foreground font-semibold px-1.5 font-lato">
                     {row.original.firstName}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "lastName",
-        header: "Last Name",
-        cell: ({ row }) => (
-            <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5 font-lato">
-                    {row.original.lastName}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "email",
-        header: "Email",
-        cell: ({ row }) => (
-            <div className="max-w-fit">
-                <p className="text-muted-foreground px-1.5 font-lato">
-                    {row.original.email}
-                </p>
+                </h1>
+                <h1 className="text-muted-foreground font-semibold px-1.5 font-lato">{row.original.lastName}</h1>
+                <h1 className="text-muted-foreground px-1.5 font-lato">{row.original.email}</h1>
             </div>
         ),
     },
@@ -365,39 +345,6 @@ export function DriversListTable({
                             {/* <IconLayoutColumns /> */}
                             <span className="hidden lg:inline">All Categories</span>
                             <span className="lg:hidden">Categories</span>
-                            <IconChevronDown />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56">
-                        {table
-                            .getAllColumns()
-                            .filter(
-                                (column) =>
-                                    typeof column.accessorFn !== "undefined" &&
-                                    column.getCanHide()
-                            )
-                            .map((column) => {
-                                return (
-                                    <DropdownMenuCheckboxItem
-                                        key={column.id}
-                                        className="capitalize"
-                                        checked={column.getIsVisible()}
-                                        onCheckedChange={(value) =>
-                                            column.toggleVisibility(!!value)
-                                        }
-                                    >
-                                        {column.id}
-                                    </DropdownMenuCheckboxItem>
-                                )
-                            })}
-                    </DropdownMenuContent>
-                </DropdownMenu>
-
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="default" className={"rounded"}>
-                            <span className="hidden lg:inline">This Month</span>
-                            <span className="lg:hidden">Month</span>
                             <IconChevronDown />
                         </Button>
                     </DropdownMenuTrigger>

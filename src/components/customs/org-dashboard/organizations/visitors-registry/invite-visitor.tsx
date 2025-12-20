@@ -15,7 +15,6 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { useSelector } from "react-redux"
-import { toast } from "sonner"
 
 // Helper function to get timezone-aware ISO string
 const getLocalISOString = (date: Date): string => {
@@ -70,8 +69,8 @@ export default function InviteVisitor() {
             startTime: startTimeISO,
             endTime: endTimeISO
         }
-        console.log(userData)
-        toast.message(JSON.stringify(userData))
+        // console.log(userData)
+        // toast.message(JSON.stringify(userData))
         const res = await inviteVisitor(userData, tenantId);
         if (res) {
             form.reset();

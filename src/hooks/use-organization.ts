@@ -38,20 +38,20 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, fetchA
         refetchOnReconnect: true
     });
 
-    const { data: orgUsers } = useGetOrgUsersQuery(inviterId!, {
+    const { data: orgUsers, isLoading: loadingOrgUsers } = useGetOrgUsersQuery(inviterId!, {
         skip: !fetchAllUsers || !inviterId,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true,
         refetchOnReconnect: true
     });
 
-    const { data: orgDrivers } = useGetOrgDriversQuery(inviterId!, {
+    const { data: orgDrivers, isLoading: loadingOrgDrivers } = useGetOrgDriversQuery(inviterId!, {
         skip: !fetchAllUsers || !inviterId,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true,
         refetchOnReconnect: true
     });
-    const { data: organizations } = useGetOrgsQuery(undefined, {
+    const { data: organizations, isLoading: loadingOrganizations } = useGetOrgsQuery(undefined, {
         skip: !fetchAllOrgs,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true,
@@ -64,7 +64,7 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, fetchA
         refetchOnReconnect: true
     });
 
-    const { data: analytics } = useGetAnalyticsQuery(undefined, {
+    const { data: analytics, isLoading: loadingAnalytics } = useGetAnalyticsQuery(undefined, {
         skip: !fetchAllOrgs,
         refetchOnFocus: true,
         refetchOnMountOrArgChange: true,
@@ -192,6 +192,10 @@ export default function useOrganization({ fetchAllUsers, fetchAllDrivers, fetchA
         organizations,
         singleOrganization,
         loadingDrivers,
+        loadingOrganizations,
+        loadingAnalytics,
+        loadingOrgUsers,
+        loadingOrgDrivers,
         orgUsers,
         orgDrivers,
         analytics,

@@ -132,7 +132,7 @@ const columns: ColumnDef<DriverListTypes>[] = [
         accessorKey: "profileImage",
         header: "Profiles",
         cell: ({ row }) => (
-            <div className="w-18 h-18 relative">
+            <div className="w-14 h-14 relative">
                 <Image src={row.original.profileImage || "/icons/avatar.svg"}
                     alt={"Profile Image"}
                     fill
