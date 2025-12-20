@@ -23,6 +23,8 @@ export type ActiveVisitorsLogTableTypes = {
     purpose: string;
     photoUrl: string;
     entryCode: string;
+    history: [];
+    noOfVisitors: number;
     status: 'pending' | 'expired' | 'checked_out' | 'checked_in' | 'canceled';
     startTime: string;
     endTime: string;
@@ -30,6 +32,22 @@ export type ActiveVisitorsLogTableTypes = {
     updatedAt: Date;
 }
 
+
+export type VisitorsLogResponse = {
+    visitors: ActiveVisitorsLogTableTypes[]
+    stats: {
+        activeVisitors: number,
+        pendingArrivals: number,
+        todaysVisits: number,
+        totalVisits: number
+    },
+    pagination: {
+        total: number,
+        page: number,
+        limit: number,
+        totalPages: number
+    },
+}
 export type VisitorDataTypes = {
     id?: string;
     status?: string;

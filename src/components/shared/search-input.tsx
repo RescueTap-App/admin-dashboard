@@ -16,7 +16,7 @@ export default function SearchInput({ value, placeholder = " ", onChange }: Sear
                 placeholder={`Search ${placeholder}`}
                 value={value}
                 onChange={onChange}
-                className="w-full max-w-sm pl-8 pr-3 py-2 text-sm rounded font-lato"
+                className="w-full max-w-xs pl-8 pr-3 py-2 text-sm rounded font-lato"
             />
             <Search size={19} className="absolute top-2 left-1.5 text-gray-600" />
         </div>

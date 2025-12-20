@@ -163,6 +163,15 @@ const columns: ColumnDef<ActiveVisitorsLogTableTypes>[] = [
         ),
     },
     {
+        accessorKey: "noOfVisitors",
+        header: "No Visitors",
+        cell: ({ row }) => (
+            <div className="w-32">
+                <Badge>{row.original.noOfVisitors}</Badge>
+            </div>
+        ),
+    },
+    {
         accessorKey: "status",
         header: "Status",
         cell: ({ row }) => (
@@ -257,8 +266,12 @@ function DraggableRow({ row }: { row: Row<ActiveVisitorsLogTableTypes> }) {
 
 export function ActiveVisitorsLogTable({
     data: initialData,
+    setLimit,
+    setPage,
 }: {
     data: ActiveVisitorsLogTableTypes[],
+    setLimit: (limit: number) => void,
+    setPage: (page: number) => void,
 }) {
     const [data, setData] = React.useState(() => initialData)
     const [rowSelection, setRowSelection] = React.useState({})
@@ -271,7 +284,7 @@ export function ActiveVisitorsLogTable({
     const [globalFilter, setGlobalFilter] = React.useState('');
     const [pagination, setPagination] = React.useState({
         pageIndex: 0,
-        pageSize: 5,
+        pageSize: 10,
     })
     const sortableId = React.useId()
     const sensors = useSensors(
@@ -406,6 +419,7 @@ export function ActiveVisitorsLogTable({
                             value={`${table.getState().pagination.pageSize}`}
                             onValueChange={(value) => {
                                 table.setPageSize(Number(value))
+                                setLimit(Number(value))
                             }}
                         >
                             <SelectTrigger size="sm" className="w-20" id="rows-per-page">
@@ -430,7 +444,10 @@ export function ActiveVisitorsLogTable({
                         <Button
                             variant="outline"
                             className="hidden h-8 w-8 p-0 lg:flex"
-                            onClick={() => table.setPageIndex(0)}
+                            onClick={() => {
+                                table.setPageIndex(0)
+                                setPage(1)
+                            }}
                             disabled={!table.getCanPreviousPage()}
                         >
                             <span className="sr-only">Go to first page</span>
@@ -440,7 +457,10 @@ export function ActiveVisitorsLogTable({
                             variant="outline"
                             className="size-8"
                             size="icon"
-                            onClick={() => table.previousPage()}
+                            onClick={() => {
+                                table.previousPage()
+                                setPage(table.getState().pagination.pageIndex)
+                            }}
                             disabled={!table.getCanPreviousPage()}
                         >
                             <span className="sr-only">Go to previous page</span>
@@ -450,7 +470,10 @@ export function ActiveVisitorsLogTable({
                             variant="outline"
                             className="size-8"
                             size="icon"
-                            onClick={() => table.nextPage()}
+                            onClick={() => {
+                                table.nextPage()
+                                setPage(table.getState().pagination.pageIndex + 2)
+                            }}
                             disabled={!table.getCanNextPage()}
                         >
                             <span className="sr-only">Go to next page</span>
@@ -460,7 +483,10 @@ export function ActiveVisitorsLogTable({
                             variant="outline"
                             className="hidden size-8 lg:flex"
                             size="icon"
-                            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                            onClick={() => {
+                                table.setPageIndex(table.getPageCount() - 1)
+                                setPage(table.getPageCount())
+                            }}
                             disabled={!table.getCanNextPage()}
                         >
                             <span className="sr-only">Go to last page</span>

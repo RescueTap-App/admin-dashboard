@@ -1,4 +1,6 @@
 import { Metadata } from "next";
+import { IoSettingsOutline } from "react-icons/io5";
+
 
 export const metadata: Metadata = {
     title: "Rescue Tap | Settings",
@@ -7,7 +9,11 @@ export const metadata: Metadata = {
 
 function Page() {
     return (
-        <div>Settings</div>
+        <div className="flex flex-col items-center justify-center gap-4">
+            <IoSettingsOutline className="text-4xl animate-spin duration-300" />
+            <h1 className="text-2xl font-bold">Settings</h1>
+            <p className="text-sm text-gray-500">Manage your settings and preferences</p>
+        </div>
     )
 }
 

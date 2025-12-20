@@ -1,13 +1,14 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { customBaseQueryWithReauth } from '@/lib/custom-base-query';
 import { CreateUserFormData } from "@/constants/validations/register-user"
+import { UserListType } from '@/types/users.types';
 
 export const usersApi = createApi({
     reducerPath: 'usersApi',
     baseQuery: customBaseQueryWithReauth,
     tagTypes: ['Users'],
     endpoints: (builder) => ({
-        getUsers: builder.query({
+        getUsers: builder.query<UserListType[], void>({
             query: () => `/users`,
             providesTags: ['Users'],
         }),

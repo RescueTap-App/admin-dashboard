@@ -49,10 +49,10 @@ export function NavMain({
                         >
                             <SidebarMenuItem>
                                 <CollapsibleTrigger asChild>
-                                    <SidebarMenuButton tooltip={item.title} className={"py-5"}>
+                                    <SidebarMenuButton tooltip={item.title} className={"py-5 hover:bg-primary hover:text-white group-[.active]:bg-primary group-[.active]:text-white"}>
                                         {item.icon && (
-                                            <span className={`text-2xl xl:text-2xl 2xl:text-3xl  ${isActive
-                                                ? "text-[#EF4136] active:bg-gray-900"
+                                            <span className={`text-2xl xl:text-2xl 2xl:text-3xl   ${isActive
+                                                ? "text-white "
                                                 : "text-gray-700"}`}>
                                                 <item.icon />
                                             </span>
@@ -69,7 +69,7 @@ export function NavMain({
                                             const isSubActive = pathname === subItem.url;
                                             return (
                                                 <SidebarMenuSubItem key={subItem.title}>
-                                                    <SidebarMenuSubButton asChild>
+                                                    <SidebarMenuSubButton asChild className="hover:bg-primary hover:text-white">
                                                         <Link href={subItem.url}>
                                                             <span className={`font-lato ${isSubActive ? "text-[#EF4136] font-semibold" : ""}`}>
                                                                 {subItem.title}

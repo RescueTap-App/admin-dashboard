@@ -4,8 +4,8 @@ import * as React from "react"
 import {
     Users,
     Car,
-    Settings,
-    LogOut
+    LogOut,
+    AlertTriangle
 } from "lucide-react"
 import {
     Sidebar,
@@ -13,6 +13,7 @@ import {
     SidebarFooter,
     SidebarHeader,
     SidebarRail,
+    useSidebar,
 } from "@/components/ui/sidebar"
 import Image from "next/image"
 import { NavMain } from "./nav-main"
@@ -82,13 +83,13 @@ const data = {
             ],
         },
         {
-            title: "Settings",
+            title: "Emergencies",
             url: "#",
-            icon: Settings,
+            icon: AlertTriangle,
             items: [
                 {
-                    title: "Your Settings",
-                    url: "/org/settings",
+                    title: "All Emergencies",
+                    url: "/org/emergencies",
                 }
             ],
         },
@@ -97,18 +98,30 @@ const data = {
 
 export function UserAppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     const { logOut } = useAuth();
+    const { open } = useSidebar()
     return (
         <Sidebar collapsible="icon"  {...props}>
             <SidebarHeader>
-                <Link href="/org">
-                    <div className={"relative h-10 w-full"}>
-                        <Image
-                            src={"/icons/logo-text.png"}
-                            fill fetchPriority={"high"}
-                            alt={"Rescue Tap Logoo"}
-                            className={"object-contain object-center"} />
-                    </div>
-                </Link>
+                {open ?
+                    <Link href={""}>
+                        <div className={"relative h-10 w-full"}>
+                            <Image
+                                src={"/icons/logo-text.png"}
+                                fill fetchPriority={"high"}
+                                alt={"Rescue Tap Logoo"}
+                                className={"object-contain object-center"} />
+                        </div>
+                    </Link>
+                    : <Link href={""}>
+                        <div className='h-10 relative w-10 mr-2'>
+                            <Image
+                                src={"/icons/logo-icon.png"}
+                                fill fetchPriority="high"
+                                alt={"Logo"}
+                                className={"object-contain"}
+                            />
+                        </div>
+                    </Link>}
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={data.navMain} />

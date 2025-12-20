@@ -6,15 +6,18 @@ import useVisitors from "@/hooks/use-visitors"
 import { RootState } from "@/lib/store"
 import { IconPlus } from '@tabler/icons-react'
 import Link from "next/link"
-import { Suspense } from "react"
+import { Suspense, useState } from "react"
 import { useSelector } from "react-redux"
 import { ActiveVisitorsLogTable } from './table'
+import { VisitorsLogSkeleton } from './skeleton'
 
 
 function ActiveVisitorsLog() {
+    const [page, setPage] = useState(1)
+    const [limit, setLimit] = useState(10)
     const { user } = useSelector((state: RootState) => state.auth);
     const orgId = user?._id as string;
-    const { visitor } = useVisitors({ fetchVisitor: true, orgId });
+    const { visitor, loadingVisitor } = useVisitors({ fetchVisitor: true, orgId, meta: { page, limit } });
 
     const stats = [
         {
@@ -35,8 +38,13 @@ function ActiveVisitorsLog() {
         }
     ]
 
+    // Show skeleton loader while loading
+    if (loadingVisitor) {
+        return <VisitorsLogSkeleton />
+    }
+
     return (
-        <section className="mt-1 flex flex-col gap-5">
+        <section className="flex flex-col gap-5">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {stats.map((stat) => (
                     <Card key={stat.title} className="rounded shadow flex flex-row justify-between items-center p-4">
@@ -69,7 +77,11 @@ function ActiveVisitorsLog() {
                 </CardHeader>
                 <div className='overflow-x-auto md:max-w-md min-w-full'>
                     <Suspense>
-                        <ActiveVisitorsLogTable data={visitor?.visitors || []} />
+                        <ActiveVisitorsLogTable
+                            data={visitor?.visitors || []}
+                            setLimit={setLimit}
+                            setPage={setPage}
+                        />
                     </Suspense>
                 </div>
             </Card>
