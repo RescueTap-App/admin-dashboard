@@ -77,10 +77,8 @@ export default function MapView({ locations = [], emergencies = [] }: MapViewPro
             })
         })
 
-        // If no locations provided, include the dummy marker for demo
-        if (locations.length === 0) {
-            bounds.extend({ lat: 8.9608333, lng: 7.0660483 })
-        }
+        // If no locations provided, just use the default center
+        // The empty state overlay will be displayed
 
         map.fitBounds(bounds)
 
@@ -105,46 +103,62 @@ export default function MapView({ locations = [], emergencies = [] }: MapViewPro
                 onUnmount={onUnmount}
             >
                 {/* Child components, such as markers, info windows, etc. */}
-                {locations.length > 0 ? (
-                    // Render markers for provided locations
-                    locations.map((location, index) => {
-                        const emergencyData = findEmergencyByLocation(location.id)
-                        return (
-                            <Marker
-                                key={location.id || `marker-${index}`}
-                                position={{
-                                    lat: location.latitude,
-                                    lng: location.longitude
-                                }}
-                                title={location.title || `Emergency #${index + 1}`}
-                                onClick={() => {
-                                    if (emergencyData) {
-                                        setSelectedEmergency(emergencyData)
-                                    }
-                                }}
-                                // Custom icon for different location types
-                                icon={location.type === 'emergency' ? {
-                                    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
-                                        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <circle cx="20" cy="20" r="18" fill="white" stroke="#dc2626" stroke-width="4"/>
-                                            <circle cx="20" cy="20" r="10" fill="#dc2626"/>
-                                            <circle cx="20" cy="14" r="3" fill="white"/>
-                                            <rect x="18" y="20" width="4" height="8" fill="white" rx="1"/>
-                                        </svg>
-                                    `),
-                                    scaledSize: new google.maps.Size(40, 40),
-                                    anchor: new google.maps.Point(20, 40)
-                                } : undefined}
-                            />
-                        )
-                    })
-                ) : (
-                    // Fallback dummy marker for demo
-                    <Marker
-                        position={{ lat: 8.9608333, lng: 7.0660483 }}
-                        title="Dummy Emergency Location"
-                    />
+
+                {/* Empty state overlay when no emergencies */}
+                {locations.length === 0 && (
+                    <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-10 pointer-events-none">
+                        <div className="text-center max-w-md mx-auto p-6 bg-white/95 rounded-lg shadow-lg border">
+                            <div className="w-16 h-16 mx-auto mb-4 text-primary">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="w-full h-full">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                All Clear
+                            </h3>
+                            <p className="text-gray-600 text-sm leading-relaxed">
+                                No active emergencies are currently being monitored in your area.
+                                The system is operational and ready to respond to any incoming alerts.
+                            </p>
+                            <div className="mt-4 text-xs text-gray-500">
+                                Last updated: {new Date().toLocaleTimeString()}
+                            </div>
+                        </div>
+                    </div>
                 )}
+
+                {/* Render markers for provided locations */}
+                {locations.map((location, index) => {
+                    const emergencyData = findEmergencyByLocation(location.id)
+                    return (
+                        <Marker
+                            key={location.id || `marker-${index}`}
+                            position={{
+                                lat: location.latitude,
+                                lng: location.longitude
+                            }}
+                            title={location.title || `Emergency #${index + 1}`}
+                            onClick={() => {
+                                if (emergencyData) {
+                                    setSelectedEmergency(emergencyData)
+                                }
+                            }}
+                            // Custom icon for different location types
+                            icon={location.type === 'emergency' ? {
+                                url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+                                    <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="20" cy="20" r="18" fill="white" stroke="#dc2626" stroke-width="4"/>
+                                        <circle cx="20" cy="20" r="10" fill="#dc2626"/>
+                                        <circle cx="20" cy="14" r="3" fill="white"/>
+                                        <rect x="18" y="20" width="4" height="8" fill="white" rx="1"/>
+                                    </svg>
+                                `),
+                                scaledSize: new google.maps.Size(40, 40),
+                                anchor: new google.maps.Point(20, 40)
+                            } : undefined}
+                        />
+                    )
+                })}
 
                 {/* InfoWindow for selected emergency */}
                 {selectedEmergency && (() => {
