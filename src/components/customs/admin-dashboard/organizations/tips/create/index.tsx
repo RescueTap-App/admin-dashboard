@@ -40,8 +40,8 @@ function CreateTips() {
         <div className={"grid grid-cols-1 lg:grid-cols-2 gap-4"}>
             <Card className="rounded shadow max-w-4xl mx-auto w-full">
                 <CardHeader>
-                    <CardTitle>Create New Tips</CardTitle>
-                    <CardDescription>Create a new tip in the RescueTap system</CardDescription>
+                    <CardTitle>Create Automated Tips</CardTitle>
+                    <CardDescription>Create a new tip in the RescueTap system that is posted 7am and 4pm</CardDescription>
                 </CardHeader>
 
                 <CardContent>
