@@ -2,7 +2,6 @@
 
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
-
 import { AppSidebar } from "@/components/shared/navigations/admin-sidebar";
 import {
     Breadcrumb,

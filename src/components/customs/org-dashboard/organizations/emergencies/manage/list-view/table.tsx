@@ -13,6 +13,7 @@ import {
     type UniqueIdentifier,
 } from "@dnd-kit/core"
 import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
+import { format } from 'date-fns';
 import {
     arrayMove,
     SortableContext,
@@ -26,12 +27,7 @@ import {
     IconChevronRight,
     IconChevronsLeft,
     IconChevronsRight,
-    IconCircleCheckFilled,
-    IconDotsVertical,
     IconGripVertical,
-    IconLayoutColumns,
-    IconLoader,
-    IconPlus,
 } from "@tabler/icons-react"
 import {
     ColumnDef,
@@ -48,29 +44,9 @@ import {
     useReactTable,
     VisibilityState,
 } from "@tanstack/react-table"
-import { z } from "zod"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-    Drawer,
-    DrawerClose,
-    DrawerContent,
-    DrawerDescription,
-    DrawerFooter,
-    DrawerHeader,
-    DrawerTitle,
-    DrawerTrigger,
-} from "@/components/ui/drawer"
 import { Checkbox } from "@/components/ui/checkbox"
-
-import {
-    DropdownMenu,
-    DropdownMenuCheckboxItem,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Label } from "@/components/ui/label"
 import {
     Select,
@@ -80,6 +56,12 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
     Table,
     TableBody,
     TableCell,
@@ -87,21 +69,12 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import { useIsMobile } from "@/hooks/use-mobile"
+import SearchInput from "@/components/shared/search-input";
+// import { EmergencyActions } from "./actions";
+import { EmergencyListTypes } from "@/types/organization.types";
 
 
-export const schema = z.object({
-    id: z.number(),
-    header: z.string(),
-    type: z.string(),
-    status: z.string(),
-    target: z.string(),
-    limit: z.string(),
-    reviewer: z.string(),
-})
-
-// Create a separate component for the drag handle
-function DragHandle({ id }: { id: number }) {
+function DragHandle({ id }: { id: string }) {
     const { attributes, listeners } = useSortable({
         id,
     })
@@ -114,17 +87,17 @@ function DragHandle({ id }: { id: number }) {
             size="icon"
             className="text-muted-foreground size-7 hover:bg-transparent"
         >
-            <IconGripVertical className="text-muted-foreground size-3" />
+            <IconGripVertical className="text-muted-foreground size-4" />
             <span className="sr-only">Drag to reorder</span>
         </Button>
     )
 }
 
-const columns: ColumnDef<z.infer<typeof schema>>[] = [
+const columns: ColumnDef<EmergencyListTypes>[] = [
     {
         id: "drag",
         header: () => null,
-        cell: ({ row }) => <DragHandle id={row.original.id} />,
+        cell: ({ row }) => <DragHandle id={row.original._id} />,
     },
     {
         id: "select",
@@ -150,70 +123,103 @@ const columns: ColumnDef<z.infer<typeof schema>>[] = [
             </div>
         ),
         enableSorting: false,
-        enableHiding: false,
-    },
-    {
-        accessorKey: "header",
-        header: "Header",
-        cell: ({ row }) => {
-            return <TableCellViewer item={row.original} />
-        },
-        enableHiding: false,
+        enableHiding: true,
     },
     {
         accessorKey: "type",
-        header: "Section Type",
+        header: "Type",
+        cell: () => (
+            <div className="max-w-fit">
+                <p className="text-muted-foreground px-1.5 font-lato capitalize">
+                    Emergency
+                </p>
+            </div>
+        ),
+    },
+    {
+        accessorKey: "user",
+        header: "User",
         cell: ({ row }) => (
-            <div className="w-32">
-                <Badge variant="outline" className="text-muted-foreground px-1.5">
-                    {row.original.type}
-                </Badge>
+            <div className="max-w-fit">
+                <p className="text-muted-foreground px-1.5 font-lato">
+                    {row.original.user.firstName} {row.original.user.lastName}
+                </p>
+            </div>
+        ),
+    },
+    {
+        accessorKey: "location",
+        header: "Location",
+        cell: ({ row }) => (
+            <div className="max-w-fit">
+                <p className="text-muted-foreground px-1.5 font-lato">
+                    {row.original.location}
+                </p>
+            </div>
+        ),
+    },
+    {
+        accessorKey: "timestamp",
+        header: "Time",
+        cell: ({ row }) => (
+            <div className="max-w-fit">
+                <p className="text-muted-foreground px-1.5 font-lato">
+                    {format(new Date(row.original.timestamp), 'MMM d, yyyy HH:mm')}
+                </p>
             </div>
         ),
     },
     {
         accessorKey: "status",
         header: "Status",
-        cell: ({ row }) => (
-            <Badge variant="outline" className="text-muted-foreground px-1.5">
-                {row.original.status === "Done" ? (
-                    <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
-                ) : (
-                    <IconLoader />
-                )}
-                {row.original.status}
-            </Badge>
-        ),
+        cell: ({ row }) => {
+            const statusColors = {
+                active: "fill-green-500",
+                pending: "fill-yellow-500",
+                resolved: "fill-blue-500",
+                in_progress: "fill-orange-500"
+            };
+
+            return (
+                <div className="flex items-center gap-2">
+                    <div className={`w-2 h-2 rounded-full ${statusColors[row.original.status] || "fill-gray-500"}`} />
+                    <span className="text-muted-foreground font-lato capitalize">
+                        {row.original.status.replace('_', ' ')}
+                    </span>
+                </div>
+            );
+        },
     },
     {
-        id: "actions",
-        cell: () => (
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                    <Button
-                        variant="ghost"
-                        className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-                        size="icon"
-                    >
-                        <IconDotsVertical />
-                        <span className="sr-only">Open menu</span>
-                    </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-32">
-                    <DropdownMenuItem>Edit</DropdownMenuItem>
-                    <DropdownMenuItem>Make a copy</DropdownMenuItem>
-                    <DropdownMenuItem>Favorite</DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenu>
-        ),
+        accessorKey: "priority",
+        header: "Priority",
+        cell: ({ row }) => {
+            const priorityColors = {
+                low: "bg-green-100 text-green-800 border-green-200",
+                medium: "bg-yellow-100 text-yellow-800 border-yellow-200",
+                high: "bg-orange-100 text-orange-800 border-orange-200",
+                critical: "bg-red-100 text-red-800 border-red-200"
+            };
+
+            return (
+                <Badge variant="outline" className={`${priorityColors[row.original.priority] || "bg-gray-100 text-gray-800 border-gray-200"} capitalize`}>
+                    {row.original.priority}
+                </Badge>
+            );
+        },
     },
+    // {
+    //     id: "actions",
+    //     header: "View",
+    //     cell: ({ row }) => (
+    //         <EmergencyActions data={row.original} />
+    //     ),
+    // },
 ]
 
-function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
+function DraggableRow({ row, onClick }: { row: Row<EmergencyListTypes>, onClick?: () => void }) {
     const { transform, transition, setNodeRef, isDragging } = useSortable({
-        id: row.original.id,
+        id: row.original._id,
     })
 
     return (
@@ -221,11 +227,12 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
             data-state={row.getIsSelected() && "selected"}
             data-dragging={isDragging}
             ref={setNodeRef}
-            className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
+            className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80 cursor-pointer hover:bg-muted/50 transition-colors"
             style={{
                 transform: CSS.Transform.toString(transform),
                 transition: transition,
             }}
+            onClick={onClick}
         >
             {row.getVisibleCells().map((cell) => (
                 <TableCell key={cell.id}>
@@ -236,20 +243,22 @@ function DraggableRow({ row }: { row: Row<z.infer<typeof schema>> }) {
     )
 }
 
-export function DataTable({
+export function ListEmergenciesTable({
     data: initialData,
+    onRowClick,
 }: {
-    data: z.infer<typeof schema>[]
+    data: EmergencyListTypes[]
+    onRowClick?: (row: EmergencyListTypes) => void
 }) {
     const [data, setData] = React.useState(() => initialData)
-    const [globalFilter, setGlobalFilter] = React.useState('');
     const [rowSelection, setRowSelection] = React.useState({})
     const [columnVisibility, setColumnVisibility] =
         React.useState<VisibilityState>({})
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
     )
-    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [sorting, setSorting] = React.useState<SortingState>([]);
+    const [globalFilter, setGlobalFilter] = React.useState('');
     const [pagination, setPagination] = React.useState({
         pageIndex: 0,
         pageSize: 5,
@@ -262,9 +271,15 @@ export function DataTable({
     )
 
     const dataIds = React.useMemo<UniqueIdentifier[]>(
-        () => data?.map(({ id }) => id) || [],
+        () => data?.map(({ _id }) => _id) || [],
         [data]
     )
+
+    React.useEffect(() => {
+        if (initialData?.length) {
+            setData(initialData);
+        }
+    }, [initialData]);
 
     const table = useReactTable({
         data,
@@ -272,12 +287,12 @@ export function DataTable({
         state: {
             sorting,
             columnVisibility,
-            globalFilter,
             rowSelection,
+            globalFilter,
             columnFilters,
             pagination,
         },
-        getRowId: (row) => row.id.toString(),
+        getRowId: (row) => row._id.toString(),
         enableRowSelection: true,
         onRowSelectionChange: setRowSelection,
         onSortingChange: setSorting,
@@ -306,34 +321,18 @@ export function DataTable({
     }
 
     return (
-        <section>
-            <div className="flex items-center justify-between px-4 lg:px-6">
-                <Label htmlFor="view-selector" className="sr-only">
-                    View
-                </Label>
-                <Select defaultValue="outline">
-                    <SelectTrigger
-                        className="flex w-fit @4xl/main:hidden"
-                        size="sm"
-                        id="view-selector"
-                    >
-                        <SelectValue placeholder="Select a view" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value="outline">Outline</SelectItem>
-                        <SelectItem value="past-performance">Past Performance</SelectItem>
-                        <SelectItem value="key-personnel">Key Personnel</SelectItem>
-                        <SelectItem value="focus-documents">Focus Documents</SelectItem>
-                    </SelectContent>
-                </Select>
-            </div>
-            <div className="flex items-center gap-2">
+        <React.Fragment>
+            <div className="flex items-center gap-3 mb-4">
+                <SearchInput
+                    value={globalFilter}
+                    placeholder={"emergencies"}
+                    onChange={(e) => setGlobalFilter(e.target.value)} />
+
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm">
-                            <IconLayoutColumns />
-                            <span className="hidden lg:inline">Customize Columns</span>
-                            <span className="lg:hidden">Columns</span>
+                        <Button variant="outline" size="default" className={"rounded"}>
+                            <span className="hidden lg:inline">This Month</span>
+                            <span className="lg:hidden">Month</span>
                             <IconChevronDown />
                         </Button>
                     </DropdownMenuTrigger>
@@ -361,12 +360,8 @@ export function DataTable({
                             })}
                     </DropdownMenuContent>
                 </DropdownMenu>
-                <Button variant="outline" size="sm">
-                    <IconPlus />
-                    <span className="hidden lg:inline">Add Section</span>
-                </Button>
             </div>
-            <div className="overflow-hidden rounded-lg border">
+            <div className="overflow-hidden border">
                 <DndContext
                     collisionDetection={closestCenter}
                     modifiers={[restrictToVerticalAxis]}
@@ -374,47 +369,52 @@ export function DataTable({
                     sensors={sensors}
                     id={sortableId}
                 >
-                    <Table>
-                        <TableHeader className="bg-muted sticky top-0 z-10">
-                            {table.getHeaderGroups().map((headerGroup) => (
-                                <TableRow key={headerGroup.id}>
-                                    {headerGroup.headers.map((header) => {
-                                        return (
-                                            <TableHead key={header.id} colSpan={header.colSpan} className="font-nunito">
-                                                {header.isPlaceholder
-                                                    ? null
-                                                    : flexRender(
-                                                        header.column.columnDef.header,
-                                                        header.getContext()
-                                                    )}
-                                            </TableHead>
-                                        )
-                                    })}
-                                </TableRow>
-                            ))}
-                        </TableHeader>
-                        <TableBody className="**:data-[slot=table-cell]:first:w-8">
-                            {table.getRowModel().rows?.length ? (
-                                <SortableContext
-                                    items={dataIds}
-                                    strategy={verticalListSortingStrategy}
-                                >
-                                    {table.getRowModel().rows.map((row) => (
-                                        <DraggableRow key={row.id} row={row} />
-                                    ))}
-                                </SortableContext>
-                            ) : (
-                                <TableRow>
-                                    <TableCell
-                                        colSpan={columns.length}
-                                        className="h-24 text-center"
-                                    >
-                                        No results.
-                                    </TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
+                    <SortableContext
+                        items={dataIds}
+                        strategy={verticalListSortingStrategy}
+                    >
+
+                        <Table>
+                            <TableHeader className="bg-muted sticky top-0 z-10">
+                                {table.getHeaderGroups().map((headerGroup) => (
+                                    <TableRow key={headerGroup.id}>
+                                        {headerGroup.headers.map((header) => {
+                                            return (
+                                                <TableHead key={header.id} colSpan={header.colSpan} className="font-nunito">
+                                                    {header.isPlaceholder
+                                                        ? null
+                                                        : flexRender(
+                                                            header.column.columnDef.header,
+                                                            header.getContext()
+                                                        )}
+                                                </TableHead>
+                                            )
+                                        })}
+                                    </TableRow>
+                                ))}
+                            </TableHeader>
+                            <TableBody className="**:data-[slot=table-cell]:first:w-8">
+                                {table.getRowModel().rows?.length ? (
+                                    table.getRowModel().rows.map(row => (
+                                        <DraggableRow
+                                            key={row.id}
+                                            row={row}
+                                            onClick={() => onRowClick?.(row.original)}
+                                        />
+                                    ))
+                                ) : (
+                                    <TableRow>
+                                        <TableCell
+                                            colSpan={columns.length}
+                                            className="h-24 text-center"
+                                        >
+                                            No results.
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                    </SortableContext>
                 </DndContext>
             </div>
             <div className="flex items-center justify-between px-4 pt-3">
@@ -494,36 +494,6 @@ export function DataTable({
                     </div>
                 </div>
             </div>
-        </section>
-    )
-}
-
-function TableCellViewer({ item }: { item: z.infer<typeof schema> }) {
-    const isMobile = useIsMobile()
-    return (
-        <Drawer direction={isMobile ? "bottom" : "right"}>
-            <DrawerTrigger asChild>
-                <Button variant="link" className="text-foreground w-fit px-0 text-left">
-                    {item.header}
-                </Button>
-            </DrawerTrigger>
-            <DrawerContent>
-                <DrawerHeader className="gap-1">
-                    <DrawerTitle>{item.header}</DrawerTitle>
-                    <DrawerDescription>
-                        Showing total visitors for the last 6 months
-                    </DrawerDescription>
-                </DrawerHeader>
-                <div>
-                    Content of Drawer
-                </div>
-                <DrawerFooter>
-                    <Button>Submit</Button>
-                    <DrawerClose asChild>
-                        <Button variant="outline">Done</Button>
-                    </DrawerClose>
-                </DrawerFooter>
-            </DrawerContent>
-        </Drawer>
+        </React.Fragment>
     )
 }

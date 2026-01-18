@@ -135,7 +135,7 @@ const columns: ColumnDef<UserListType>[] = [
         accessorKey: "profileImage",
         header: "Profile",
         cell: ({ row }) => (
-            <div className="w-16 h-16 relative">
+            <div className="w-10 h-10 relative">
                 <Image src={row.original.profileImage || "/icons/avatar.svg"}
                     alt={"Profile Image"}
                     fill
@@ -146,35 +146,29 @@ const columns: ColumnDef<UserListType>[] = [
     },
     {
         accessorKey: "firstName",
-        header: "First Name",
+        header: "Name",
         cell: ({ row }) => (
-            <div className="w-32">
-                <p className="text-muted-foreground px-1.5 font-lato">
+            <div className="max-w-32 flex flex-col gap-1">
+                <h1 className="text-muted-foreground font-semibold px-1.5 font-lato">
                     {row.original.firstName}
-                </p>
+                </h1>
+                <h1 className="text-muted-foreground font-semibold px-1.5 font-lato">{row.original.lastName}</h1>
+                <h1 className="text-muted-foreground px-1.5 font-lato">{row.original.email}</h1>
             </div>
         ),
     },
     {
-        accessorKey: "lastName",
-        header: "Last Name",
+        accessorKey: "hasActiveSubscription",
+        header: "User Type",
         cell: ({ row }) => (
-            <div className="w-32">
-                <p className="text-muted-foreground px-1.5 font-lato">
-                    {row.original.lastName}
-                </p>
-            </div>
-        ),
-    },
-    {
-        accessorKey: "email",
-        header: "Email",
-        cell: ({ row }) => (
-            <div className="w-fit">
-                <p className="text-muted-foreground px-1.5 font-lato">
-                    {row.original.email}
-                </p>
-            </div>
+            <Badge variant="outline" className={`text-muted-foreground px-1.5 flex flex-row items-center capitalize ${row.original.verified ? "text-green-500 dark:text-green-400" : "text-amber-500 dark:text-amber-400"}`}>
+                {row.original.hasActiveSubscription ? (
+                    <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
+                ) : (
+                    <IconInfoCircle className={"fill-amber-500 text-white"} />
+                )}
+                {row.original.hasActiveSubscription ? "Active" : "Unsubscribed"}
+            </Badge>
         ),
     },
     {
@@ -368,39 +362,6 @@ export function UsersListTable({
                             {/* <IconLayoutColumns /> */}
                             <span className="hidden lg:inline">All Roles</span>
                             <span className="lg:hidden">Roles</span>
-                            <IconChevronDown />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56">
-                        {table
-                            .getAllColumns()
-                            .filter(
-                                (column) =>
-                                    typeof column.accessorFn !== "undefined" &&
-                                    column.getCanHide()
-                            )
-                            .map((column) => {
-                                return (
-                                    <DropdownMenuCheckboxItem
-                                        key={column.id}
-                                        className="capitalize"
-                                        checked={column.getIsVisible()}
-                                        onCheckedChange={(value) =>
-                                            column.toggleVisibility(!!value)
-                                        }
-                                    >
-                                        {column.id}
-                                    </DropdownMenuCheckboxItem>
-                                )
-                            })}
-                    </DropdownMenuContent>
-                </DropdownMenu>
-
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="default" className={"rounded"}>
-                            <span className="hidden lg:inline">This Month</span>
-                            <span className="lg:hidden">Month</span>
                             <IconChevronDown />
                         </Button>
                     </DropdownMenuTrigger>

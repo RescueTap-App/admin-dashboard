@@ -110,7 +110,7 @@ export default function CreateDriver() {
                                             control={form.control}
                                             name="profileImage"
                                             label="Profile Image *"
-                                            buttonLabel="Take Profile Photo"
+                                        // buttonLabel="Take Profile Photo"
                                         />
                                     </div>
                                 </div>
@@ -139,7 +139,7 @@ export default function CreateDriver() {
                                             control={form.control}
                                             name="vehicleImage"
                                             label="Vehicle Image *"
-                                            buttonLabel="Upload Vehicle Image"
+                                        // buttonLabel="Upload Vehicle Image"
                                         />
                                     </div>
                                 </div>

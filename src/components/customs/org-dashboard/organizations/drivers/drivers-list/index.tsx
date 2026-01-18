@@ -7,6 +7,7 @@ import { IconPlus } from '@tabler/icons-react'
 import Link from "next/link"
 import { Suspense } from 'react'
 import { DriversListTable } from './table'
+import { DriversSkeleton } from './skeleton'
 import { useSelector } from "react-redux"
 import { RootState } from "@/lib/store"
 
@@ -14,10 +15,15 @@ import { RootState } from "@/lib/store"
 function DriversList() {
     const { user } = useSelector((state: RootState) => state.auth);
     const inviterId = user?._id as string;
-    const { orgDrivers } = useOrganization({ fetchAllUsers: true, inviterId });
-    
+    const { orgDrivers, loadingOrgDrivers } = useOrganization({ fetchAllUsers: true, inviterId });
+
+    // Show skeleton loader while loading
+    if (loadingOrgDrivers) {
+        return <DriversSkeleton />
+    }
+
     return (
-        <Card className={"rounded-sm mt-10 px-3 min-w-full shadow"}>
+        <Card className={"rounded-sm  px-3 min-w-full shadow"}>
             <CardHeader className='flex flex-row justify-between px-0'>
                 <div>
                     <h1 className={"font-semibold text-xl"}>Drivers Lists</h1>

@@ -7,18 +7,24 @@ import { IconPlus } from '@tabler/icons-react'
 import Link from "next/link"
 import { Suspense } from 'react'
 import { UsersListTable } from './table'
+import { OrgUsersSkeleton } from './skeleton'
 import { useSelector } from "react-redux"
 import { RootState } from "@/lib/store"
-
 
 function UsersList() {
 
     const { user } = useSelector((state: RootState) => state.auth);
     const inviterId = user?._id as string;
-    const { orgUsers } = useOrganization({ fetchAllUsers: true, inviterId });
+    const { orgUsers, loadingOrgUsers } = useOrganization({ fetchAllUsers: true, inviterId });
+
+    // Show skeleton loader while loading
+    if (loadingOrgUsers) {
+        return <OrgUsersSkeleton />
+    }
 
     return (
-        <Card className={"rounded-sm mt-10 px-3 min-w-full shadow"}>
+        <Card className={"rounded-sm  px-3 min-w-full shadow"}>
+            {/* {JSON.stringify(orgUsers?.[0])} */}
             <CardHeader className='flex flex-row justify-between px-0'>
                 <div>
                     <h1 className={"font-semibold text-xl"}>Users List</h1>

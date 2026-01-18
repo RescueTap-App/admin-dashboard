@@ -101,7 +101,7 @@ export function TipActions({ id, content }: TipProps) {
                             onClick={onDeleteTip}
                             className={"bg-[#EF4136] hover:bg-[#EF4136]/50  text-white rounded font-lato"}
                         >
-                            {deletingTips ? "Deletig..." : "Delete Tip"}</Button>
+                            {deletingTips ? "Deleting..." : "Delete Tip"}</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>

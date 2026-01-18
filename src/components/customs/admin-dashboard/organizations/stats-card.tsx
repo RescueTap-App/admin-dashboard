@@ -56,7 +56,7 @@ export default function StatsCard({ data }: { data: DashboardData }) {
             <Card className="rounded py-2 border shadow-none border-[#DDDDDD] bg-white">
                 <CardHeader className="px-2 flex flex-row items-center justify-between">
                     <CardTitle className="text-sm font-semibold text-gray-600">Total Revenue</CardTitle>
-                    <h1 className="text-lg font-medium font-roboto text-gray-900 mb-2">{formatCurrency(data?.totalRevenue || 0)}</h1>
+                    <h1 className="text-lg font-bolds font-roboto text-gray-900 mb-2">{formatCurrency(data?.totalRevenue || 0)}</h1>
                 </CardHeader>
                 <CardContent className="px-2">
                     <div className="text-sm text-green-600 font-medium">

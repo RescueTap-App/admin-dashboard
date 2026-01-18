@@ -14,7 +14,7 @@ export function UsersActions() {
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button
-                        variant="ghost"
+                        variant="outline"
                         className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
                         size="icon"
                     >

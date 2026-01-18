@@ -49,7 +49,7 @@ export default function EditCategory({ categoryId }: Props) {
     return (
         <div className="px-2">
             <div className="mb-6 pt-2">
-                <h1 className="text-2xl font-bold font-roboto mb-2 text-center">Create New Category</h1>
+                <h1 className="text-2xl font-bold font-roboto mb-2 text-center">Edit Category</h1>
             </div>
 
             <Form {...form}>

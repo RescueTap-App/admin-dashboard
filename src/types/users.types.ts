@@ -9,6 +9,8 @@ export type UserListType = {
   role: "user" | "admin" | "driver";
   verified: boolean;
   totalRides: number;
+  hasActiveSubscription: boolean;
+  userType: "individual" | "family" | "organization";
   createdAt: Date;
-  updatedAt:Date;
+  updatedAt: Date;
 };

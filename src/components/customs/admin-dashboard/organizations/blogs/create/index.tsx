@@ -95,7 +95,6 @@ export default function CreateBlogs() {
                                                 control={form.control}
                                                 name="featureImage"
                                                 label="Feature Image *"
-                                                buttonLabel="Upload Blog Photo"
                                             />
                                         </div>
                                     </div>

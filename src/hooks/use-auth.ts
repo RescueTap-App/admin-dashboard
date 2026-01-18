@@ -40,7 +40,7 @@ export function useAuth() {
             if (redirectUrl) {
                 router.replace(redirectUrl);
             } else if (res.user.role === "admin") {
-                router.replace("/dashboard/users");
+                router.replace("/dashboard/organizations");
             } else if (res.user.role === "organization") {
                 router.replace("/org");
             }
