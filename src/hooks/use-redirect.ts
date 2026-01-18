@@ -23,7 +23,7 @@ export function useRedirect() {
 
         if (!token) {
             // If not logged in, block access to protected routes
-            if (path.startsWith("/dashboard") || path.startsWith("/org")) {
+            if (path.startsWith("/dashboard/organizations") || path.startsWith("/org")) {
                 router.replace("/auth/login");
             }
             return;
@@ -44,7 +44,7 @@ export function useRedirect() {
         // Redirect logged-in users away from auth pages
         if (path.startsWith("/auth")) {
             if (role === "admin") {
-                router.replace("/dashboard");
+                router.replace("/dashboard/organizations");
             } else if (role === "organization") {
                 router.replace("/org");
             } else {

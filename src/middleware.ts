@@ -7,7 +7,7 @@ interface DecodedToken {
 }
 
 const PUBLIC_ROUTES = ["/", "/auth/forgot-password", "/auth/new-password", "/auth/verify-otp", "/"];
-const ADMIN_PROTECTED = ["/dashboard"];
+const ADMIN_PROTECTED = ["/dashboard/organizations"];
 const ORG_PROTECTED = ["/org"];
 
 export function middleware(request: NextRequest) {
@@ -53,14 +53,14 @@ export function middleware(request: NextRequest) {
     // Redirect logged-in users away from signup/register pages
     if (PUBLIC_ROUTES.includes(pathname)) {
         if (role === "admin") {
-            return NextResponse.redirect(new URL("/dashboard", request.url));
+            return NextResponse.redirect(new URL("/dashboard/organizations", request.url));
         } else if (role === "organization") {
             return NextResponse.redirect(new URL("/org", request.url));
         }
     }
 
     // Role-based access restriction
-    if (pathname.startsWith("/dashboard") && role !== "admin") {
+    if (pathname.startsWith("/dashboard/organizations") && role !== "admin") {
         return NextResponse.redirect(new URL("/unauthorized", request.url));
     }
 
