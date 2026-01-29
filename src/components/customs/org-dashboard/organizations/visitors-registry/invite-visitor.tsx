@@ -35,10 +35,13 @@ export default function InviteVisitor() {
             phone: "",
             email: "",
             startTime: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
-            endTime: format(new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), "yyyy-MM-dd'T'HH:mm"),
+            endTime: format(new Date(Date.now() + 10 * 60 * 1000), "yyyy-MM-dd'T'HH:mm"),
             vehicleNumber: "",
         },
     })
+
+    // Watch startTime to set minimum for endTime
+    const startTime = form.watch("startTime");
 
     const handleSubmit = async (data: VisitorsSchemaFormDataType) => {
 
@@ -137,6 +140,7 @@ export default function InviteVisitor() {
                                     name="endTime"
                                     label="Check-out Time *"
                                     type="datetime-local"
+                                    min={startTime}
                                 // className="transition-colors"
                                 />
                             </div>

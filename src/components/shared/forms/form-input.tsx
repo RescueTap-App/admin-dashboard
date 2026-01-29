@@ -45,6 +45,7 @@ interface ReusableFormFieldProps {
     icon?: React.ReactNode;
     disabled?: boolean;
     value?: string;
+    min?: string;
     options?: { label: string; value: string }[];
 }
 
@@ -62,6 +63,7 @@ export function ReusableFormField({
     icon,
     disabled = false,
     value,
+    min,
     options = [],
 }: ReusableFormFieldProps) {
     const [showPassword, setShowPassword] = useState(false);
@@ -156,6 +158,7 @@ export function ReusableFormField({
                                         value={value || field.value}
                                         placeholder={placeholder}
                                         inputMode={inputMode}
+                                        min={min}
                                         type={type === "password" ? (showPassword ? "text" : "password") : type}
                                         className={cn(
                                             className,
