@@ -20,23 +20,6 @@ import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import { toast } from "sonner";
 
-
-// Helper function to get timezone-aware ISO string
-const getLocalISOString = (date: Date): string => {
-  const localISOTime = new Date(
-    date.getTime() - date.getTimezoneOffset() * 60000
-  ).toISOString();
-  // .slice(0, -1);
-
-  const offsetMin = date.getTimezoneOffset();
-  const sign = offsetMin > 0 ? "-" : "+";
-  const pad = (n: number) => String(Math.floor(Math.abs(n))).padStart(2, "0");
-  const offset = `${sign}${pad(offsetMin / -60)}:${pad(offsetMin % 60)}`;
-  console.log(offset);
-  return `${localISOTime}`;
-};
-// ${offset}
-
 export default function InviteVisitor() {
     const { inviteVisitor, invitingVisitor } = useVisitors({})
     const [selectedCountryCode, setSelectedCountryCode] = useState(countryCodes[0])
@@ -65,9 +48,9 @@ export default function InviteVisitor() {
         }
         const fullPhoneNumber = selectedCountryCode.dialCode.replace('+', '') + cleanPhoneNumber
 
-        // Convert datetime-local values to timezone-aware ISO strings
-        const startTimeISO = getLocalISOString(new Date(data.startTime));
-        const endTimeISO = getLocalISOString(new Date(data.endTime));
+        // Convert datetime-local values to standard UTC ISO strings
+        const startTimeISO = new Date(data.startTime).toISOString();
+        const endTimeISO = new Date(data.endTime).toISOString();
 
         const userData = {
             ...data,
