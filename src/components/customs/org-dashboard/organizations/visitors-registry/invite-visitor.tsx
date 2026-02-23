@@ -4,7 +4,8 @@ import { ReusableFormField } from "@/components/shared/forms/form-input";
 import { PhoneInput } from "@/components/shared/forms/phone-input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Form } from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { countryCodes } from "@/constants/country-codes";
 import {
   visitorsSchema,
@@ -37,6 +38,9 @@ export default function InviteVisitor() {
             startTime: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
             endTime: format(new Date(Date.now() + 10 * 60 * 1000), "yyyy-MM-dd'T'HH:mm"),
             vehicleNumber: "",
+            notifyVia: "email",
+            isPersistent: "false",
+            timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         },
     })
 
@@ -59,7 +63,10 @@ export default function InviteVisitor() {
             ...data,
             phone: fullPhoneNumber,
             startTime: startTimeISO,
-            endTime: endTimeISO
+            endTime: endTimeISO,
+            isPersistent: data.isPersistent === "true",
+            notifyVia: data.notifyVia,
+            timezone: data.timezone
         }
         // console.log(userData)
         // toast.message(JSON.stringify(userData))
@@ -118,6 +125,52 @@ export default function InviteVisitor() {
                                         label="Vehicle Plate Number"
                                         type="text"
                                         placeholder="ABC-123-xy"
+                                    />
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <FormField
+                                        control={form.control}
+                                        name="notifyVia"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Notify Via *</FormLabel>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select notification method" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="sms">SMS</SelectItem>
+                                                        <SelectItem value="email">Email</SelectItem>
+                                                        <SelectItem value="both">Both SMS and Email</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
+                                    />
+                                    <FormField
+                                        control={form.control}
+                                        name="isPersistent"
+                                        render={({ field }) => (
+                                            <FormItem>
+                                                <FormLabel>Persistent Visitor *</FormLabel>
+                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                    <FormControl>
+                                                        <SelectTrigger>
+                                                            <SelectValue placeholder="Select option" />
+                                                        </SelectTrigger>
+                                                    </FormControl>
+                                                    <SelectContent>
+                                                        <SelectItem value="true">Yes</SelectItem>
+                                                        <SelectItem value="false">No</SelectItem>
+                                                    </SelectContent>
+                                                </Select>
+                                                <FormMessage />
+                                            </FormItem>
+                                        )}
                                     />
                                 </div>
                             </div>

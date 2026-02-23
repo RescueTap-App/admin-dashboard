@@ -13,6 +13,13 @@ export const visitorsSchema = z.object({
     startTime: z.string().min(1, "Start time is required"),
     endTime: z.string().min(1, "End time is required"),
     vehicleNumber: z.string().optional(),
+    notifyVia: z.enum(["sms", "email", "both"], {
+        errorMap: () => ({ message: "Please select a notification method" }),
+    }),
+    isPersistent: z.enum(["true", "false"], {
+        errorMap: () => ({ message: "Please select whether visitor is persistent" }),
+    }),
+    timezone: z.string().optional(),
 })
 
 export type VisitorsSchemaFormDataType = z.infer<typeof visitorsSchema>
