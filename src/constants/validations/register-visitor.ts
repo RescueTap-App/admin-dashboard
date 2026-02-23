@@ -13,12 +13,8 @@ export const visitorsSchema = z.object({
     startTime: z.string().min(1, "Start time is required"),
     endTime: z.string().min(1, "End time is required"),
     vehicleNumber: z.string().optional(),
-    notifyVia: z.enum(["sms", "email", "both"] as const, {
-        errorMap: () => ({ message: "Please select a notification method" }),
-    }),
-    isPersistent: z.enum(["true", "false"] as const, {
-        errorMap: () => ({ message: "Please select whether visitor is persistent" }),
-    }),
+    notifyVia: z.enum(["sms", "email", "both"] as const),
+    isPersistent: z.enum(["true", "false"] as const),
     timezone: z.string().optional(),
 })
 
