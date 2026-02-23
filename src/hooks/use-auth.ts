@@ -30,7 +30,7 @@ export function useAuth() {
             sessionStorage.setItem("token", res.access_token);
             sessionStorage.setItem("userId", res.user._id);
             sessionStorage.setItem("role", res.user.role);
-            // Set cookie to expire in 7 days
+            // Set cookie to expire in 7 days jk
             Cookies.set("token", res.access_token, { expires: 7 });
 
             toast.success(res.messages || "Login successful");
