@@ -47,6 +47,10 @@ interface ReusableFormFieldProps {
     value?: string;
     min?: string;
     options?: { label: string; value: string }[];
+      selectOptions?: Array<{
+    label: string;
+    value: string;
+  }>;
 }
 
 export function ReusableFormField({

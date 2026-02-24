@@ -66,7 +66,9 @@ export function TipActions({ id, content }: TipProps) {
   }, [content, form]);
 
   const handleSubmit = async (data: CreateTipSchemaType) => {
-    const res = await updateTips(id, data);
+    const res = await updateTips(id, {
+  ...data,
+});
     if (res) {
       form.reset(data); // ✅ immediately reflect updated text
       setOpenEdit(false); // ✅ close modal after saving

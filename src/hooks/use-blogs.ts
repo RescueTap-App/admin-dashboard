@@ -22,6 +22,7 @@ import {
 import { BlogDataTypes } from "@/types/blogs.types";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 interface BlogProps {
     fetchAllBlogs?: boolean;
@@ -33,6 +34,17 @@ interface BlogProps {
     categoryId?: string;
 }
 
+function getErrorMessage(error: unknown): string {
+  if (typeof error === "object" && error !== null && "data" in error) {
+    const err = error as FetchBaseQueryError;
+
+    if (typeof err.data === "object" && err.data && "message" in err.data) {
+      return (err.data as { message: string }).message;
+    }
+  }
+
+  return "Something went wrong";
+}
 export default function useBlogs({
     fetchAllBlogs,
     fetchABlog,
@@ -178,9 +190,9 @@ const createTips = async (data: CreateTipSchemaType) => {
       const res = await createTipMutation(data).unwrap();
       toast.success("Tip created successfully");
       return res;
-    } catch (error: unknown) {
-      toast.error(error?.data?.message || "Failed to create tip");
-    }
+   } catch (error: unknown) {
+  toast.error(getErrorMessage(error));
+}
   };
 
   const sendTestTip = async (data: CreateTipSchemaType) => {
@@ -188,9 +200,9 @@ const createTips = async (data: CreateTipSchemaType) => {
       const res = await sendTestTipMutation(data).unwrap();
       toast.success("Test tip sent successfully");
       return res;
-    } catch (error: unknown) {
-      toast.error(error?.data?.message || "Failed to send test tip");
-    }
+  } catch (error: unknown) {
+  toast.error(getErrorMessage(error));
+}
   };
 
   const updateTips = async (id: string, content: string) => {
@@ -198,9 +210,9 @@ const createTips = async (data: CreateTipSchemaType) => {
       const res = await editTipMutation({ id, content }).unwrap();
       toast.success("Tip updated successfully");
       return res;
-    } catch (error: unknown) {
-      toast.error(error?.data?.message || "Failed to update tip");
-    }
+  } catch (error: unknown) {
+  toast.error(getErrorMessage(error));
+}
   };
 
   const deleteTips = async (id: string) => {
@@ -208,9 +220,9 @@ const createTips = async (data: CreateTipSchemaType) => {
       const res = await deleteTipMutation(id).unwrap();
       toast.success("Tip deleted successfully");
       return res;
-    } catch (error: unknown) {
-      toast.error(error?.data?.message || "Failed to delete tip");
-    }
+   } catch (error: unknown) {
+  toast.error(getErrorMessage(error));
+}
   };
 
     return {
