@@ -1,7 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { customBaseQueryWithReauth } from '@/lib/custom-base-query';
 import { BlogDataTypes } from '@/types/blogs.types';
-import { CreateCategoryFormData } from '@/constants/validations/blogs';
+import { CreateCategoryFormData, CreateTipSchemaType } from '@/constants/validations/blogs';
 
 export const blogsApi = createApi({
     reducerPath: 'blogsApi',
@@ -80,36 +80,39 @@ export const blogsApi = createApi({
             query: (id: string) => `/tips/${id}`,
             providesTags: ['Tips'],
         }),
-        createTips: builder.mutation({
-            query: ({ content }: { content: string }) => ({
-                url: `/tips`,
-                method: "POST",
-                body: { content },
-            }),
-            invalidatesTags: ['Tips'],
-        }),
-        sendTestTip: builder.mutation({
-            query: ({ content }: { content: string }) => ({
-                url: `/tips/send-test`,
-                method: "POST",
-                body: { content },
-            }),
-        }),
+       createTips: builder.mutation({
+      query: (data: CreateTipSchemaType) => ({
+        url: `/tips`,
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["Tips"],
+    }),
+
+    sendTestTip: builder.mutation({
+      query: (data: CreateTipSchemaType) => ({
+        url: `/tips/send-test`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+
         editTips: builder.mutation({
-            query: ({ id, data }: { id?: string, data: { content: string } }) => ({
-                url: `/tips/${id}`,
-                method: "PUT",
-                body: data
-            }),
-            invalidatesTags: ['Tips'],
-        }),
-        deleteTip: builder.mutation({
-            query: ({ id }: { id?: string }) => ({
-                url: `/tips/${id}`,
-                method: "DELETE"
-            }),
-            invalidatesTags: ['Tips'],
-        }),
+      query: ({ id, content }: { id: string; content: string }) => ({
+        url: `/tips/${id}`,
+        method: "PUT",
+        body: { content },
+      }),
+      invalidatesTags: ["Tips"],
+    }),
+
+    deleteTip: builder.mutation({
+      query: (id: string) => ({
+        url: `/tips/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Tips"],
+    }),
     }),
 });
 

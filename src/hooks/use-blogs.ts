@@ -1,4 +1,7 @@
-import { CreateCategoryFormData } from "@/constants/validations/blogs";
+import type { 
+  CreateCategoryFormData,
+  CreateTipSchemaType
+} from "@/constants/validations/blogs";
 import {
     useCreateBlogMutation,
     useCreateCategoryMutation,
@@ -170,62 +173,45 @@ export default function useBlogs({
             console.log(error)
         }
     };
+const createTips = async (data: CreateTipSchemaType) => {
+    try {
+      const res = await createTipMutation(data).unwrap();
+      toast.success("Tip created successfully");
+      return res;
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to create tip");
+    }
+  };
 
-    const createTips = async (content: string) => {
-        try {
-            const res = await createTipMutation({ content }).unwrap();
-            if (res) {
-                toast.success("Tip created successfully");
-            }
-            return res;
-        } catch (error: unknown) {
-            const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to create tip"
-            toast.error(errorMessage)
-            console.log(error)
-        }
-    };
+  const sendTestTip = async (data: CreateTipSchemaType) => {
+    try {
+      const res = await sendTestTipMutation(data).unwrap();
+      toast.success("Test tip sent successfully");
+      return res;
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to send test tip");
+    }
+  };
 
-    const sendTestTip = async (content: string) => {
-        try {
-            const res = await sendTestTipMutation({ content }).unwrap();
-            if (res) {
-                toast.success("Test tip sent successfully");
-            }
-            return res;
-        } catch (error: unknown) {
-            const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to send test tip"
-            toast.error(errorMessage)
-            console.log(error)
-        }
-    };
+  const updateTips = async (id: string, content: string) => {
+    try {
+      const res = await editTipMutation({ id, content }).unwrap();
+      toast.success("Tip updated successfully");
+      return res;
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to update tip");
+    }
+  };
 
-    const updateTips = async (id: string, data: { content: string }) => {
-        try {
-            const res = await editTipMutation({ id, data }).unwrap();
-            if (res) {
-                toast.success("Tip updated successfully");
-            }
-            return res;
-        } catch (error: unknown) {
-            const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to update tip"
-            toast.error(errorMessage)
-            console.log(error)
-        }
-    };
-
-    const deleteTips = async (id: string) => {
-        try {
-            const res = await deleteTipMutation({ id }).unwrap();
-            if (res) {
-                toast.success("Tip deleted successfully");
-            }
-            return res
-        } catch (error: unknown) {
-            const errorMessage = (error as { data?: { message: string } })?.data?.message || "Failed to delete tip"
-            toast.error(errorMessage)
-            console.log(error)
-        }
-    };
+  const deleteTips = async (id: string) => {
+    try {
+      const res = await deleteTipMutation(id).unwrap();
+      toast.success("Tip deleted successfully");
+      return res;
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to delete tip");
+    }
+  };
 
     return {
         createTips,

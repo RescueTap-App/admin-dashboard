@@ -2,140 +2,113 @@
 
 import { ReusableFormField } from "@/components/shared/forms/form-input";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import {
   createTipSchema,
-  createTipSchemaType,
+  CreateTipSchemaType,
 } from "@/constants/validations/blogs";
 import useBlogs from "@/hooks/use-blogs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 function CreateTips() {
-  const { createTips, creatingTip, sendTestTip, sendingTestTip } =
-    useBlogs({});
-
-  // ✅ Form for Automated Tips
-  const automatedForm = useForm<createTipSchemaType>({
+  const { createTips, creatingTip, sendTestTip, sendingTestTip } = useBlogs({});
+  const automatedForm = useForm<CreateTipSchemaType>({
     resolver: zodResolver(createTipSchema),
     defaultValues: {
       content: "",
+      category: "Safety",
     },
   });
 
-  // ✅ Form for Instant Tips
-  const instantForm = useForm<createTipSchemaType>({
+  const instantForm = useForm<CreateTipSchemaType>({
     resolver: zodResolver(createTipSchema),
     defaultValues: {
       content: "",
+      category: "Safety",
     },
   });
-
-  const handleCreateAutomatedTip = async (
-    data: createTipSchemaType
-  ) => {
-    const res = await createTips(data.content);
-    if (res) {
-      automatedForm.reset();
-    }
-  };
-
-  const handleSendInstantTip = async (
-    data: createTipSchemaType
-  ) => {
-    const res = await sendTestTip(data.content);
-    if (res) {
-      instantForm.reset();
-    }
-  };
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      {/* ================= Automated Tips ================= */}
-      <Card className="rounded shadow max-w-4xl mx-auto w-full">
+      {/* Automated */}
+      <Card>
         <CardHeader>
           <CardTitle>Create Automated Tips</CardTitle>
-          <CardDescription>
-            Create a new tip in the RescueTap system that is posted
-            at 7am and 4pm daily
-          </CardDescription>
+          <p className="text-sm text-muted-foreground">
+            These tips are automatically scheduled and sent at 7:00 AM and 4:00
+            PM daily.
+          </p>
         </CardHeader>
-
         <CardContent>
           <Form {...automatedForm}>
             <form
-              onSubmit={automatedForm.handleSubmit(
-                handleCreateAutomatedTip
-              )}
+              onSubmit={automatedForm.handleSubmit(createTips)}
               className="space-y-6"
             >
               <ReusableFormField
                 control={automatedForm.control}
                 name="content"
                 fieldType="textarea"
-                className="h-20 text-sm rounded"
-                placeholder="Stay hydrated. Learn more: https://example.com"
+                placeholder="Enter the automated tip content here..."
+                className="placeholder:text-muted-foreground"
               />
 
-              <CardFooter className="flex justify-end px-0">
-                <Button
-                  disabled={creatingTip}
-                  type="submit"
-                  className="rounded bg-[#EF4136] hover:bg-[#EF4136]/50 text-white py-3"
-                >
-                  {creatingTip ? "Processing..." : "Create Tip"}
-                </Button>
-              </CardFooter>
+              <ReusableFormField
+                control={automatedForm.control}
+                name="category"
+                fieldType="select"
+                selectOptions={[
+                  { label: "Safety", value: "Safety" },
+                  { label: "Updates", value: "Updates" },
+                ]}
+              />
+
+              <Button disabled={creatingTip} type="submit">
+                {creatingTip ? "Processing..." : "Create Automated Tip"}
+              </Button>
             </form>
           </Form>
         </CardContent>
       </Card>
 
-      {/* ================= Instant Tips ================= */}
-      <Card className="rounded shadow max-w-4xl mx-auto w-full">
+      {/* Instant */}
+      <Card>
         <CardHeader>
           <CardTitle>Create Instant Tips</CardTitle>
-          <CardDescription>
-            Send an instant tip to the RescueTap system. This
-            automatically notifies all organizations and users.
-          </CardDescription>
+          <p className="text-sm text-muted-foreground">
+            These tips are sent immediately and notify all organizations and
+            users in real time.
+          </p>
         </CardHeader>
-
         <CardContent>
           <Form {...instantForm}>
             <form
-              onSubmit={instantForm.handleSubmit(
-                handleSendInstantTip
-              )}
+              onSubmit={instantForm.handleSubmit(sendTestTip)}
               className="space-y-6"
             >
               <ReusableFormField
                 control={instantForm.control}
                 name="content"
                 fieldType="textarea"
-                className="h-20 text-sm rounded"
-                placeholder="Emergency alert. Details: https://rescuetap.com"
+                placeholder="Enter the instant tip content here..."
+                className="placeholder:text-muted-foreground"
               />
 
-              <CardFooter className="flex justify-end px-0">
-                <Button
-                  disabled={sendingTestTip}
-                  type="submit"
-                  className="rounded bg-[#EF4136] hover:bg-[#EF4136]/50 text-white py-3"
-                >
-                  {sendingTestTip
-                    ? "Processing..."
-                    : "Send Test Tip"}
-                </Button>
-              </CardFooter>
+              <ReusableFormField
+                control={instantForm.control}
+                name="category"
+                fieldType="select"
+                selectOptions={[
+                  { label: "Safety", value: "Safety" },
+                  { label: "Updates", value: "Updates" },
+                ]}
+              />
+
+              <Button disabled={sendingTestTip} type="submit">
+                {sendingTestTip ? "Processing..." : "Send Instant Tip"}
+              </Button>
             </form>
           </Form>
         </CardContent>
