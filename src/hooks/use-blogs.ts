@@ -178,7 +178,7 @@ const createTips = async (data: CreateTipSchemaType) => {
       const res = await createTipMutation(data).unwrap();
       toast.success("Tip created successfully");
       return res;
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error(error?.data?.message || "Failed to create tip");
     }
   };
@@ -188,7 +188,7 @@ const createTips = async (data: CreateTipSchemaType) => {
       const res = await sendTestTipMutation(data).unwrap();
       toast.success("Test tip sent successfully");
       return res;
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error(error?.data?.message || "Failed to send test tip");
     }
   };
@@ -198,7 +198,7 @@ const createTips = async (data: CreateTipSchemaType) => {
       const res = await editTipMutation({ id, content }).unwrap();
       toast.success("Tip updated successfully");
       return res;
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error(error?.data?.message || "Failed to update tip");
     }
   };
@@ -208,7 +208,7 @@ const createTips = async (data: CreateTipSchemaType) => {
       const res = await deleteTipMutation(id).unwrap();
       toast.success("Tip deleted successfully");
       return res;
-    } catch (error: any) {
+    } catch (error: unknown) {
       toast.error(error?.data?.message || "Failed to delete tip");
     }
   };
