@@ -65,15 +65,14 @@ export function TipActions({ id, content }: TipProps) {
     form.reset({ content });
   }, [content, form]);
 
-  const handleSubmit = async (data: CreateTipSchemaType) => {
-    const res = await updateTips(id, {
-  ...data,
-});
-    if (res) {
-      form.reset(data); // ✅ immediately reflect updated text
-      setOpenEdit(false); // ✅ close modal after saving
-    }
-  };
+const handleSubmit = async (formData: CreateTipSchemaType) => {
+  const res = await updateTips(id, formData.content);
+  if (res) {
+    form.reset(formData); // ✅ immediately reflect updated text
+    setOpenEdit(false); // ✅ close modal after saving
+  }
+};
+
 
   return (
     <div className="flex items-center">
