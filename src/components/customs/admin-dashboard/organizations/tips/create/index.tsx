@@ -11,14 +11,32 @@ import {
 import useBlogs from "@/hooks/use-blogs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { TipCategory } from "@/redux/features/blogs-api";
 
 function CreateTips() {
-  const { createTips, creatingTip, sendTestTip, sendingTestTip } = useBlogs({});
+  const { 
+    createTips, 
+    creatingTip, 
+    sendTestTip, 
+    sendingTestTip,
+    tipCategories,
+    loadingTipCategories 
+  } = useBlogs({ 
+    fetchTipCategories: true
+  });
+  
+  // Transform tip categories to select options format
+  const categoryOptions = (tipCategories || []).map((category: TipCategory) => ({
+    label: category.name,
+    value: category.name,
+  }));
+
+  // Fix: Set a valid default value that matches the schema
   const automatedForm = useForm<CreateTipSchemaType>({
     resolver: zodResolver(createTipSchema),
     defaultValues: {
       content: "",
-      category: "Safety",
+      category: "Safety", // Changed from "" to a valid enum value
     },
   });
 
@@ -26,7 +44,7 @@ function CreateTips() {
     resolver: zodResolver(createTipSchema),
     defaultValues: {
       content: "",
-      category: "Safety",
+      category: "Safety", // Changed from "" to a valid enum value
     },
   });
 
@@ -52,20 +70,23 @@ function CreateTips() {
                 name="content"
                 fieldType="textarea"
                 placeholder="Enter the automated tip content here..."
-                className="placeholder:text-muted-foreground"
+                className="placeholder:text-muted-foreground min-h-[120px]"
               />
 
               <ReusableFormField
                 control={automatedForm.control}
                 name="category"
                 fieldType="select"
-                selectOptions={[
-                  { label: "Safety", value: "Safety" },
-                  { label: "Updates", value: "Updates" },
-                ]}
+                placeholder={loadingTipCategories ? "Loading tip categories..." : "Select a tip category"}
+                disabled={loadingTipCategories}
+                options={categoryOptions}
               />
 
-              <Button disabled={creatingTip} type="submit">
+              <Button 
+                disabled={creatingTip || loadingTipCategories} 
+                type="submit"
+                className="w-full"
+              >
                 {creatingTip ? "Processing..." : "Create Automated Tip"}
               </Button>
             </form>
@@ -93,20 +114,23 @@ function CreateTips() {
                 name="content"
                 fieldType="textarea"
                 placeholder="Enter the instant tip content here..."
-                className="placeholder:text-muted-foreground"
+                className="placeholder:text-muted-foreground min-h-[120px]"
               />
 
               <ReusableFormField
                 control={instantForm.control}
                 name="category"
                 fieldType="select"
-                selectOptions={[
-                  { label: "Safety", value: "Safety" },
-                  { label: "Updates", value: "Updates" },
-                ]}
+                placeholder={loadingTipCategories ? "Loading tip categories..." : "Select a tip category"}
+                disabled={loadingTipCategories}
+                options={categoryOptions}
               />
 
-              <Button disabled={sendingTestTip} type="submit">
+              <Button 
+                disabled={sendingTestTip || loadingTipCategories} 
+                type="submit"
+                className="w-full"
+              >
                 {sendingTestTip ? "Processing..." : "Send Instant Tip"}
               </Button>
             </form>

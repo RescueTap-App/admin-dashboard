@@ -17,7 +17,11 @@ import {
     useEditTipsMutation,
     useDeleteTipMutation,
     useGetallTipsQuery,
-    useSendTestTipMutation
+    useSendTestTipMutation,
+    // Import the new tip categories hooks
+    useGetTipCategoriesQuery,
+    useGetTipCategoryQuery,
+    type TipCategory, // Import the type
 } from "@/redux/features/blogs-api";
 import { BlogDataTypes } from "@/types/blogs.types";
 import { useRouter } from "next/navigation";
@@ -30,8 +34,11 @@ interface BlogProps {
     blogId?: string;
     fetchAllCategories?: boolean;
     fetchAllTips?: boolean;
+    fetchTipCategories?: boolean; // Add this
+    fetchTipCategory?: boolean; // Add this
     fetchACategory?: boolean;
     categoryId?: string;
+    tipCategoryId?: string; // Add this
 }
 
 function getErrorMessage(error: unknown): string {
@@ -45,6 +52,7 @@ function getErrorMessage(error: unknown): string {
 
   return "Something went wrong";
 }
+
 export default function useBlogs({
     fetchAllBlogs,
     fetchABlog,
@@ -52,7 +60,10 @@ export default function useBlogs({
     fetchAllCategories,
     fetchACategory,
     fetchAllTips,
-    categoryId
+    fetchTipCategories, // Add this
+    fetchTipCategory, // Add this
+    categoryId,
+    tipCategoryId, // Add this
 }: BlogProps) {
     const router = useRouter();
     const [createBlogMutation, { isLoading: creatingBlog }] = useCreateBlogMutation();
@@ -65,6 +76,21 @@ export default function useBlogs({
     const [createCategoryMutation, { isLoading: creatingCategory }] = useCreateCategoryMutation();
     const [updateCategoryMutation, { isLoading: updatingCategory }] = useUpdateCategoryMutation();
     const [deleteCategoryMutation, { isLoading: deletingCategory }] = useDeleteCategoryMutation();
+
+    // Tip Categories queries
+    const { data: tipCategories, isLoading: loadingTipCategories } = useGetTipCategoriesQuery(undefined, {
+        skip: !fetchTipCategories,
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true,
+        refetchOnReconnect: true
+    });
+
+    const { data: tipCategory, isLoading: loadingTipCategory } = useGetTipCategoryQuery(tipCategoryId!, {
+        skip: !fetchTipCategory || !tipCategoryId,
+        refetchOnFocus: true,
+        refetchOnMountOrArgChange: true,
+        refetchOnReconnect: true
+    });
 
     const { data: tips, isLoading: loadingtips } = useGetallTipsQuery(undefined, {
         skip: !fetchAllTips,
@@ -156,7 +182,6 @@ export default function useBlogs({
         }
     };
 
-
     const updateCategory = async (data: CreateCategoryFormData,) => {
         try {
             const res = await updateCategoryMutation({ id: categoryId, data }).unwrap();
@@ -171,7 +196,6 @@ export default function useBlogs({
         }
     };
 
-
     const deleteCategory = async (id: string) => {
         try {
             const res = await deleteCategoryMutation({ id }).unwrap();
@@ -185,45 +209,46 @@ export default function useBlogs({
             console.log(error)
         }
     };
-const createTips = async (data: CreateTipSchemaType) => {
-    try {
-      const res = await createTipMutation(data).unwrap();
-      toast.success("Tip created successfully");
-      return res;
-   } catch (error: unknown) {
-  toast.error(getErrorMessage(error));
-}
-  };
 
-  const sendTestTip = async (data: CreateTipSchemaType) => {
-    try {
-      const res = await sendTestTipMutation(data).unwrap();
-      toast.success("Test tip sent successfully");
-      return res;
-  } catch (error: unknown) {
-  toast.error(getErrorMessage(error));
-}
-  };
+    const createTips = async (data: CreateTipSchemaType) => {
+        try {
+            const res = await createTipMutation(data).unwrap();
+            toast.success("Tip created successfully");
+            return res;
+        } catch (error: unknown) {
+            toast.error(getErrorMessage(error));
+        }
+    };
 
-  const updateTips = async (id: string, content: string) => {
-    try {
-      const res = await editTipMutation({ id, content }).unwrap();
-      toast.success("Tip updated successfully");
-      return res;
-  } catch (error: unknown) {
-  toast.error(getErrorMessage(error));
-}
-  };
+    const sendTestTip = async (data: CreateTipSchemaType) => {
+        try {
+            const res = await sendTestTipMutation(data).unwrap();
+            toast.success("Test tip sent successfully");
+            return res;
+        } catch (error: unknown) {
+            toast.error(getErrorMessage(error));
+        }
+    };
 
-  const deleteTips = async (id: string) => {
-    try {
-      const res = await deleteTipMutation(id).unwrap();
-      toast.success("Tip deleted successfully");
-      return res;
-   } catch (error: unknown) {
-  toast.error(getErrorMessage(error));
-}
-  };
+    const updateTips = async (id: string, content: string) => {
+        try {
+            const res = await editTipMutation({ id, content }).unwrap();
+            toast.success("Tip updated successfully");
+            return res;
+        } catch (error: unknown) {
+            toast.error(getErrorMessage(error));
+        }
+    };
+
+    const deleteTips = async (id: string) => {
+        try {
+            const res = await deleteTipMutation(id).unwrap();
+            toast.success("Tip deleted successfully");
+            return res;
+        } catch (error: unknown) {
+            toast.error(getErrorMessage(error));
+        }
+    };
 
     return {
         createTips,
@@ -257,6 +282,12 @@ const createTips = async (data: CreateTipSchemaType) => {
         updateCategory,
         updatingCategory,
         deleteCategory,
-        deletingCategory
+        deletingCategory,
+
+        // Tip Categories - NEW
+        tipCategories,
+        loadingTipCategories,
+        tipCategory,
+        loadingTipCategory,
     };
 }

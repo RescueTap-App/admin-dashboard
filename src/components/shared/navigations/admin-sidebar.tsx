@@ -94,7 +94,13 @@ const data = {
                 {
                     title: "Create Tips",
                     url: "/dashboard/blogs/tips/create"
-                }
+                },
+               
+{
+  title: "Tip Categories",
+  url: "/dashboard/blogs/tips/category",
+
+}
             ],
         },
     ],

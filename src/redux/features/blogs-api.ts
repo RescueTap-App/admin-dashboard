@@ -2,12 +2,25 @@ import { createApi } from '@reduxjs/toolkit/query/react';
 import { customBaseQueryWithReauth } from '@/lib/custom-base-query';
 import { BlogDataTypes } from '@/types/blogs.types';
 import { CreateCategoryFormData, CreateTipSchemaType } from '@/constants/validations/blogs';
+import { CreateTipCategorySchemaType } from "@/constants/validations/blogs";;
+
+// Add Tip Category interface for type safety
+export interface TipCategory {
+  _id: string;
+  name: string;
+  description: string;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+}
 
 export const blogsApi = createApi({
     reducerPath: 'blogsApi',
     baseQuery: customBaseQueryWithReauth,
-    tagTypes: ['Category', 'Blogs', 'Tips'],
+    tagTypes: ['Category', 'Blogs', 'Tips', 'TipCategories'],
     endpoints: (builder) => ({
+        // Category endpoints (Blog Categories)
         createCategory: builder.mutation({
             query: ({ data }: { data: CreateCategoryFormData }) => ({
                 url: `/blogs/categories`,
@@ -40,7 +53,7 @@ export const blogsApi = createApi({
             providesTags: ['Category'],
         }),
 
-        // blogs sections
+        // Blogs sections
         createBlog: builder.mutation({
             query: ({ data }: { data: BlogDataTypes }) => ({
                 url: `/blogs`,
@@ -72,6 +85,8 @@ export const blogsApi = createApi({
             }),
             invalidatesTags: ['Blogs'],
         }),
+
+        // Tips endpoints
         getallTips: builder.query({
             query: () => `/tips`,
             providesTags: ['Tips'],
@@ -80,43 +95,74 @@ export const blogsApi = createApi({
             query: (id: string) => `/tips/${id}`,
             providesTags: ['Tips'],
         }),
-       createTips: builder.mutation({
-      query: (data: CreateTipSchemaType) => ({
-        url: `/tips`,
-        method: "POST",
-        body: data,
-      }),
-      invalidatesTags: ["Tips"],
-    }),
-
-    sendTestTip: builder.mutation({
-      query: (data: CreateTipSchemaType) => ({
-        url: `/tips/send-test`,
-        method: "POST",
-        body: data,
-      }),
-    }),
-
+        createTips: builder.mutation({
+            query: (data: CreateTipSchemaType) => ({
+                url: `/tips`,
+                method: "POST",
+                body: data,
+            }),
+            invalidatesTags: ["Tips"],
+        }),
+        sendTestTip: builder.mutation({
+            query: (data: CreateTipSchemaType) => ({
+                url: `/tips/send-test`,
+                method: "POST",
+                body: data,
+            }),
+        }),
         editTips: builder.mutation({
-      query: ({ id, content }: { id: string; content: string }) => ({
-        url: `/tips/${id}`,
-        method: "PUT",
-        body: { content },
-      }),
-      invalidatesTags: ["Tips"],
-    }),
+            query: ({ id, content }: { id: string; content: string }) => ({
+                url: `/tips/${id}`,
+                method: "PUT",
+                body: { content },
+            }),
+            invalidatesTags: ["Tips"],
+        }),
+        deleteTip: builder.mutation({
+            query: (id: string) => ({
+                url: `/tips/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ["Tips"],
+        }),
 
-    deleteTip: builder.mutation({
-      query: (id: string) => ({
-        url: `/tips/${id}`,
-        method: "DELETE",
-      }),
-      invalidatesTags: ["Tips"],
-    }),
+        // Tip Categories endpoints
+        getTipCategories: builder.query<TipCategory[], void>({
+            query: () => `/tips/categories`,
+            providesTags: ['TipCategories'],
+        }),
+        getTipCategory: builder.query<TipCategory, string>({
+            query: (id) => `/tips/categories/${id}`,
+            providesTags: (result, error, id) => [{ type: 'TipCategories', id }],
+        }),
+        createTipCategory: builder.mutation<TipCategory, CreateTipCategorySchemaType>({
+            query: (data) => ({
+                url: `/tips/categories`,
+                method: "POST",
+                body: data,
+            }),
+            invalidatesTags: ['TipCategories'],
+        }),
+        updateTipCategory: builder.mutation<TipCategory, { id: string; data: CreateTipCategorySchemaType }>({
+            query: ({ id, data }) => ({
+                url: `/tips/categories/${id}`,
+                method: "PATCH",
+                body: data,
+            }),
+            invalidatesTags: (result, error, { id }) => [{ type: 'TipCategories', id }],
+        }),
+        deleteTipCategory: builder.mutation<void, string>({
+            query: (id) => ({
+                url: `/tips/categories/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ['TipCategories'],
+        }),
     }),
 });
 
 export const {
+    // Blog Category exports
     useCreateBlogMutation,
     useCreateCategoryMutation,
     useDeleteBlogMutation,
@@ -127,11 +173,19 @@ export const {
     useGetallCategoryQuery,
     useUpdateCategoryMutation,
     useUpdateBlogMutation,
+    
+    // Tips exports
     useCreateTipsMutation,
     useSendTestTipMutation,
     useEditTipsMutation,
     useDeleteTipMutation,
     useGetallTipsQuery,
-    useGetTipByIdQuery
+    useGetTipByIdQuery,
+    
+    // Tip Categories exports
+    useGetTipCategoriesQuery,
+    useGetTipCategoryQuery,
+    useCreateTipCategoryMutation,
+    useUpdateTipCategoryMutation,
+    useDeleteTipCategoryMutation,
 } = blogsApi;
-
