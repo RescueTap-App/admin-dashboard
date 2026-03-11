@@ -21,6 +21,7 @@ interface VisitorData {
     startTime: string
     endTime: string
     entryCode: string
+    checkedInAt: string
     status: 'pending' | 'expired' | 'checked_out' | 'checked_in' | 'canceled'
     photoUrl: string | null
     createdAt: string
