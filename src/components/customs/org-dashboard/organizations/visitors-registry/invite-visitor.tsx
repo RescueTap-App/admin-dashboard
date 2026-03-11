@@ -59,7 +59,7 @@ export default function InviteVisitor() {
         // Convert datetime-local values to standard UTC ISO strings
         const startTimeISO = new Date(data.startTime).toISOString();
         const endTimeISO = new Date(data.endTime).toISOString();
-
+ const checkedInAtISO = new Date(data.checkedInAt).toISOString();
         const userData = {
             ...data,
             phone: fullPhoneNumber,
@@ -67,6 +67,7 @@ export default function InviteVisitor() {
             endTime: endTimeISO,
             isPersistent: data.isPersistent === "true",
             notifyVia: data.notifyVia,
+            checkedInAt: checkedInAtISO,
             timezone: data.timezone
         }
         // console.log(userData)
