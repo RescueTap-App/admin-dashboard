@@ -24,6 +24,7 @@ interface VisitorData {
     status: 'pending' | 'expired' | 'checked_out' | 'checked_in' | 'canceled'
     photoUrl: string | null
     createdAt: string
+    checkedInAt: string
     updatedAt: string
     __v: number
 }

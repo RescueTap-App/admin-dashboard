@@ -22,6 +22,7 @@ interface VisitorData {
     entryCode: string
     status: 'pending' | 'expired' | 'checked_out' | 'checked_in' | 'canceled'
     photoUrl: string | null
+    checkedInAt: string
     createdAt: string
     updatedAt: string
     __v: number
@@ -141,6 +142,10 @@ export default function VerificationDialog({
                                         <p className="text-sm text-gray-900">{formattedData?.endTime}</p>
                                     </div>
                                     <div>
+                                        <span className="text-sm font-medium text-gray-700">Check In Time</span>
+                                        <p className="text-sm text-gray-900">{formattedData?.checkedInAt}</p>
+                                    </div>
+                                     <div>
                                         <span className="text-sm font-medium text-gray-700">Created</span>
                                         <p className="text-sm text-gray-900">{formattedData?.createdAt}</p>
                                     </div>

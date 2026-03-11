@@ -37,6 +37,7 @@ export default function InviteVisitor() {
             email: "",
             startTime: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
             endTime: format(new Date(Date.now() + 10 * 60 * 1000), "yyyy-MM-dd'T'HH:mm"),
+            
             vehicleNumber: "",
             notifyVia: "email",
             isPersistent: "false",

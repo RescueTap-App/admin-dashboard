@@ -209,7 +209,7 @@ const columns: ColumnDef<ActiveVisitorsLogTableTypes>[] = [
     },
     {
         accessorKey: "startTime",
-        header: "Check-In-Time",
+        header: "Start Time",
         cell: ({ row }) => (
             <div className="max-w-fit">
                 <p className="text-muted-foreground px-1.5 font-lato">
@@ -218,9 +218,10 @@ const columns: ColumnDef<ActiveVisitorsLogTableTypes>[] = [
             </div>
         ),
     },
+
     {
         accessorKey: "endTime",
-        header: "Check-Out-Time",
+        header: "End Time",
         cell: ({ row }) => (
             <div className="max-w-fit">
                 <p className="text-muted-foreground px-1.5 font-lato">
@@ -229,7 +230,19 @@ const columns: ColumnDef<ActiveVisitorsLogTableTypes>[] = [
             </div>
         ),
     },
-
+ {
+        accessorKey: "checkedInAt",
+        header: "Check-In Time",
+        cell: ({ row }) => (
+            <div className="max-w-fit">
+                <p className="text-muted-foreground px-1.5 font-lato">
+                  {row.original.checkedInAt
+  ? format(new Date(row.original.checkedInAt), 'MMM d, yyyy hh:mm a')
+  : `Hasn't Checked In`}
+                </p>
+            </div>
+        ),
+    },
     {
         id: "id",
         header: "Actions",

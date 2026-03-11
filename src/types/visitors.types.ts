@@ -28,6 +28,7 @@ export type ActiveVisitorsLogTableTypes = {
     status: 'pending' | 'expired' | 'checked_out' | 'checked_in' | 'canceled';
     startTime: string;
     endTime: string;
+    checkedInAt: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -56,6 +57,7 @@ export type VisitorDataTypes = {
     name: string;
     vehicleNumber?: string;
     purpose: string;
+    checkedInAt: string;
     startTime: string;
     endTime: string;
 }

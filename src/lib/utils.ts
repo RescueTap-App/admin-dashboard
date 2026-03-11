@@ -186,6 +186,7 @@ export function formatVisitorDisplayData(visitor: any) {
     status: visitor.status || 'N/A',
     startTime: visitor.startTime ? new Date(visitor.startTime).toLocaleString() : 'N/A',
     endTime: visitor.endTime ? new Date(visitor.endTime).toLocaleString() : 'N/A',
+     checkedInAt: visitor.checkedInAt ? new Date(visitor.checkedInAt).toLocaleString() : 'N/A',
     createdAt: visitor.createdAt ? new Date(visitor.createdAt).toLocaleString() : 'N/A',
     tenantInfo: visitor.tenantId ? {
       name: `${visitor.tenantId.firstName || ''} ${visitor.tenantId.lastName || ''}`.trim() || 'N/A',
