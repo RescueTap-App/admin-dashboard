@@ -57,7 +57,6 @@ export type VisitorDataTypes = {
     name: string;
     vehicleNumber?: string;
     purpose: string;
-    checkedInAt: string;
     startTime: string;
     endTime: string;
 }

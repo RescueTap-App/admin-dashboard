@@ -37,8 +37,7 @@ export default function InviteVisitor() {
             email: "",
             startTime: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
             endTime: format(new Date(Date.now() + 10 * 60 * 1000), "yyyy-MM-dd'T'HH:mm"),
-            
-            vehicleNumber: "",
+           vehicleNumber: "",
             notifyVia: "email",
             isPersistent: "false",
             timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -59,15 +58,14 @@ export default function InviteVisitor() {
         // Convert datetime-local values to standard UTC ISO strings
         const startTimeISO = new Date(data.startTime).toISOString();
         const endTimeISO = new Date(data.endTime).toISOString();
- const checkedInAtISO = new Date(data.checkedInAt).toISOString();
-        const userData = {
+ const userData = {
             ...data,
             phone: fullPhoneNumber,
             startTime: startTimeISO,
             endTime: endTimeISO,
             isPersistent: data.isPersistent === "true",
             notifyVia: data.notifyVia,
-            checkedInAt: checkedInAtISO,
+          
             timezone: data.timezone
         }
         // console.log(userData)
