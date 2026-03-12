@@ -57,7 +57,7 @@ function ActiveVisitorsLog() {
             <div className="flex justify-start">
                 <Link href={"/org/visitors/verify"}>
                     <Button className={"bg-[#EF4136] hover:bg-[#EF4136]/50 rounded text-white"}>
-                        Verify Visitor Code
+                        Verify Visitor/Personnel Code
                         <IconPlus />
                     </Button>
                 </Link>

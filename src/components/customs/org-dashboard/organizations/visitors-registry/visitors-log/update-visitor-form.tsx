@@ -59,7 +59,7 @@ export function UpdateVisitorForm({ visitorData, onSubmit, onCancel }: UpdateVis
                     <CardHeader className="pb-4 font-nunito">
                         <CardTitle className="flex items-center gap-2 text-lg">
                             <UserIcon className="h-5 w-5" />
-                            Visitor Information
+                            Visitor/Personnel Information
                         </CardTitle>
                         <CardDescription>
                             Update the visitor&apos;s personal details and visit information
@@ -70,8 +70,8 @@ export function UpdateVisitorForm({ visitorData, onSubmit, onCancel }: UpdateVis
                         <ReusableFormField
                             control={methods.control}
                             name="name"
-                            label="Visitor Name *"
-                            placeholder="Enter visitor name"
+                            label="Visitor/Personnel Name *"
+                            placeholder="Enter visitor/Personnel name"
                             icon={<UserIcon className="h-4 w-4 text-black" />}
                         />
 

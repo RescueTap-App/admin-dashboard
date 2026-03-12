@@ -49,8 +49,8 @@ function ManualEntry({ onCodeSubmit, isVerifying }: ManualEntryProps) {
                     <Hash className="w-8 h-8 text-gray-600" />
                 </div>
                 <div>
-                    <h2 className="text-xl font-semibold text-gray-900">Verify Visitor Code</h2>
-                    <p className="text-gray-600">Enter QR Code to verify visitor access</p>
+                    <h2 className="text-xl font-semibold text-gray-900">Verify Visitor/Personnel Code</h2>
+                    <p className="text-gray-600">Enter QR Code to verify visitor/Personnel access</p>
                 </div>
             </div>
 

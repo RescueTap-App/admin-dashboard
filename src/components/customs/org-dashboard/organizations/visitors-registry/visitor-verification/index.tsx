@@ -162,8 +162,8 @@ export default function VisitorVerification() {
         <div className="w-full max-w-4xl mx-auto sm:p-6 p-2 space-y-6">
             {/* Header */}
             <div className="text-center space-y-2">
-                <h1 className="text-2xl font-bold font-nunito text-gray-900">Visitor Verification</h1>
-                <p className="text-gray-600 font-nunito">Scan visitor QR code to view information or manually verify access</p>
+                <h1 className="text-2xl font-bold font-nunito text-gray-900">Visitor/Personnel Verification</h1>
+                <p className="text-gray-600 font-nunito">Scan visitor/Personnel QR code to view information or manually verify access</p>
             </div>
 
             {/* Tab Navigation */}
@@ -180,7 +180,7 @@ export default function VisitorVerification() {
                             }`}
                     >
                         <QrCode className="w-4 h-4" />
-                        Scan Visitor QR
+                        Scan Visitor/Personnel QR
                     </button>
                     <button
                         onClick={() => {
@@ -229,8 +229,8 @@ export default function VisitorVerification() {
                                         <User className="w-6 h-6 text-blue-600" />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-semibold text-gray-900">Scanned Visitor Information</h3>
-                                        <p className="text-sm text-gray-600">Visitor data from QR code scan</p>
+                                        <h3 className="text-lg font-semibold text-gray-900">Scanned Visitor/Personnel Information</h3>
+                                        <p className="text-sm text-gray-600">Visitor/Personnel data from QR code scan</p>
                                     </div>
                                 </div>
                                 <div className="flex gap-2">

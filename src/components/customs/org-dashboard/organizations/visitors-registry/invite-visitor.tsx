@@ -82,12 +82,12 @@ export default function InviteVisitor() {
             <Card className={"rounded shadow max-w-4xl 2xl:max-w-4xl"}>
                 <CardContent className="space-y-4">
                     <div className="mb-6">
-                        <h1 className="text-xl font-semibold font-roboto mb-2">Generate Visitor Pass</h1>
-                        <p className="text-gray-600">Create a temporary tag pass for a visitor</p>
+                        <h1 className="text-xl font-semibold font-roboto mb-2">Generate Visitor/Personnel Pass</h1>
+                        <p className="text-gray-600">Create a temporary tag pass for a visitor/Personnel</p>
                     </div>
                     <div className={"border border-[#5283EB] bg-[#5283EB]/20 rounded-sm p-2"}>
-                        <h1 className={"text-[#063776] font-semibold font-roboto"}>Visitor Tag Number: BH-0007</h1>
-                        <p className={"text-[#00499A]"}>This unique identifier will be used to track the visitor in the system</p>
+                        <h1 className={"text-[#063776] font-semibold font-roboto"}>Visitor/Personnel Tag Number: BH-0007</h1>
+                        <p className={"text-[#00499A]"}>This unique identifier will be used to track the visitor/Personnel in the system</p>
                     </div>
                     <Form {...form}>
                         <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
@@ -156,7 +156,7 @@ export default function InviteVisitor() {
                                         name="isPersistent"
                                         render={({ field }) => (
                                             <FormItem>
-                                                <FormLabel>Persistent Visitor *</FormLabel>
+                                                <FormLabel>Persistent Visitor/Personnel *</FormLabel>
                                                 <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                     <FormControl>
                                                         <SelectTrigger>

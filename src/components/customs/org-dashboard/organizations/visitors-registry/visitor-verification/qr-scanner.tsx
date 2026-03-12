@@ -281,7 +281,7 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying }: QR
                 </div>
                 <div>
                     <h2 className="text-xl font-semibold text-gray-900 font-nunito">Scan Visitor QR</h2>
-                    <p className="text-gray-600 font-nunito">Scan visitor QR code containing 6-digit entry code</p>
+                    <p className="text-gray-600 font-nunito">Scan visitor/Personnel QR code containing 6-digit entry code</p>
                 </div>
             </div>
 
@@ -329,7 +329,7 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying }: QR
                             )}
                         </Button>
 
-                        <p className="text-sm text-gray-500">Position Visitor QR Code in camera view</p>
+                        <p className="text-sm text-gray-500">Position Visitor/Personnel QR Code in camera view</p>
 
                     </div>
                 ) : (
@@ -410,7 +410,7 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying }: QR
                 <div className="text-center text-xs text-gray-400 space-y-1">
                     <p>Debug: isScanning={String(isScanning)}, isTestMode={String(isTestMode)}, isCameraInitializing={String(isCameraInitializing)}, isQrVerifying={String(isQrVerifying)}</p>
                     <p>Camera Error: {cameraError || 'None'}</p>
-                    <p>Note: QR scanner only accepts 6-digit entry codes. Visitor data is fetched from the server.</p>
+                    <p>Note: QR scanner only accepts 6-digit entry codes. Visitor/Personnel data is fetched from the server.</p>
                 </div>
             </div>
         </div>

@@ -64,20 +64,20 @@ const data = {
             ],
         },
         {
-            title: "Visitors Registry",
+            title: "Visitors/Personnels Registry",
             url: "#",
             icon: MdOutlineEngineering,
             items: [
                 {
-                    title: "All Visitors",
+                    title: "All Visitors/Personnels",
                     url: "/org/visitors",
                 },
                 {
-                    title: "Verify Visitor",
+                    title: "Verify Visitor/Personnel",
                     url: "/org/visitors/verify",
                 },
                 {
-                    title: "Invite Visitor",
+                    title: "Invite Visitor/Personnel",
                     url: "/org/visitors/generate-pass",
                 },
             ],

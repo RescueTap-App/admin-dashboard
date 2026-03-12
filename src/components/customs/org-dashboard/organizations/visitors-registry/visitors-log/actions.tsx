@@ -126,9 +126,9 @@ export function VisitorsLogActions({ data }: { data: ActiveVisitorsLogTableTypes
                 <Drawer open={update} onOpenChange={setUpdate} direction="bottom">
                     <DrawerContent className="max-h-[90vh]">
                         <DrawerHeader>
-                            <DrawerTitle>Update Visitor</DrawerTitle>
+                            <DrawerTitle>Update Visitor/Personnel</DrawerTitle>
                             <DrawerDescription>
-                                Update visitor information for {data.name}
+                                Update visitor/Personnel information for {data.name}
                             </DrawerDescription>
                         </DrawerHeader>
                         <div className="px-4 pb-4 overflow-y-auto">
@@ -146,7 +146,7 @@ export function VisitorsLogActions({ data }: { data: ActiveVisitorsLogTableTypes
                         <DialogHeader>
                             <DialogTitle>Update Visitor</DialogTitle>
                             <DialogDescription>
-                                Update visitor information for {data.name}
+                                Update visitor/Personnel information for {data.name}
                             </DialogDescription>
                         </DialogHeader>
                         <UpdateVisitorForm
