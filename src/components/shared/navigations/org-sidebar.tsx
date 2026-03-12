@@ -64,7 +64,7 @@ const data = {
             ],
         },
         {
-            title: "Visitors/Personnels Registry",
+            title: "Visitors/Personnels",
             url: "#",
             icon: MdOutlineEngineering,
             items: [
