@@ -441,7 +441,7 @@ export function ActiveVisitorsLogTable({
                                 />
                             </SelectTrigger>
                             <SelectContent side="top">
-                                {[5, 10, 20, 30, 40, 50].map((pageSize) => (
+                                {[5, 10, 20, 30, 40, 50,100, 200].map((pageSize) => (
                                     <SelectItem key={pageSize} value={`${pageSize}`}>
                                         {pageSize}
                                     </SelectItem>
