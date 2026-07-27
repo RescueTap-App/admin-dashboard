@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { io, type Socket } from "socket.io-client"
 import {
   type EmergencySocketPayload,
@@ -16,6 +16,15 @@ type EmergencyLike = {
   isActive: boolean
 }
 
+function activeEmergencyKey(emergencies: EmergencyLike[] | undefined): string {
+  if (!Array.isArray(emergencies)) return ""
+  return emergencies
+    .filter((e) => e.isActive)
+    .map((e) => `${e.user._id}:${e._id}`)
+    .sort()
+    .join("|")
+}
+
 export function useEmergencyLivePositions(
   emergencies: EmergencyLike[] | undefined,
 ): Record<string, LivePosition> {
@@ -23,10 +32,15 @@ export function useEmergencyLivePositions(
   const socketRef = useRef<Socket | null>(null)
   const emergencyByUserRef = useRef<Map<string, string>>(new Map())
 
+  const subscriptionKey = useMemo(
+    () => activeEmergencyKey(emergencies),
+    [emergencies],
+  )
+
   // Keep userId → emergencyId map current for the active set
   useEffect(() => {
     const map = new Map<string, string>()
-    if (Array.isArray(emergencies)) {
+    if (subscriptionKey && Array.isArray(emergencies)) {
       for (const e of emergencies) {
         if (e.isActive) map.set(e.user._id, e._id)
       }
@@ -41,19 +55,15 @@ export function useEmergencyLivePositions(
       }
       return next
     })
-  }, [emergencies])
+    // Only re-run when the active user/emergency set changes, not on every poll
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subscriptionKey])
 
   useEffect(() => {
     const socket = io(SOCKET_URL, { autoConnect: true })
     socketRef.current = socket
 
-    const onConnect = () => {
-      // Socket connected; listeners attach in the emergencies effect below.
-    }
-    socket.on("connect", onConnect)
-
     return () => {
-      socket.off("connect", onConnect)
       socket.removeAllListeners()
       socket.disconnect()
       socketRef.current = null
@@ -62,15 +72,13 @@ export function useEmergencyLivePositions(
 
   useEffect(() => {
     const socket = socketRef.current
-    if (!socket) return
+    if (!socket || !subscriptionKey) return
 
-    const activeUserIds = Array.isArray(emergencies)
-      ? [
-          ...new Set(
-            emergencies.filter((e) => e.isActive).map((e) => e.user._id),
-          ),
-        ]
-      : []
+    const pairs = subscriptionKey.split("|").filter(Boolean).map((pair) => {
+      const [userId] = pair.split(":")
+      return userId
+    })
+    const activeUserIds = [...new Set(pairs)]
 
     const handlers = new Map<string, (data: EmergencySocketPayload) => void>()
 
@@ -117,7 +125,7 @@ export function useEmergencyLivePositions(
         socket.off(event, handler)
       }
     }
-  }, [emergencies])
+  }, [subscriptionKey])
 
   return livePositions
 }

@@ -1,6 +1,6 @@
 # Org-Admin Live Map — Accuracy & Realtime Design
 
-> **Status:** Approved for documentation; implementation not started  
+> **Status:** Implemented on org-admin `/org/emergencies`  
 > **Date:** 2026-07-27  
 > **Surface:** Org admin only (`/org/emergencies`)  
 > **Backlog:** 1.2, 1.3, 1.4 (and supports 1.1 map portion later)
