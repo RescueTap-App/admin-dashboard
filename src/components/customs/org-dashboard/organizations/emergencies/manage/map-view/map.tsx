@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from '@react-google-maps/api'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+import { GoogleMap, useJsApiLoader, Marker, InfoWindow, Circle } from '@react-google-maps/api'
 import { MAPS_API_KEY } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { IconMapPin, IconMail, IconPhone } from '@tabler/icons-react'
@@ -10,6 +10,7 @@ interface LocationData {
     id?: string
     latitude: number
     longitude: number
+    accuracy?: number
     title?: string
     description?: string
     type?: 'emergency' | 'user' | 'responder'
@@ -55,42 +56,58 @@ export default function MapView({ locations = [], emergencies = [] }: MapViewPro
         googleMapsApiKey: MAPS_API_KEY!,
     })
 
-    const [, setMap] = React.useState<google.maps.Map | null>(null)
+    const mapRef = useRef<google.maps.Map | null>(null)
     const [selectedEmergency, setSelectedEmergency] = useState<EmergencyData | null>(null)
 
-    // Find emergency data by location ID
     const findEmergencyByLocation = (locationId: string | undefined): EmergencyData | null => {
         if (!locationId) return null
         return emergencies.find(emergency => emergency._id === locationId) || null
     }
 
-    const onLoad = React.useCallback(function callback(map: google.maps.Map) {
-        // Create bounds that include all locations and center
+    const locationIdsKey = useMemo(
+        () =>
+            locations
+                .map((l) => l.id)
+                .filter(Boolean)
+                .sort()
+                .join("|"),
+        [locations],
+    )
+
+    const fitToLocations = React.useCallback((map: google.maps.Map) => {
         const bounds = new window.google.maps.LatLngBounds()
-        bounds.extend(center) // Always include the default center
-
-        // Include all location points in bounds
-        locations.forEach(location => {
-            bounds.extend({
-                lat: location.latitude,
-                lng: location.longitude
+        if (locations.length === 0) {
+            bounds.extend(center)
+        } else {
+            locations.forEach((location) => {
+                bounds.extend({
+                    lat: location.latitude,
+                    lng: location.longitude,
+                })
             })
-        })
-
-        // If no locations provided, just use the default center
-        // The empty state overlay will be displayed
-
+        }
         map.fitBounds(bounds)
-
-        setMap(map)
     }, [locations])
 
-    const onUnmount = React.useCallback(function callback() {
-        setMap(null)
+    const onLoad = React.useCallback((map: google.maps.Map) => {
+        mapRef.current = map
+        fitToLocations(map)
+    }, [fitToLocations])
+
+    const onUnmount = React.useCallback(() => {
+        mapRef.current = null
     }, [])
 
+    // Re-fit only when the set of emergency IDs changes, not on every coordinate tick
+    useEffect(() => {
+        if (!mapRef.current) return
+        fitToLocations(mapRef.current)
+        // intentionally depend on locationIdsKey, not full locations
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [locationIdsKey])
+
     return isLoaded ? (
-        <div>
+        <div className="relative">
             <Button variant="link" size="default" className={"rounded mb-2"}>
                 <IconMapPin />
                 Add Marker
@@ -102,9 +119,6 @@ export default function MapView({ locations = [], emergencies = [] }: MapViewPro
                 onLoad={onLoad}
                 onUnmount={onUnmount}
             >
-                {/* Child components, such as markers, info windows, etc. */}
-
-                {/* Empty state overlay when no emergencies */}
                 {locations.length === 0 && (
                     <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-10 pointer-events-none">
                         <div className="text-center max-w-md mx-auto p-6 bg-white/95 rounded-lg shadow-lg border">
@@ -127,7 +141,6 @@ export default function MapView({ locations = [], emergencies = [] }: MapViewPro
                     </div>
                 )}
 
-                {/* Render markers for provided locations */}
                 {locations.map((location, index) => {
                     const emergencyData = findEmergencyByLocation(location.id)
                     return (
@@ -143,7 +156,6 @@ export default function MapView({ locations = [], emergencies = [] }: MapViewPro
                                     setSelectedEmergency(emergencyData)
                                 }
                             }}
-                            // Custom icon for different location types
                             icon={location.type === 'emergency' ? {
                                 url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
                                     <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -160,15 +172,49 @@ export default function MapView({ locations = [], emergencies = [] }: MapViewPro
                     )
                 })}
 
-                {/* InfoWindow for selected emergency */}
+                {locations.map((location, index) => {
+                    if (
+                        typeof location.accuracy !== "number" ||
+                        !Number.isFinite(location.accuracy) ||
+                        location.accuracy <= 0
+                    ) {
+                        return null
+                    }
+                    return (
+                        <Circle
+                            key={`accuracy-${location.id || index}`}
+                            center={{ lat: location.latitude, lng: location.longitude }}
+                            radius={location.accuracy}
+                            options={{
+                                fillColor: "#dc2626",
+                                fillOpacity: 0.12,
+                                strokeColor: "#dc2626",
+                                strokeOpacity: 0.4,
+                                strokeWeight: 1,
+                                clickable: false,
+                            }}
+                        />
+                    )
+                })}
+
                 {selectedEmergency && (() => {
                     try {
-                        const locationData = JSON.parse(selectedEmergency.location)
+                        const selectedLocation = locations.find((l) => l.id === selectedEmergency._id)
+                        let infoLat: number
+                        let infoLng: number
+                        if (selectedLocation) {
+                            infoLat = selectedLocation.latitude
+                            infoLng = selectedLocation.longitude
+                        } else {
+                            const locationData = JSON.parse(selectedEmergency.location)
+                            infoLat = locationData.coords.latitude
+                            infoLng = locationData.coords.longitude
+                        }
                         return (
                             <InfoWindow
                                 position={{
-                                    lat: locationData.coords.latitude,
-                                    lng: locationData.coords.longitude
+                                    lat: infoLat,
+                                    lng: infoLng,
                                 }}
                                 onCloseClick={() => setSelectedEmergency(null)}
                             >

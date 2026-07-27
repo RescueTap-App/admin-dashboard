@@ -5,6 +5,7 @@ interface LocationData {
     id?: string
     latitude: number
     longitude: number
+    accuracy?: number
     title?: string
     description?: string
     type?: 'emergency' | 'user' | 'responder'
