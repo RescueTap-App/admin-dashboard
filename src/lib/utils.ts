@@ -8,6 +8,7 @@ export const MAPS_API_KEY = "AIzaSyBVNl95P-xbD9Xj-baOThLU0SMwtyzTHBo"
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+
 export const formatCurrency = (amount: number, currency: 'NGN' | 'USD' = 'NGN') => {
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -27,7 +28,6 @@ export function formatNumber(value: number | string): string {
 
   return new Intl.NumberFormat('en-US').format(rounded);
 }
-
 
 export function disableConsoleLogsInProduction() {
   if (process.env.NODE_ENV === "production") {
