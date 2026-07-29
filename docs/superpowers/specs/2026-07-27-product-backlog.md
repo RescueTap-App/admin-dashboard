@@ -21,9 +21,9 @@ Suggested build order (rough): **7 → 5 → 4 → 3 → 2 → 1 → 6 → 8**
 | ID | Task | Area | Status | Notes |
 |----|------|------|--------|-------|
 | 1.1 | Location-based reporting via map and notifications | shared | todo | Report incidents/locations on map; notify relevant admins/users |
-| 1.2 | More precise location on the map | org-admin | todo | Improve accuracy of plotted pins; see `2026-07-27-org-admin-live-map-design.md` |
-| 1.3 | Real-time tracking on the admin map | org-admin | todo | Live position updates per emergency user; org-admin only this pass |
-| 1.4 | Reduce 4–5s lag before location appears on the map | org-admin | todo | Socket reuse + live overlay; see live-map design |
+| 1.2 | More precise location on the map | org-admin | done | Implemented per `2026-07-27-org-admin-live-map-design.md` (meters gate + accuracy circle) |
+| 1.3 | Real-time tracking on the admin map | org-admin | done | Per-user live socket positions on `/org/emergencies` |
+| 1.4 | Reduce 4–5s lag before location appears on the map | org-admin | done | Single socket client; live overlay prefers socket over 3s poll |
 | 1.5 | Link on admin dashboard to open Google Maps | super-admin, org-admin | todo | Deep-link from admin map/pin to Google Maps |
 | 1.6 | Snapchat-like map on the app and the admin | app, super-admin, org-admin | todo | Friend/bitmoji-style map UX across surfaces |
 
@@ -68,8 +68,8 @@ Suggested build order (rough): **7 → 5 → 4 → 3 → 2 → 1 → 6 → 8**
 | 5.2 | User limit per organization | super-admin, org-admin | todo | Enforce limit from 4.4 when inviting/adding users |
 | 5.3 | Separate org users from normal users on the admin | super-admin | todo | Distinct lists/filters/views |
 | 5.4 | Upgrade a normal user into an organization user | super-admin | todo | Promote / attach user to an org |
-| 5.5 | Restrict normal organization users from admin access | org-admin, shared | todo | Role gating so non-admin org members cannot open admin |
-| 5.6 | Hide or blur user details in user list for organizations | org-admin, super-admin | todo | Privacy: mask PII in org-scoped user lists |
+| 5.5 | Restrict normal organization users from admin access | org-admin, shared | done | Login toast + middleware: only `admin` / `organization` roles; see `2026-07-29-restrict-org-member-admin-access-design.md` |
+| 5.6 | Hide or blur user details in user list for organizations | org-admin | done | Partial asterisk mask on org `/org/users` (name, email, phone, address); see `2026-07-29-org-user-list-pii-masking-design.md` |
 | 5.7 | Edit organization details | super-admin, org-admin | todo | Update org profile/settings |
 | 5.8 | Show which users login to the app (esp. org users) in super-admin user list | super-admin | todo | Login activity columns/data on user list (ties to 4.3) |
 

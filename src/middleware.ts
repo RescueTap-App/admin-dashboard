@@ -1,32 +1,46 @@
 import { NextRequest, NextResponse } from "next/server";
 import { jwtDecode } from "jwt-decode";
+import {
+    canAccessAdminApp,
+    homePathForRole,
+    isPathAllowedForRole,
+} from "@/lib/admin-access";
 
 interface DecodedToken {
     exp: number;
     role?: string;
 }
 
-const PUBLIC_ROUTES = ["/", "/auth/forgot-password", "/auth/new-password", "/auth/verify-otp", "/"];
-const ADMIN_PROTECTED = ["/dashboard/organizations"];
-const ORG_PROTECTED = ["/org"];
+const PUBLIC_ROUTES = [
+    "/",
+    "/auth/forgot-password",
+    "/auth/new-password",
+    "/auth/verify-otp",
+    "/auth/signup",
+];
+
+const AUTH_PREFIXES = ["/auth"];
 
 export function middleware(request: NextRequest) {
     const token = request.cookies.get("token")?.value;
     const { pathname, search } = request.nextUrl;
 
-    // Helper to build redirect with intended URL
     const redirectToAuth = () => {
         const redirectUrl = new URL("/", request.url);
         redirectUrl.searchParams.set("redirect", pathname + search);
         return NextResponse.redirect(redirectUrl);
     };
 
+    const isPublic =
+        PUBLIC_ROUTES.includes(pathname) ||
+        AUTH_PREFIXES.some((p) => pathname.startsWith(p));
+
+    const isAdminArea = pathname.startsWith("/dashboard");
+    const isOrgArea = pathname.startsWith("/org");
+    const isProtected = isAdminArea || isOrgArea;
+
     if (!token) {
-        // Block protected routes if unauthenticated
-        if (
-            ADMIN_PROTECTED.some((path) => pathname.startsWith(path)) ||
-            ORG_PROTECTED.some((path) => pathname.startsWith(path))
-        ) {
+        if (isProtected) {
             return redirectToAuth();
         }
         return NextResponse.next();
@@ -37,34 +51,36 @@ export function middleware(request: NextRequest) {
         decoded = jwtDecode<DecodedToken>(token);
     } catch (err) {
         console.error("Invalid token", err);
-        return redirectToAuth();
+        const res = redirectToAuth();
+        res.cookies.delete("token");
+        return res;
     }
 
     const { exp, role } = decoded;
     const now = Date.now() / 1000;
 
-    // Expired token
     if (exp && exp < now) {
         const res = redirectToAuth();
         res.cookies.delete("token");
         return res;
     }
 
-    // Redirect logged-in users away from signup/register pages
-    if (PUBLIC_ROUTES.includes(pathname)) {
-        if (role === "admin") {
-            return NextResponse.redirect(new URL("/dashboard/organizations", request.url));
-        } else if (role === "organization") {
-            return NextResponse.redirect(new URL("/org", request.url));
+    // Logged-in users without admin-app roles should not keep a session here
+    if (!canAccessAdminApp(role) && isProtected) {
+        const res = NextResponse.redirect(new URL("/unauthorized", request.url));
+        res.cookies.delete("token");
+        return res;
+    }
+
+    // Redirect logged-in admins/orgs away from public auth/home
+    if (isPublic || pathname === "/") {
+        const home = homePathForRole(role);
+        if (home) {
+            return NextResponse.redirect(new URL(home, request.url));
         }
     }
 
-    // Role-based access restriction
-    if (pathname.startsWith("/dashboard/organizations") && role !== "admin") {
-        return NextResponse.redirect(new URL("/unauthorized", request.url));
-    }
-
-    if (pathname.startsWith("/org") && role !== "organization") {
+    if (isProtected && !isPathAllowedForRole(role, pathname)) {
         return NextResponse.redirect(new URL("/unauthorized", request.url));
     }
 
