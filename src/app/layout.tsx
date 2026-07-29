@@ -51,6 +51,7 @@ export default function RootLayout({
     <html lang="en">
       <body
         className={`${inter.variable} ${lato.variable} ${roboto.variable} ${roboto_mono.variable} ${nunito.variable} ${poppins.variable} antialiased scroll-smooth`}
+        suppressHydrationWarning
       >
         <ReduxProvider>
           {children}
