@@ -70,6 +70,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { OrgUsersTypes } from "@/types/organization.types";
+import { maskAddress, maskEmail, maskName, maskPhone } from "@/lib/mask-pii";
 import Image from "next/image";
 
 
@@ -144,7 +145,7 @@ const columns: ColumnDef<OrgUsersTypes>[] = [
         cell: ({ row }) => (
             <div className="max-w-fit">
                 <p className="text-muted-foreground px-1.5 font-lato">
-                    {row.original.firstName}
+                    {maskName(row.original.firstName)}
                 </p>
             </div>
         ),
@@ -155,7 +156,7 @@ const columns: ColumnDef<OrgUsersTypes>[] = [
         cell: ({ row }) => (
             <div className="max-w-fit">
                 <p className="text-muted-foreground px-1.5 font-lato">
-                    {row.original.lastName}
+                    {maskName(row.original.lastName)}
                 </p>
             </div>
         ),
@@ -166,7 +167,7 @@ const columns: ColumnDef<OrgUsersTypes>[] = [
         cell: ({ row }) => (
             <div className="max-w-fit">
                 <p className="text-muted-foreground px-1.5 font-lato">
-                    {row.original.email}
+                    {maskEmail(row.original.email)}
                 </p>
             </div>
         ),
@@ -177,7 +178,7 @@ const columns: ColumnDef<OrgUsersTypes>[] = [
         cell: ({ row }) => (
             <div className="max-w-fit">
                 <p className="text-muted-foreground px-1.5 font-lato">
-                    {row.original.phoneNumber}
+                    {maskPhone(row.original.phoneNumber)}
                 </p>
             </div>
         ),
@@ -188,7 +189,7 @@ const columns: ColumnDef<OrgUsersTypes>[] = [
         cell: ({ row }) => (
             <div className="max-w-fit">
                 <p className="text-muted-foreground px-1.5 font-lato">
-                    {row.original.address.slice(0, 15)}
+                    {maskAddress(row.original.address)}
                 </p>
             </div>
         ),
