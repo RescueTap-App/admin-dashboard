@@ -61,6 +61,7 @@ export const visitorsApi = createApi({
 
 export const {
     useGetOrgVisitorsQuery,
+    useLazyGetOrgVisitorsQuery,
     useGetAllVisitorsQuery,
     useGetTenantVisitorsQuery,
     useInviteVisitorMutation,

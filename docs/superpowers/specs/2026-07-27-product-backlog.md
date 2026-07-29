@@ -35,7 +35,7 @@ Suggested build order (rough): **7 → 5 → 4 → 3 → 2 → 1 → 6 → 8**
 |----|------|------|--------|-------|
 | 2.1 | Location-based check-in system | app, org-admin | todo | Check in against a place / geofence |
 | 2.2 | Flag for visitors late vs check-in time | org-admin, super-admin | todo | Visual/status flag when visitor arrives after expected time |
-| 2.3 | Activity log: export visitors as CSV with month filter | org-admin, super-admin | todo | Filter by month, export CSV |
+| 2.3 | Activity log: export visitors as CSV with month filter | org-admin | done | Month filter + full-month CSV on `/org/visitors`; swappable `VisitorMonthBasis` (default `checkedInAt`); see `2026-07-29-visitors-month-csv-export-design.md` |
 
 ---
 

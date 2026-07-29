@@ -313,9 +313,7 @@ export function ActiveVisitorsLogTable({
 
 
     React.useEffect(() => {
-        if (initialData?.length) {
-            setData(initialData);
-        }
+        setData(initialData ?? [])
     }, [initialData]);
 
     const table = useReactTable({
