@@ -69,7 +69,7 @@ Suggested build order (rough): **7 → 5 → 4 → 3 → 2 → 1 → 6 → 8**
 | 5.3 | Separate org users from normal users on the admin | super-admin | todo | Distinct lists/filters/views |
 | 5.4 | Upgrade a normal user into an organization user | super-admin | todo | Promote / attach user to an org |
 | 5.5 | Restrict normal organization users from admin access | org-admin, shared | todo | Role gating so non-admin org members cannot open admin |
-| 5.6 | Hide or blur user details in user list for organizations | org-admin, super-admin | todo | Privacy: mask PII in org-scoped user lists |
+| 5.6 | Hide or blur user details in user list for organizations | org-admin | done | Partial asterisk mask on org `/org/users` (name, email, phone, address); see `2026-07-29-org-user-list-pii-masking-design.md` |
 | 5.7 | Edit organization details | super-admin, org-admin | todo | Update org profile/settings |
 | 5.8 | Show which users login to the app (esp. org users) in super-admin user list | super-admin | todo | Login activity columns/data on user list (ties to 4.3) |
 
