@@ -3,6 +3,11 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { jwtDecode } from "jwt-decode";
+import {
+  canAccessAdminApp,
+  homePathForRole,
+  isPathAllowedForRole,
+} from "@/lib/admin-access";
 
 interface DecodedToken {
   exp: number;
@@ -20,14 +25,12 @@ export function useRedirect() {
       ?.split("=")[1];
 
     const path = window.location.pathname;
+    const isProtected =
+      path.startsWith("/dashboard") || path.startsWith("/org");
 
     if (!token) {
-      // If not logged in, block access to protected routes
-      if (
-        path.startsWith("/dashboard/organizations") ||
-        path.startsWith("/org")
-      ) {
-        router.replace("/auth/login");
+      if (isProtected) {
+        router.replace("/");
       }
       return;
     }
@@ -38,36 +41,31 @@ export function useRedirect() {
       decoded = jwtDecode<DecodedToken>(token);
     } catch (err) {
       console.error("Failed to decode token", err);
-      router.replace("/auth/login");
+      document.cookie =
+        "token=; path=/; expires=" + new Date(0).toUTCString();
+      router.replace("/");
       return;
     }
 
     const { exp, role } = decoded;
 
-    // Redirect logged-in users away from auth pages
-    if (path.startsWith("/auth")) {
-      if (role === "admin") {
-        router.replace("/dashboard/organizations");
-      } else if (role === "organization") {
-        router.replace("/org");
-      } else {
-        router.replace("/");
+    if (path.startsWith("/auth") || path === "/") {
+      const home = homePathForRole(role);
+      if (home) {
+        router.replace(home);
       }
       return;
     }
 
-    // Role-based access control
-    if (role === "admin" && !path.startsWith("/dashboard")) {
-      router.replace("/unauthorized");
-      return;
+    if (isProtected) {
+      if (!canAccessAdminApp(role) || !isPathAllowedForRole(role, path)) {
+        document.cookie =
+          "token=; path=/; expires=" + new Date(0).toUTCString();
+        router.replace("/unauthorized");
+        return;
+      }
     }
 
-    if (role === "organization" && !path.startsWith("/org")) {
-      router.replace("/unauthorized");
-      return;
-    }
-
-    // Token expiry handling
     if (exp) {
       const now = Date.now() / 1000;
       const timeUntilExpiry = (exp - now) * 1000;
@@ -75,12 +73,12 @@ export function useRedirect() {
       if (timeUntilExpiry <= 0) {
         document.cookie =
           "token=; path=/; expires=" + new Date(0).toUTCString();
-        router.replace("/auth/login");
+        router.replace("/");
       } else {
         const timeout = setTimeout(() => {
           document.cookie =
             "token=; path=/; expires=" + new Date(0).toUTCString();
-          router.replace("/auth/login");
+          router.replace("/");
         }, timeUntilExpiry);
 
         return () => clearTimeout(timeout);

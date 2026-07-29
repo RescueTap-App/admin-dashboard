@@ -5,6 +5,12 @@ import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import Cookies from "js-cookie";
 import { useRouter, useSearchParams } from "next/navigation";
+import {
+    canAccessAdminApp,
+    homePathForRole,
+    isSafeRedirectForRole,
+    NO_ADMIN_ACCESS_MESSAGE,
+} from "@/lib/admin-access";
 
 export function useAuth() {
 
@@ -16,9 +22,25 @@ export function useAuth() {
     const [resetMutation, { isLoading: resetting }] = useResetPasswordMutation();
     const [verifyMutation, { isLoading: verifying }] = useVerifyOtpMutation()
 
+    const clearClientSession = () => {
+        Cookies.remove("token");
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("userId");
+        sessionStorage.removeItem("role");
+        dispatch(resetUser());
+    };
+
     const login = async (credentials: LoginTypes) => {
         try {
             const res = await loginMutation(credentials).unwrap();
+            const role = res.user?.role as string | undefined;
+
+            // Normal users / org members / drivers cannot use this admin app
+            if (!canAccessAdminApp(role)) {
+                clearClientSession();
+                toast.error(NO_ADMIN_ACCESS_MESSAGE);
+                return;
+            }
 
             dispatch(
                 setCredentials({
@@ -30,20 +52,16 @@ export function useAuth() {
             sessionStorage.setItem("token", res.access_token);
             sessionStorage.setItem("userId", res.user._id);
             sessionStorage.setItem("role", res.user.role);
-            // Set cookie to expire in 7 days jk
             Cookies.set("token", res.access_token, { expires: 7 });
 
             toast.success(res.messages || "Login successful");
 
-            // check for redirect param
             const redirectUrl = searchParams?.get("redirect");
-
-            if (redirectUrl) {
-                router.replace(redirectUrl);
-            } else if (res.user.role === "admin") {
-                router.replace("/dashboard/organizations");
-            } else if (res.user.role === "organization") {
-                router.replace("/org");
+            if (isSafeRedirectForRole(role, redirectUrl)) {
+                router.replace(redirectUrl!);
+            } else {
+                const home = homePathForRole(role);
+                if (home) router.replace(home);
             }
 
             return res;
@@ -94,16 +112,7 @@ export function useAuth() {
     }
 
     const logOut = async () => {
-        // Clear cookies and session
-        Cookies.remove("token");
-        sessionStorage.removeItem("token");
-        sessionStorage.removeItem("userId");
-        sessionStorage.removeItem("role");
-
-        // Clear Redux/auth state if applicable
-        dispatch(resetUser());
-
-        // Redirect
+        clearClientSession();
         router.replace("/");
     };
 
