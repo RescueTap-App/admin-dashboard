@@ -34,7 +34,7 @@ Suggested build order (rough): **7 → 5 → 4 → 3 → 2 → 1 → 6 → 8**
 | ID | Task | Area | Status | Notes |
 |----|------|------|--------|-------|
 | 2.1 | Location-based check-in system | app, org-admin | todo | Check in against a place / geofence |
-| 2.2 | Flag for visitors late vs check-in time | org-admin, super-admin | todo | Visual/status flag when visitor arrives after expected time |
+| 2.2 | Flag for visitors late vs check-in time | org-admin | done | Amber Late badge when pending past startTime or checkedInAt after startTime; `src/lib/visitors/late-check-in.ts` |
 | 2.3 | Activity log: export visitors as CSV with month filter | org-admin | done | Month filter + full-month CSV on `/org/visitors`; swappable `VisitorMonthBasis` (default `checkedInAt`); see `2026-07-29-visitors-month-csv-export-design.md` |
 
 ---

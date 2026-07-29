@@ -18,6 +18,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import { isVisitorLate } from "@/lib/visitors/late-check-in"
 import { ActiveVisitorsLogTableTypes } from "@/types/visitors.types"
 import {
     closestCenter,
@@ -174,9 +175,11 @@ const columns: ColumnDef<ActiveVisitorsLogTableTypes>[] = [
     {
         accessorKey: "status",
         header: "Status",
-        cell: ({ row }) => (
-            <div className="w-32">
-                <Badge variant="outline" className="text-muted-foreground px-1.5">
+        cell: ({ row }) => {
+            const late = isVisitorLate(row.original)
+            return (
+            <div className="flex w-40 flex-col gap-1">
+                <Badge variant="outline" className="text-muted-foreground px-1.5 w-fit">
                     {row.original.status === 'pending' ? (
                         <React.Fragment>
                             <IconInfoCircle className={"fill-amber-500 text-white"} />
@@ -204,8 +207,18 @@ const columns: ColumnDef<ActiveVisitorsLogTableTypes>[] = [
                         </React.Fragment>
                     )}
                 </Badge>
+                {late && (
+                    <Badge
+                        variant="outline"
+                        className="w-fit border-amber-500/40 bg-amber-50 px-1.5 text-amber-700"
+                    >
+                        <IconInfoCircle className="fill-amber-500 text-white" />
+                        <span>Late</span>
+                    </Badge>
+                )}
             </div>
-        ),
+            )
+        },
     },
     {
         accessorKey: "startTime",
