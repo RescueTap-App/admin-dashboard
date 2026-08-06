@@ -1,19 +1,19 @@
 "use client"
 
-import { useGetVoiceNotesByUserQuery } from "@/redux/features/voice-notes-api"
 import {
+  useGetVoiceNotesByUserQuery,
+  useLazyGetVoiceNoteSignedUrlQuery,
+} from "@/redux/features/voice-notes-api"
+import {
+  extractSignedUrl,
   mapVoiceRecordToListItem,
   type VoiceNoteListItem,
 } from "@/types/voice-notes.types"
-import { useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 
 type UseVoiceNotesOptions = {
-  /**
-   * Logged-in user / organisation id used by `GET /voicerecord/user/:userId`.
-   * Do not pass other dashboard member ids.
-   */
+  /** Logged-in user / organisation id for `GET /voicerecord/user/:userId`. */
   userId?: string
-  /** When false, the query is skipped (e.g. super-admin dummy data path). */
   enabled?: boolean
 }
 
@@ -35,7 +35,11 @@ export default function useVoiceNotes({
     refetchOnReconnect: true,
   })
 
-  const voiceNotes: VoiceNoteListItem[] = useMemo(() => {
+  const [fetchSignedUrl] = useLazyGetVoiceNoteSignedUrlQuery()
+  const [urlById, setUrlById] = useState<Record<string, string>>({})
+  const [resolvingUrls, setResolvingUrls] = useState(false)
+
+  const baseNotes: VoiceNoteListItem[] = useMemo(() => {
     if (!raw?.length) return []
     return [...raw]
       .map(mapVoiceRecordToListItem)
@@ -45,10 +49,63 @@ export default function useVoiceNotes({
       )
   }, [raw])
 
+  // List items only have fileKey — resolve playable URLs via signed-url endpoint.
+  useEffect(() => {
+    let cancelled = false
+
+    const resolve = async () => {
+      const needsUrl = baseNotes.filter((n) => !n.audioUrl && !urlById[n.id])
+      if (!needsUrl.length) return
+
+      setResolvingUrls(true)
+      try {
+        const results = await Promise.all(
+          needsUrl.map(async (note) => {
+            try {
+              const response = await fetchSignedUrl(note.id).unwrap()
+              const url = extractSignedUrl(response)
+              return url ? ([note.id, url] as const) : null
+            } catch {
+              return null
+            }
+          }),
+        )
+
+        if (cancelled) return
+
+        setUrlById((prev) => {
+          const next = { ...prev }
+          for (const pair of results) {
+            if (pair) next[pair[0]] = pair[1]
+          }
+          return next
+        })
+      } finally {
+        if (!cancelled) setResolvingUrls(false)
+      }
+    }
+
+    void resolve()
+    return () => {
+      cancelled = true
+    }
+    // urlById intentionally omitted: we only resolve ids not already cached.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [baseNotes, fetchSignedUrl])
+
+  const voiceNotes: VoiceNoteListItem[] = useMemo(
+    () =>
+      baseNotes.map((note) => ({
+        ...note,
+        audioUrl: note.audioUrl || urlById[note.id],
+      })),
+    [baseNotes, urlById],
+  )
+
   return {
     voiceNotes,
     isLoading,
-    isFetching,
+    isFetching: isFetching || resolvingUrls,
     isError,
     error,
     refetch,

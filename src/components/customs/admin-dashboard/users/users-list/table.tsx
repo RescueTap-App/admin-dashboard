@@ -242,10 +242,9 @@ const columns: ColumnDef<UserListType>[] = [
     },
     {
         id: "actions",
-        header: "Actions",
-        cell: () => (
-            <UsersActions />
-        ),
+        header: () => <div className="text-right">Actions</div>,
+        cell: ({ row }) => <UsersActions user={row.original} />,
+        enableHiding: false,
     },
 ]
 

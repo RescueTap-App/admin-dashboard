@@ -1,61 +1,67 @@
-/** Row shape used by the admin/org voice-notes table UI. */
-export type VoiceNoteListItem = {
-  id: string
-  userName: string
-  recordedAt: string
-  durationLabel: string
-  relatedTo: string
-  status: "available" | "processing" | "unavailable"
-  audioUrl: string
-}
-
 /**
- * API record returned by `GET /voicerecord/user/:userId`
- * (and related voicerecord endpoints). Fields mirror the mobile app.
+ * API record from `GET /voicerecord/user/:userId`.
+ * Matches the live backend payload — do not invent missing fields.
  */
 export type VoiceRecordApiItem = {
   _id: string
-  fileKey?: string
-  createdAt?: string
-  updatedAt?: string
-  userId?: string
-  userName?: string
-  date?: string
-  time?: string
-  duration?: string | number
+  userId: string
+  fileKey: string
+  createdAt: string
+  updatedAt: string
+  __v?: number
+  /** Present only if the backend includes a playable URL on the list response. */
   url?: string
-  fileName?: string
 }
 
-function formatDurationLabel(duration: string | number | undefined): string {
-  if (duration == null || duration === "") return "—"
-  if (typeof duration === "string") {
-    // Already formatted (e.g. "0:02" or "00:02")
-    if (duration.includes(":")) return duration
-    const asNumber = Number(duration)
-    if (!Number.isFinite(asNumber)) return duration
-    duration = asNumber
-  }
-  const total = Math.max(0, Math.floor(duration))
-  const mins = Math.floor(total / 60)
-  const secs = total % 60
-  return `${mins}:${secs.toString().padStart(2, "0")}`
+/** Row model for the voice-notes table — only real API fields + resolved playback URL. */
+export type VoiceNoteListItem = {
+  id: string
+  userId: string
+  fileKey: string
+  recordedAt: string
+  /** Set after `GET /voicerecord/signed-url/:id` (or if list already returned `url`). */
+  audioUrl?: string
 }
 
-/** Map a backend voice-record document into the table row model. */
 export function mapVoiceRecordToListItem(
   record: VoiceRecordApiItem,
 ): VoiceNoteListItem {
-  const recordedAt = record.createdAt || record.date || ""
-  const hasUrl = Boolean(record.url)
-
   return {
     id: record._id,
-    userName: record.userName?.trim() || "Unknown user",
-    recordedAt: recordedAt || new Date(0).toISOString(),
-    durationLabel: formatDurationLabel(record.duration),
-    relatedTo: "Emergency recording",
-    status: hasUrl ? "available" : "processing",
-    audioUrl: record.url || "",
+    userId: record.userId,
+    fileKey: record.fileKey,
+    recordedAt: record.createdAt,
+    audioUrl: record.url || undefined,
   }
+}
+
+/** Extract a playable URL from the signed-url endpoint response. */
+export function extractSignedUrl(response: unknown): string | undefined {
+  if (!response) return undefined
+  if (typeof response === "string" && response.trim()) return response.trim()
+  if (typeof response !== "object") return undefined
+
+  const obj = response as Record<string, unknown>
+  const candidates = [obj.url, obj.signedUrl, obj.signed_url, obj.data]
+
+  for (const value of candidates) {
+    if (typeof value === "string" && value.trim()) return value.trim()
+    if (value && typeof value === "object") {
+      const nested = value as Record<string, unknown>
+      for (const key of ["url", "signedUrl", "signed_url"] as const) {
+        if (typeof nested[key] === "string" && nested[key].trim()) {
+          return (nested[key] as string).trim()
+        }
+      }
+    }
+  }
+
+  return undefined
+}
+
+/** Last path segment of an S3/file key for display (no invented labels). */
+export function fileKeyLabel(fileKey: string): string {
+  if (!fileKey) return ""
+  const parts = fileKey.split("/")
+  return parts[parts.length - 1] || fileKey
 }

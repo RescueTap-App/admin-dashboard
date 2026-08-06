@@ -2,8 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { GoogleMap, useJsApiLoader, Marker, InfoWindow, Circle } from '@react-google-maps/api'
 import { MAPS_API_KEY } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { IconMapPin, IconMail, IconPhone } from '@tabler/icons-react'
-import { openEmailClient, openWhatsAppOrPhone } from '../contact-utils'
+import { IconMapPin, IconMail, IconPhone, IconBrandGoogleMaps } from '@tabler/icons-react'
+import { openEmailClient, openInGoogleMaps, openWhatsAppOrPhone } from '../contact-utils'
 
 
 interface LocationData {
@@ -249,25 +249,36 @@ export default function MapView({ locations = [], emergencies = [] }: MapViewPro
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="flex gap-2 mt-3 pt-3 border-t">
+                                    <div className="flex flex-col gap-2 mt-3 pt-3 border-t">
                                         <Button
-                                            onClick={() => openEmailClient(selectedEmergency.user, selectedEmergency)}
-                                            variant="outline"
+                                            onClick={() => openInGoogleMaps(infoLat, infoLng)}
+                                            variant="default"
                                             size="sm"
-                                            className="flex-1 text-xs"
+                                            className="w-full text-xs bg-[#EF4136] hover:bg-[#EF4136]/90"
                                         >
-                                            <IconMail className="w-3 h-3 mr-1" />
-                                            Email
+                                            <IconBrandGoogleMaps className="w-3 h-3 mr-1" />
+                                            View in Google Maps
                                         </Button>
-                                        <Button
-                                            onClick={() => openWhatsAppOrPhone(selectedEmergency.user, selectedEmergency)}
-                                            variant="outline"
-                                            size="sm"
-                                            className="flex-1 text-xs"
-                                        >
-                                            <IconPhone className="w-3 h-3 mr-1" />
-                                            Contact
-                                        </Button>
+                                        <div className="flex gap-2">
+                                            <Button
+                                                onClick={() => openEmailClient(selectedEmergency.user, selectedEmergency)}
+                                                variant="outline"
+                                                size="sm"
+                                                className="flex-1 text-xs"
+                                            >
+                                                <IconMail className="w-3 h-3 mr-1" />
+                                                Email
+                                            </Button>
+                                            <Button
+                                                onClick={() => openWhatsAppOrPhone(selectedEmergency.user, selectedEmergency)}
+                                                variant="outline"
+                                                size="sm"
+                                                className="flex-1 text-xs"
+                                            >
+                                                <IconPhone className="w-3 h-3 mr-1" />
+                                                Contact
+                                            </Button>
+                                        </div>
                                     </div>
                                 </div>
                             </InfoWindow>

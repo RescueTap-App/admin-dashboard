@@ -1,7 +1,6 @@
 "use client"
 
 import SearchInput from "@/components/shared/search-input"
-import { Badge } from "@/components/ui/badge"
 import {
   Table,
   TableBody,
@@ -10,7 +9,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import type { VoiceNoteListItem } from "@/types/voice-notes.types"
+import {
+  fileKeyLabel,
+  type VoiceNoteListItem,
+} from "@/types/voice-notes.types"
 import { format } from "date-fns"
 import * as React from "react"
 
@@ -25,7 +27,8 @@ export function VoiceNotesTable({ data }: VoiceNotesTableProps) {
     const q = globalFilter.trim().toLowerCase()
     if (!q) return data
     return data.filter((row) =>
-      [row.userName, row.relatedTo, row.status, row.durationLabel]
+      [row.fileKey, row.userId, row.id, row.recordedAt]
+        .filter(Boolean)
         .join(" ")
         .toLowerCase()
         .includes(q),
@@ -46,70 +49,62 @@ export function VoiceNotesTable({ data }: VoiceNotesTableProps) {
         <Table>
           <TableHeader className="bg-muted sticky top-0 z-10">
             <TableRow>
-              <TableHead className="font-nunito">User</TableHead>
+              <TableHead className="font-nunito">File</TableHead>
+              <TableHead className="font-nunito">User ID</TableHead>
               <TableHead className="font-nunito">Recorded At</TableHead>
-              <TableHead className="font-nunito">Duration</TableHead>
-              <TableHead className="font-nunito">Related To</TableHead>
-              <TableHead className="font-nunito">Status</TableHead>
               <TableHead className="font-nunito">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filtered.length ? (
-              filtered.map((row) => (
-                <TableRow key={row.id}>
-                  <TableCell>
-                    <p className="text-muted-foreground px-1.5 font-lato">
-                      {row.userName}
-                    </p>
-                  </TableCell>
-                  <TableCell>
-                    <p className="text-muted-foreground px-1.5 font-lato">
-                      {(() => {
-                        const d = new Date(row.recordedAt)
-                        return Number.isNaN(d.getTime())
-                          ? "—"
-                          : format(d, "MMM d, yyyy hh:mm a")
-                      })()}
-                    </p>
-                  </TableCell>
-                  <TableCell>
-                    <p className="text-muted-foreground px-1.5 font-lato">
-                      {row.durationLabel}
-                    </p>
-                  </TableCell>
-                  <TableCell>
-                    <p className="text-muted-foreground px-1.5 font-lato">
-                      {row.relatedTo}
-                    </p>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className="text-muted-foreground px-1.5 capitalize">
-                      {row.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {row.audioUrl ? (
-                      <audio
-                        controls
-                        preload="metadata"
-                        src={row.audioUrl}
-                        aria-label={`Play voice note from ${row.userName}`}
-                        className="h-9 w-64 max-w-full"
+              filtered.map((row) => {
+                const recorded = row.recordedAt
+                  ? new Date(row.recordedAt)
+                  : null
+                const recordedLabel =
+                  recorded && !Number.isNaN(recorded.getTime())
+                    ? format(recorded, "MMM d, yyyy hh:mm a")
+                    : row.recordedAt
+
+                return (
+                  <TableRow key={row.id}>
+                    <TableCell>
+                      <p
+                        className="text-muted-foreground max-w-xs truncate px-1.5 font-lato"
+                        title={row.fileKey}
                       >
-                        Your browser does not support audio playback.
-                      </audio>
-                    ) : (
-                      <p className="text-muted-foreground px-1.5 text-sm font-lato">
-                        Playback unavailable
+                        {fileKeyLabel(row.fileKey) || row.fileKey}
                       </p>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))
+                    </TableCell>
+                    <TableCell>
+                      <p className="text-muted-foreground px-1.5 font-mono text-xs font-lato">
+                        {row.userId}
+                      </p>
+                    </TableCell>
+                    <TableCell>
+                      <p className="text-muted-foreground px-1.5 font-lato">
+                        {recordedLabel}
+                      </p>
+                    </TableCell>
+                    <TableCell>
+                      {row.audioUrl ? (
+                        <audio
+                          controls
+                          preload="metadata"
+                          src={row.audioUrl}
+                          aria-label={`Play voice note ${row.id}`}
+                          className="h-9 w-64 max-w-full"
+                        >
+                          Your browser does not support audio playback.
+                        </audio>
+                      ) : null}
+                    </TableCell>
+                  </TableRow>
+                )
+              })
             ) : (
               <TableRow>
-                <TableCell colSpan={6} className="h-24 text-center">
+                <TableCell colSpan={4} className="h-24 text-center">
                   No voice notes yet.
                 </TableCell>
               </TableRow>

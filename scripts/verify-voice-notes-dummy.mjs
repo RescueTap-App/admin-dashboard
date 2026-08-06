@@ -11,6 +11,7 @@ const readSource = (path) => {
 
 const typeSource = readSource("src/types/voice-notes.types.ts")
 const apiSource = readSource("src/redux/features/voice-notes-api.ts")
+const hookSource = readSource("src/hooks/use-voice-notes.ts")
 const listSource = readSource("src/components/shared/voice-notes/index.tsx")
 const adminPageSource = readSource(
   "src/app/(admin-dashboard)/dashboard/voice-notes/page.tsx",
@@ -22,8 +23,13 @@ const tableSource = readSource(
   "src/components/shared/voice-notes/table.tsx",
 )
 
-assert.match(typeSource, /audioUrl:\s*string/)
+assert.match(typeSource, /fileKey:\s*string/)
+assert.match(typeSource, /userId:\s*string/)
+assert.doesNotMatch(typeSource, /Unknown user/)
+assert.doesNotMatch(typeSource, /Emergency recording/)
 assert.match(apiSource, /\/voicerecord\/user\/\$\{userId\}/)
+assert.match(apiSource, /\/voicerecord\/signed-url\/\$\{id\}/)
+assert.match(hookSource, /fetchSignedUrl|getVoiceNoteSignedUrl|signed-url/)
 assert.match(listSource, /useVoiceNotes/)
 assert.match(listSource, /loggedInUserId/)
 assert.doesNotMatch(adminPageSource, /dummyVoiceNotes/)
