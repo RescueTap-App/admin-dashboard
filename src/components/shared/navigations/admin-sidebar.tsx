@@ -6,7 +6,8 @@ import {
     Car,
     Users,
     BookAudioIcon,
-    LogOut
+    LogOut,
+    AlertTriangle,
 } from "lucide-react"
 import {
     Sidebar,
@@ -67,6 +68,17 @@ const data = {
                 {
                     title: "Create User",
                     url: "/dashboard/users/create",
+                },
+            ],
+        },
+        {
+            title: "Emergencies",
+            url: "#",
+            icon: AlertTriangle,
+            items: [
+                {
+                    title: "Voice Notes",
+                    url: "/dashboard/voice-notes",
                 },
             ],
         },

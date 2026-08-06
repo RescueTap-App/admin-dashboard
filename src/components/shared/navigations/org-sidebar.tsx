@@ -90,7 +90,11 @@ const data = {
                 {
                     title: "All Emergencies",
                     url: "/org/emergencies",
-                }
+                },
+                {
+                    title: "Voice Notes",
+                    url: "/org/voice-notes",
+                },
             ],
         },
     ],

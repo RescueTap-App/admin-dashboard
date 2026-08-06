@@ -79,7 +79,7 @@ Suggested build order (rough): **7 → 5 → 4 → 3 → 2 → 1 → 6 → 8**
 
 | ID | Task | Area | Status | Notes |
 |----|------|------|--------|-------|
-| 6.1 | Page to view voice notes on admin dashboard | super-admin, org-admin | todo | Browse/play voice notes from emergencies or reports |
+| 6.1 | Page to view voice notes on admin dashboard | super-admin, org-admin | done | UI shell at `/dashboard/voice-notes` + `/org/voice-notes` (empty until list/play API) |
 
 ---
 
