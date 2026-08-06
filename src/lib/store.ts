@@ -11,6 +11,7 @@ import { combineReducers } from 'redux';
 import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { visitorsApi } from '@/redux/features/visitors-api';
+import { voiceNotesApi } from '@/redux/features/voice-notes-api';
 
 
 const persistConfig = {
@@ -27,6 +28,7 @@ const rootReducer = combineReducers({
     [driversApi.reducerPath]: driversApi.reducer,
     [organizationApi.reducerPath]: organizationApi.reducer,
     [visitorsApi.reducerPath]: visitorsApi.reducer,
+    [voiceNotesApi.reducerPath]: voiceNotesApi.reducer,
     auth: authSlice.reducer,
 });
 
@@ -44,7 +46,8 @@ export const store = configureStore({
             blogsApi.middleware,
             driversApi.middleware,
             organizationApi.middleware,
-            visitorsApi.middleware
+            visitorsApi.middleware,
+            voiceNotesApi.middleware
         ),
 });
 

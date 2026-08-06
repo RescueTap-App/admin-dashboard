@@ -65,7 +65,12 @@ export function VoiceNotesTable({ data }: VoiceNotesTableProps) {
                   </TableCell>
                   <TableCell>
                     <p className="text-muted-foreground px-1.5 font-lato">
-                      {format(new Date(row.recordedAt), "MMM d, yyyy hh:mm a")}
+                      {(() => {
+                        const d = new Date(row.recordedAt)
+                        return Number.isNaN(d.getTime())
+                          ? "—"
+                          : format(d, "MMM d, yyyy hh:mm a")
+                      })()}
                     </p>
                   </TableCell>
                   <TableCell>
@@ -84,15 +89,21 @@ export function VoiceNotesTable({ data }: VoiceNotesTableProps) {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <audio
-                      controls
-                      preload="metadata"
-                      src={row.audioUrl}
-                      aria-label={`Play voice note from ${row.userName}`}
-                      className="h-9 w-64 max-w-full"
-                    >
-                      Your browser does not support audio playback.
-                    </audio>
+                    {row.audioUrl ? (
+                      <audio
+                        controls
+                        preload="metadata"
+                        src={row.audioUrl}
+                        aria-label={`Play voice note from ${row.userName}`}
+                        className="h-9 w-64 max-w-full"
+                      >
+                        Your browser does not support audio playback.
+                      </audio>
+                    ) : (
+                      <p className="text-muted-foreground px-1.5 text-sm font-lato">
+                        Playback unavailable
+                      </p>
+                    )}
                   </TableCell>
                 </TableRow>
               ))

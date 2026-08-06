@@ -10,7 +10,8 @@ const readSource = (path) => {
 }
 
 const typeSource = readSource("src/types/voice-notes.types.ts")
-const dataSource = readSource("src/data/voice-notes.ts")
+const apiSource = readSource("src/redux/features/voice-notes-api.ts")
+const listSource = readSource("src/components/shared/voice-notes/index.tsx")
 const adminPageSource = readSource(
   "src/app/(admin-dashboard)/dashboard/voice-notes/page.tsx",
 )
@@ -22,13 +23,10 @@ const tableSource = readSource(
 )
 
 assert.match(typeSource, /audioUrl:\s*string/)
-assert.match(
-  dataSource,
-  /export const dummyVoiceNotes:\s*VoiceNoteListItem\[\]/,
-)
-assert.match(dataSource, /audioUrl:\s*["']https:\/\//)
-assert.match(adminPageSource, /import \{ dummyVoiceNotes \}/)
-assert.match(adminPageSource, /data=\{dummyVoiceNotes\}/)
+assert.match(apiSource, /\/voicerecord\/user\/\$\{userId\}/)
+assert.match(listSource, /useVoiceNotes/)
+assert.match(listSource, /loggedInUserId/)
+assert.doesNotMatch(adminPageSource, /dummyVoiceNotes/)
 assert.doesNotMatch(orgPageSource, /dummyVoiceNotes/)
 assert.match(tableSource, /<audio/)
 assert.match(tableSource, /controls/)

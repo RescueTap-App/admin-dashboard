@@ -1,5 +1,4 @@
 import VoiceNotesList from "@/components/shared/voice-notes"
-import { dummyVoiceNotes } from "@/data/voice-notes"
 import { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -10,9 +9,6 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <VoiceNotesList
-      description="Voice recordings from emergencies and alerts across the platform."
-      data={dummyVoiceNotes}
-    />
+    <VoiceNotesList description="Voice recordings from emergencies and alerts across the platform." />
   )
 }
