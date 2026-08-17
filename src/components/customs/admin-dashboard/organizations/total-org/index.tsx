@@ -17,6 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { UserLoginAnalytics } from "../../login-analytics";
 
 function StatsCardSkeleton() {
   return (
@@ -96,6 +97,12 @@ function Oraganizations() {
       ) : (
         <StatsCard data={analytics} />
       )}
+      
+      {/* User Login Analytics Widget */}
+      <div className="mt-10">
+        <UserLoginAnalytics />
+      </div>
+      
       <Card className={"rounded-sm mt-10 px-3 min-w-full shadow"}>
         <CardHeader className="flex flex-row justify-between px-0">
           <div>

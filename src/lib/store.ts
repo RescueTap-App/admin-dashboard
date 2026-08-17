@@ -4,6 +4,8 @@ import { organizationApi } from "@/redux/features/organization-api";
 import { uploadApi } from '@/redux/features/upload-api';
 import { usersApi } from "@/redux/features/users-api";
 import { blogsApi } from "@/redux/features/blogs-api"
+import { userSessionsApi } from '@/redux/features/user-sessions-api';
+import { analyticsApi } from '@/redux/features/analytics-api';
 import { authSlice } from '@/redux/slices/auth-slice';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
@@ -29,6 +31,8 @@ const rootReducer = combineReducers({
     [organizationApi.reducerPath]: organizationApi.reducer,
     [visitorsApi.reducerPath]: visitorsApi.reducer,
     [voiceNotesApi.reducerPath]: voiceNotesApi.reducer,
+    [userSessionsApi.reducerPath]: userSessionsApi.reducer,
+    [analyticsApi.reducerPath]: analyticsApi.reducer,
     auth: authSlice.reducer,
 });
 
@@ -47,7 +51,9 @@ export const store = configureStore({
             driversApi.middleware,
             organizationApi.middleware,
             visitorsApi.middleware,
-            voiceNotesApi.middleware
+            voiceNotesApi.middleware,
+            userSessionsApi.middleware,
+            analyticsApi.middleware
         ),
 });
 

@@ -8,6 +8,7 @@ import {
     BookAudioIcon,
     LogOut,
     AlertTriangle,
+    Activity,
 } from "lucide-react"
 import {
     Sidebar,
@@ -26,10 +27,22 @@ import Link from "next/link"
 const data = {
     navMain: [
         {
+            title: "Analytics",
+            url: "#",
+            icon: Activity,
+            isActive: true,
+            items: [
+                {
+                    title: "Dashboard",
+                    url: "/dashboard/analytics",
+                },
+            ],
+        },
+        {
             title: "Organizations",
             url: "#",
             icon: Boxes,
-            isActive: true,
+            isActive: false,
             items: [
                 {
                     title: "All Organizations",

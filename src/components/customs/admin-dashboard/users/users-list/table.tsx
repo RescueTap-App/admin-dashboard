@@ -136,7 +136,7 @@ const columns: ColumnDef<UserListType>[] = [
         header: "Profile",
         cell: ({ row }) => (
             <div className="w-10 h-10 relative">
-                <Image src={row.original.profileImage || "/icons/avatar.svg"}
+                <Image src={row.original.profileImage && (row.original.profileImage.startsWith('http') || row.original.profileImage.startsWith('/')) ? row.original.profileImage : "/icons/avatar.svg"}
                     alt={"Profile Image"}
                     fill
                     fetchPriority="high"
@@ -158,10 +158,36 @@ const columns: ColumnDef<UserListType>[] = [
         ),
     },
     {
-        accessorKey: "hasActiveSubscription",
+        accessorKey: "userType",
         header: "User Type",
+        cell: ({ row }) => {
+            const userType = row.original.userType;
+            let bgColor = "bg-blue-50 dark:bg-blue-950 text-blue-700 dark:text-blue-300";
+            let label = "Individual";
+
+            switch (userType) {
+                case "organization":
+                    bgColor = "bg-purple-50 dark:bg-purple-950 text-purple-700 dark:text-purple-300";
+                    label = "Organization";
+                    break;
+                case "family":
+                    bgColor = "bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300";
+                    label = "Family";
+                    break;
+            }
+
+            return (
+                <Badge className={`${bgColor} px-2.5 py-0.5 font-medium capitalize`}>
+                    {label}
+                </Badge>
+            );
+        },
+    },
+    {
+        accessorKey: "hasActiveSubscription",
+        header: "Subscription Status",
         cell: ({ row }) => (
-            <Badge variant="outline" className={`text-muted-foreground px-1.5 flex flex-row items-center capitalize ${row.original.verified ? "text-green-500 dark:text-green-400" : "text-amber-500 dark:text-amber-400"}`}>
+            <Badge variant="outline" className={`text-muted-foreground px-1.5 flex flex-row items-center capitalize ${row.original.hasActiveSubscription ? "text-green-500 dark:text-green-400" : "text-amber-500 dark:text-amber-400"}`}>
                 {row.original.hasActiveSubscription ? (
                     <IconCircleCheckFilled className="fill-green-500 dark:fill-green-400" />
                 ) : (
@@ -275,8 +301,12 @@ function DraggableRow({ row }: { row: Row<UserListType> }) {
 
 export function UsersListTable({
     data: initialData,
+    userTypeFilter = "all",
+    setUserTypeFilter,
 }: {
     data: UserListType[]
+    userTypeFilter?: "all" | "individual" | "family" | "organization"
+    setUserTypeFilter?: (filter: "all" | "individual" | "family" | "organization") => void
 }) {
     const [data, setData] = React.useState(() => initialData)
     const [rowSelection, setRowSelection] = React.useState({})
@@ -305,9 +335,15 @@ export function UsersListTable({
 
     React.useEffect(() => {
         if (initialData?.length) {
-            setData(initialData);
+            let filtered = initialData;
+
+            if (userTypeFilter !== "all") {
+                filtered = initialData.filter(user => user.userType === userTypeFilter);
+            }
+
+            setData(filtered);
         }
-    }, [initialData]);
+    }, [initialData, userTypeFilter]);
 
     const table = useReactTable({
         data,
@@ -350,7 +386,7 @@ export function UsersListTable({
 
     return (
         <React.Fragment>
-            <div className="flex items-center gap-3 mb-4">
+            <div className="flex items-center gap-3 mb-4 flex-wrap">
                 <SearchInput
                     value={globalFilter}
                     placeholder={"users"}
@@ -358,9 +394,53 @@ export function UsersListTable({
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" size="default" className={"rounded"}>
+                            {userTypeFilter === "all" ? (
+                                <>
+                                    <span className="hidden lg:inline">All Users</span>
+                                    <span className="lg:hidden">Users</span>
+                                </>
+                            ) : (
+                                <>
+                                    <span className="hidden lg:inline capitalize">{userTypeFilter === "organization" ? "Organization Users" : userTypeFilter === "family" ? "Family Users" : "Individual Users"}</span>
+                                    <span className="lg:hidden capitalize">{userTypeFilter}</span>
+                                </>
+                            )}
+                            <IconChevronDown />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                        <DropdownMenuCheckboxItem
+                            checked={userTypeFilter === "all"}
+                            onCheckedChange={() => setUserTypeFilter?.("all")}
+                        >
+                            All Users
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                            checked={userTypeFilter === "individual"}
+                            onCheckedChange={() => setUserTypeFilter?.("individual")}
+                        >
+                            Individual Users
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                            checked={userTypeFilter === "family"}
+                            onCheckedChange={() => setUserTypeFilter?.("family")}
+                        >
+                            Family Users
+                        </DropdownMenuCheckboxItem>
+                        <DropdownMenuCheckboxItem
+                            checked={userTypeFilter === "organization"}
+                            onCheckedChange={() => setUserTypeFilter?.("organization")}
+                        >
+                            Organization Users
+                        </DropdownMenuCheckboxItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="default" className={"rounded"}>
                             {/* <IconLayoutColumns /> */}
-                            <span className="hidden lg:inline">All Roles</span>
-                            <span className="lg:hidden">Roles</span>
+                            <span className="hidden lg:inline">Columns</span>
+                            <span className="lg:hidden">Cols</span>
                             <IconChevronDown />
                         </Button>
                     </DropdownMenuTrigger>
@@ -387,8 +467,7 @@ export function UsersListTable({
                                 )
                             })}
                     </DropdownMenuContent>
-                </DropdownMenu>
-            </div>
+                </DropdownMenu></div>
             <div className="overflow-hidden border">
                 <DndContext
                     collisionDetection={closestCenter}

@@ -16,6 +16,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
+import React from "react"
 
 function TableSkeleton() {
     return (
@@ -65,6 +66,7 @@ function TableSkeleton() {
 
 function UsersList() {
     const { all_users, loading_users } = useUsers({ fetchAllUsers: true })
+    const [userTypeFilter, setUserTypeFilter] = React.useState<"all" | "individual" | "family" | "organization">("all")
 
     return (
         <Fragment>
@@ -87,7 +89,7 @@ function UsersList() {
                         <TableSkeleton />
                     ) : (
                         <Suspense>
-                            <UsersListTable data={all_users || []} />
+                            <UsersListTable data={all_users || []} userTypeFilter={userTypeFilter} setUserTypeFilter={setUserTypeFilter} />
                         </Suspense>
                     )}
                 </div>

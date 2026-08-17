@@ -87,15 +87,16 @@ export default function VisitorVerification() {
     }
 
     const handleVerification = async (code: string) => {
-        if (!code || code.length !== 6) {
-            setDialogData({
-                success: false,
-                message: "Please enter a valid 6-digit code",
-                visitor: null
-            })
-            setIsDialogOpen(true)
-            return
-        }
+        //TODO(ANYDEV): UNCOMMENT THIS TO FINALIZE THE VALIDATION REINSTATION
+        // if (!code || code.length !== 6) {
+        //     setDialogData({
+        //         success: false,
+        //         message: "Please enter a valid 6-digit code",
+        //         visitor: null
+        //     })
+        //     setIsDialogOpen(true)
+        //     return
+        // }
 
         setIsVerifying(true)
         setVerificationResult(null)
@@ -323,7 +324,7 @@ export default function VisitorVerification() {
                                             <span className="text-sm font-medium text-gray-700">Created</span>
                                             <p className="text-sm text-gray-900">{formattedData?.createdAt}</p>
                                         </div>
-                                         <div>
+                                        <div>
                                             <span className="text-sm font-medium text-gray-700">Check In Time</span>
                                             <p className="text-sm text-gray-900">{formattedData?.checkedInAt}</p>
                                         </div>

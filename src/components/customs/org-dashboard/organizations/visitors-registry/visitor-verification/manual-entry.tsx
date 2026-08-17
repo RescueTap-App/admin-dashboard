@@ -8,12 +8,15 @@ import { Input } from "@/components/ui/input"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form"
 import { Hash, Check } from "lucide-react"
 
+//TODO(next dev): TEMPORAL REMOVAL OF THE VALIDATION was done in this file, reinstate the comments
+// to fix the validations back.
+
 const manualEntrySchema = z.object({
     code: z
         .string()
-        .min(1, "Code is required")
-        .length(6, "Code must be exactly 6 digits")
-        .regex(/^\d{6}$/, "Code must contain only numbers")
+    // .min(1, "Code is required")
+    // .length(6, "Code must be exactly 6 digits")
+    // .regex(/^\d{6}$/, "Code must contain only numbers")
 })
 
 type ManualEntryForm = z.infer<typeof manualEntrySchema>
@@ -37,7 +40,8 @@ function ManualEntry({ onCodeSubmit, isVerifying }: ManualEntryProps) {
 
     const handleInputChange = (value: string) => {
         // Only allow digits and limit to 6 characters
-        const numericValue = value.replace(/\D/g, '').slice(0, 6)
+        // const numericValue = value.replace(/\D/g, '').slice(0, 6)
+        const numericValue = value
         form.setValue('code', numericValue)
     }
 
@@ -68,7 +72,7 @@ function ManualEntry({ onCodeSubmit, isVerifying }: ManualEntryProps) {
                                             {...field}
                                             placeholder="Enter 6-digit code"
                                             className="text-center text-lg font-mono tracking-widest"
-                                            maxLength={6}
+                                            // maxLength={6}
                                             onChange={(e) => {
                                                 handleInputChange(e.target.value)
                                                 field.onChange(e.target.value)
@@ -83,7 +87,8 @@ function ManualEntry({ onCodeSubmit, isVerifying }: ManualEntryProps) {
 
                         <Button
                             type="submit"
-                            disabled={isVerifying || !form.watch('code') || form.watch('code').length !== 6}
+                            // disabled={isVerifying || !form.watch('code') || form.watch('code').length !== 6}
+                            disabled={isVerifying || !form.watch('code')}
                             className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 min-w-[100px]"
                         >
                             {isVerifying ? (
