@@ -96,29 +96,33 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
             let entryCode: string | null = null
 
             // Try to extract entry code from different formats
-            if (/^\d{6}$/.test(scannedData)) {
-                // Direct 6-digit entry code
-                entryCode = scannedData
-            } else {
-                // Try to parse as JSON and extract entry code
-                try {
-                    const parsedData = JSON.parse(scannedData)
-                    console.log('Parsed QR data:', parsedData)
+            // if (/^\d{6}$/.test(scannedData)) {
+            //     // Direct 6-digit entry code
+            //     entryCode = scannedData
+            // } else {
 
-                    // Check for different possible field names
-                    if (parsedData.name && /^\d{6}$/.test(parsedData.name)) {
-                        entryCode = parsedData.name
-                    } else if (parsedData.code && /^\d{6}$/.test(parsedData.code)) {
-                        entryCode = parsedData.code
-                    } else if (parsedData.entryCode && /^\d{6}$/.test(parsedData.entryCode)) {
-                        entryCode = parsedData.entryCode
-                    } else if (parsedData.id && /^\d{6}$/.test(parsedData.id)) {
-                        entryCode = parsedData.id
-                    }
-                } catch (parseError) {
-                    console.log('Failed to parse QR code as JSON:', parseError)
+            // Temporary removal of 6-digit validation
+            entryCode = scannedData;
+
+            // Try to parse as JSON and extract entry code
+            try {
+                const parsedData = JSON.parse(scannedData)
+                console.log('Parsed QR data:', parsedData)
+
+                // Check for different possible field names
+                if (parsedData.name /* && /^\d{6}$/.test(parsedData.name) */) {
+                    entryCode = parsedData.name
+                } else if (parsedData.code /* && /^\d{6}$/.test(parsedData.code) */) {
+                    entryCode = parsedData.code
+                } else if (parsedData.entryCode /* && /^\d{6}$/.test(parsedData.entryCode) */) {
+                    entryCode = parsedData.entryCode
+                } else if (parsedData.id /* && /^\d{6}$/.test(parsedData.id) */) {
+                    entryCode = parsedData.id
                 }
+            } catch (parseError) {
+                console.log('Failed to parse QR code as JSON:', parseError)
             }
+            // }
 
             if (entryCode) {
                 console.log('Entry code extracted:', entryCode)
