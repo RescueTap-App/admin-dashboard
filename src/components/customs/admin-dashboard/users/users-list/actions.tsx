@@ -37,7 +37,7 @@ export function UsersActions({ user }: UsersActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-52">
-          <DropdownMenuItem
+          {/* <DropdownMenuItem
             disabled={!canUpgrade}
             onSelect={(event) => {
               // Placeholder until the upgrade endpoint is ready.
@@ -45,7 +45,7 @@ export function UsersActions({ user }: UsersActionsProps) {
             }}
           >
             Upgrade to organization
-          </DropdownMenuItem>
+          </DropdownMenuItem> */}
           <DropdownMenuSeparator />
           <DropdownMenuItem variant="destructive" disabled>
             Delete

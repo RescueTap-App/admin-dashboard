@@ -30,7 +30,7 @@ function ManualEntry({ onCodeSubmit, isVerifying }: ManualEntryProps) {
     const form = useForm<ManualEntryForm>({
         resolver: zodResolver(manualEntrySchema),
         defaultValues: {
-            code: ""
+            code: "",
         }
     })
 

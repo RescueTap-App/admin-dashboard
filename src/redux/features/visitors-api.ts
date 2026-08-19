@@ -28,9 +28,10 @@ export const visitorsApi = createApi({
             invalidatesTags: ['Visitors'],
         }),
         verifyCode: builder.mutation({
-            query: ({ data }: { data: { code: string } }) => ({
+            query: ({ data }: { data: { code: string, tenantId: string } }) => ({
                 url: `/visitors/verify/${data.code}`,
                 method: 'POST',
+                body: { 'tenantId': data.tenantId },
             }),
             invalidatesTags: ['Visitors'],
         }),

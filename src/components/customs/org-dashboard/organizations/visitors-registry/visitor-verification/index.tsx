@@ -8,6 +8,8 @@ import { useVerifyCodeMutation } from "@/redux/features/visitors-api"
 import { AlertCircle, Check, Hash, QrCode, User, Phone, Car, Calendar, Eye, EyeOff, Copy } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
+import { useSelector } from "react-redux"
+import { RootState } from "@/lib/store"
 import ManualEntry from "./manual-entry"
 import QRScanner from "./qr-scanner"
 import VerificationDialog from "./verification-dialog"
@@ -50,6 +52,8 @@ export default function VisitorVerification() {
     const [showRawData, setShowRawData] = useState(false)
     const [copiedToClipboard, setCopiedToClipboard] = useState(false)
     const [verifyCode] = useVerifyCodeMutation()
+    const { user } = useSelector((state: RootState) => state.auth)
+    const tenantId = user?._id as string
 
     // Dialog state
     const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -103,7 +107,7 @@ export default function VisitorVerification() {
 
         try {
             const result = await verifyCode({
-                data: { code }
+                data: { code, tenantId }
             }).unwrap()
 
             setDialogData({
@@ -207,6 +211,7 @@ export default function VisitorVerification() {
                             onVisitorScanned={handleVisitorScanned}
                             onVerificationComplete={handleVerificationComplete}
                             isVerifying={isVerifying}
+                            tenantId={tenantId}
                         />
                     ) : (
                         <ManualEntry

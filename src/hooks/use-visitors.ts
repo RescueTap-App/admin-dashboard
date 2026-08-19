@@ -121,7 +121,7 @@ export default function useVisitors({
 
   const verifyCode = async (data: { code: string }) => {
     try {
-      const res = await verifyCodeMutation({ data }).unwrap()
+      const res = await verifyCodeMutation({ data: { ...data, tenantId: orgId! } }).unwrap()
       toast.success("Code verified successfully")
       return res
     } catch (error: unknown) {

@@ -33,9 +33,10 @@ interface QRScannerProps {
     onVisitorScanned: (visitor: VisitorData) => void
     onVerificationComplete: (result: { success: boolean; message: string; visitor?: VisitorData }) => void
     isVerifying: boolean
+    tenantId: string
 }
 
-function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying }: QRScannerProps) {
+function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tenantId }: QRScannerProps) {
     const [isScanning, setIsScanning] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [isTestMode, setIsTestMode] = useState(false)
@@ -137,7 +138,7 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying }: QR
                     try {
                         console.log('Auto-verifying visitor with entry code:', entryCode)
                         const result = await verifyCode({
-                            data: { code: entryCode }
+                            data: { code: entryCode, tenantId: tenantId }
                         }).unwrap()
 
                         console.log('Verification successful:', result)
@@ -244,7 +245,7 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying }: QR
         try {
             console.log('Auto-verifying test entry code:', testEntryCode)
             const result = await verifyCode({
-                data: { code: testEntryCode }
+                data: { code: testEntryCode, tenantId: tenantId }
             }).unwrap()
 
             console.log('Test verification successful:', result)
