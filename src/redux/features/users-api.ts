@@ -24,6 +24,13 @@ export const usersApi = createApi({
             }),
             invalidatesTags: ['Users'],
         }),
+        deleteUser: builder.mutation({
+            query: (userId: string) => ({
+                url: `/users/${userId}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Users']
+        }),
         getActiveSubcription: builder.query({
             query: (userId: string) => `/subscriptions/active/${userId}`
         })
@@ -34,6 +41,7 @@ export const {
     useGetUsersQuery,
     useCreateUserMutation,
     useGetUserByIdQuery,
+    useDeleteUserMutation,
     useGetActiveSubcriptionQuery
 } = usersApi;
 
