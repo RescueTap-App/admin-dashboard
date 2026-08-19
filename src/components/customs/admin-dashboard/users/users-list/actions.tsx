@@ -99,7 +99,7 @@ export function UsersActions({ user }: UsersActionsProps) {
               Confirm this Action
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Clicking confirm will permanently delete {user.firstName} {user.lastName} and cannot be undone.
+              Clicking confirm will permanently delete <span className="font-semibold text-red-600">{user.firstName} {user.lastName}</span> and cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
