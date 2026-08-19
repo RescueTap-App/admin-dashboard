@@ -18,9 +18,7 @@ import * as React from "react"
 import {
   IconDownload,
   // IconPlay,
-  IconX,
   IconCheck,
-  IconCalendar,
   IconClockPlay,
 } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"

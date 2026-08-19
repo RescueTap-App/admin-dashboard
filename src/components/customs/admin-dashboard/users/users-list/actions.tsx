@@ -38,17 +38,6 @@ export function UsersActions({ user }: UsersActionsProps) {
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation()
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
-  const handleDelete = async () => {
-    if (!window.confirm(`Are you sure you want to delete ${user.firstName} ${user.lastName}?`)) return
-
-    try {
-      await deleteUser(user._id).unwrap()
-      toast.success("User deleted successfully")
-    } catch (error: any) {
-      toast.error(error?.data?.message || "Failed to delete user")
-    }
-  }
-
   return (
     <div className="flex justify-end">
       <DropdownMenu>
@@ -81,7 +70,6 @@ export function UsersActions({ user }: UsersActionsProps) {
           <DropdownMenuItem
             variant="destructive"
             disabled={isDeleting}
-            // onClick={handleDelete}
             onSelect={(e) => {
               e.preventDefault()
               setShowDeleteDialog(true)
