@@ -21,7 +21,7 @@ import {
     // Import the new tip categories hooks
     useGetTipCategoriesQuery,
     useGetTipCategoryQuery,
-    type TipCategory, // Import the type
+    // type TipCategory, // Import the type
 } from "@/redux/features/blogs-api";
 import { BlogDataTypes } from "@/types/blogs.types";
 import { useRouter } from "next/navigation";

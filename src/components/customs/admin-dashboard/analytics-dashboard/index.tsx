@@ -1,16 +1,16 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import useAnalytics from "@/hooks/use-analytics"
 import { Badge } from "@/components/ui/badge"
-import {
-  IconTrendingUp,
-  IconAlertTriangle,
-  IconClock,
-  IconUsers,
-  IconMapPin,
-} from "@tabler/icons-react"
+// import {
+//   IconTrendingUp,
+//   IconAlertTriangle,
+//   IconClock,
+//   IconUsers,
+//   IconMapPin,
+// } from "@tabler/icons-react"
 import {
   BarChart,
   Bar,
@@ -23,10 +23,10 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
+  // Legend,
   ResponsiveContainer,
-  ScatterChart,
-  Scatter,
+  // ScatterChart,
+  // Scatter,
 } from "recharts"
 import {
   Select,
@@ -50,7 +50,7 @@ export function AdminDashboardAnalytics() {
   const [emergencyType, setEmergencyType] = useState<string>('all')
 
   const {
-    dashboardData,
+    // dashboardData,
     loadingDashboard,
     voiceNotesData,
     loadingVoiceNotes,

@@ -4,10 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Skeleton } from "@/components/ui/skeleton"
 import useUserSessions from "@/hooks/use-user-sessions"
 import { Badge } from "@/components/ui/badge"
-import { IconTrendingUp, IconUsers } from "@tabler/icons-react"
+// import { IconTrendingUp, IconUsers } from "@tabler/icons-react"
 import {
-    BarChart,
-    Bar,
+    // BarChart,
+    // Bar,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -44,7 +44,7 @@ export function UserLoginAnalytics() {
         )
         : 0
 
-    const closingPercentage = 100 - seatsUsagePercent
+    // const closingPercentage = 100 - seatsUsagePercent
 
     return (
         <div className="space-y-4">

@@ -100,8 +100,9 @@ export function UsersActions({ user }: UsersActionsProps) {
                 await deleteUser(user._id).unwrap()
                 toast.success("User deleted successfully")
                 setShowDeleteDialog(false)
-              } catch (error: any) {
-                toast.error(error?.data?.message || "Failed to delete user")
+              } catch (error) {
+                toast.error("Failed to delete user")
+                console.log(error)
               }
             }}>
               {isDeleting ? "Deleting..." : "Delete"}
