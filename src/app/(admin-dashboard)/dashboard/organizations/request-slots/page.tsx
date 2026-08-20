@@ -1,4 +1,4 @@
-import { RequestSlots } from '@/components/customs/org-dashboard/organizations/vehicles-registry/request-slots';
+import { RequestSlots } from '@/components/customs/org-dashboard/organizations/request-slots';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {

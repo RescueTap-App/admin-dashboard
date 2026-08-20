@@ -39,9 +39,9 @@ export function RequestSlots() {
     return (
         <Card className="rounded shadow max-w-4xl">
             <CardHeader>
-                <CardTitle className="text-xl">Request Additional Vehicle Slots</CardTitle>
+                <CardTitle className="text-xl">Request Additional Slots</CardTitle>
                 <p className="text-gray-600">
-                    Submit a request to RescueTap admin for additional vehicle slots for your organization.
+                    Submit a request to RescueTap admin for additional user or driver slots for your organization.
                 </p>
             </CardHeader>
             <CardContent>
@@ -102,7 +102,7 @@ export function RequestSlots() {
                             type="text"
                             fieldType="textarea"
                             label="Justification for Additional User and Driver Slots *"
-                            placeholder="Please explain why you need additional vehicle slots..."
+                            placeholder="Please explain why you need additional slots..."
                             className="min-h-32 resize-none"
                         />
 
