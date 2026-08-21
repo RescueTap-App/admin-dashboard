@@ -14,6 +14,7 @@ import { persistReducer, persistStore } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { visitorsApi } from '@/redux/features/visitors-api';
 import { voiceNotesApi } from '@/redux/features/voice-notes-api';
+import { slotRequestsApi } from '@/redux/features/slot-requests-api';
 
 
 const persistConfig = {
@@ -33,6 +34,7 @@ const rootReducer = combineReducers({
     [voiceNotesApi.reducerPath]: voiceNotesApi.reducer,
     [userSessionsApi.reducerPath]: userSessionsApi.reducer,
     [analyticsApi.reducerPath]: analyticsApi.reducer,
+    [slotRequestsApi.reducerPath]: slotRequestsApi.reducer,
     auth: authSlice.reducer,
 });
 
@@ -53,7 +55,8 @@ export const store = configureStore({
             visitorsApi.middleware,
             voiceNotesApi.middleware,
             userSessionsApi.middleware,
-            analyticsApi.middleware
+            analyticsApi.middleware,
+            slotRequestsApi.middleware
         ),
 });
 

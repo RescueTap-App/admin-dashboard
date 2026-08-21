@@ -2,6 +2,7 @@
 
 import {
   useGetVoiceNotesByUserQuery,
+  useGetVoiceNotesByOrganizationQuery,
   useLazyGetVoiceNoteSignedUrlQuery,
 } from "@/redux/features/voice-notes-api"
 import {
@@ -12,28 +13,52 @@ import {
 import { useEffect, useMemo, useState } from "react"
 
 type UseVoiceNotesOptions = {
-  /** Logged-in user / organisation id for `GET /voicerecord/user/:userId`. */
+  /** Pass userId to fetch a single user's notes via `GET /voicerecord/user/:userId`. */
   userId?: string
+  /** Pass organizationId to fetch ALL org notes via `GET /voicerecord/organization/:organizationId`. */
+  organizationId?: string
+  /** Optionally filter by a specific user when using the org endpoint. */
+  filterUserId?: string
   enabled?: boolean
 }
 
 export default function useVoiceNotes({
   userId,
+  organizationId,
+  filterUserId,
   enabled = true,
 }: UseVoiceNotesOptions = {}) {
+  // Org-wide endpoint (preferred when organizationId is provided)
   const {
-    data: raw,
-    isLoading,
-    isFetching,
-    isError,
-    error,
-    refetch,
+    data: orgRaw,
+    isLoading: orgLoading,
+    isFetching: orgFetching,
+    isError: orgError,
+    refetch: orgRefetch,
+  } = useGetVoiceNotesByOrganizationQuery(
+    { organizationId: organizationId!, userId: filterUserId },
+    { skip: !enabled || !organizationId, refetchOnFocus: true, refetchOnMountOrArgChange: true, refetchOnReconnect: true },
+  )
+
+  // Fallback: single-user endpoint
+  const {
+    data: userRaw,
+    isLoading: userLoading,
+    isFetching: userFetching,
+    isError: userError,
+    refetch: userRefetch,
   } = useGetVoiceNotesByUserQuery(userId!, {
-    skip: !enabled || !userId,
+    skip: !enabled || !userId || !!organizationId,
     refetchOnFocus: true,
     refetchOnMountOrArgChange: true,
     refetchOnReconnect: true,
   })
+
+  const raw = organizationId ? orgRaw : userRaw
+  const isLoading = organizationId ? orgLoading : userLoading
+  const isFetching = organizationId ? orgFetching : userFetching
+  const isError = organizationId ? orgError : userError
+  const refetch = organizationId ? orgRefetch : userRefetch
 
   const [fetchSignedUrl] = useLazyGetVoiceNoteSignedUrlQuery()
   const [urlById, setUrlById] = useState<Record<string, string>>({})
@@ -49,7 +74,7 @@ export default function useVoiceNotes({
       )
   }, [raw])
 
-  // List items only have fileKey — resolve playable URLs via signed-url endpoint.
+  // Resolve playable URLs via signed-url endpoint.
   useEffect(() => {
     let cancelled = false
 
@@ -89,7 +114,6 @@ export default function useVoiceNotes({
     return () => {
       cancelled = true
     }
-    // urlById intentionally omitted: we only resolve ids not already cached.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [baseNotes, fetchSignedUrl])
 
@@ -107,7 +131,6 @@ export default function useVoiceNotes({
     isLoading,
     isFetching: isFetching || resolvingUrls,
     isError,
-    error,
     refetch,
   }
 }

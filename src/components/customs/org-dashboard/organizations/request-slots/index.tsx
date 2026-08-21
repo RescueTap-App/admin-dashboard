@@ -8,6 +8,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { SlotRequestFormData, slotRequestSchema } from "@/constants/validations/register-vehicle"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Resolver, useForm } from "react-hook-form"
+import { useCreateSlotRequestMutation } from "@/redux/features/slot-requests-api"
+import { useSelector } from "react-redux"
+import { toast } from "sonner"
 
 
 const urgencyOptions = [
@@ -32,8 +35,22 @@ export function RequestSlots() {
         },
     })
 
-    const handleSubmit = (data: SlotRequestFormData) => {
-        console.log(data)
+    const user = useSelector((state: any) => state.auth.user)
+    const [createRequest] = useCreateSlotRequestMutation()
+
+    const handleSubmit = async (data: SlotRequestFormData) => {
+        try {
+            await createRequest({
+                ...data,
+                organizationId: user?.tenantId || user?._id || data.organizationId,
+            }).unwrap()
+            
+            toast.success("Slot request submitted successfully!")
+            form.reset()
+        } catch (error: any) {
+            toast.error(error?.data?.message || "Failed to submit request")
+            console.error("Failed to submit request", error)
+        }
     }
 
     return (
@@ -52,14 +69,14 @@ export function RequestSlots() {
                                 <ReusableFormField
                                     control={form.control}
                                     name="additionalUserSlots"
-                                    label="Number of Additional Slots Needed *"
+                                    label="Number of Additional User Slots Needed"
                                     type="number"
                                     placeholder="Enter number of slots"
                                 />
                                 <ReusableFormField
                                     control={form.control}
                                     name="additionalDriverSlots"
-                                    label="Number of Additional Driver Slots Needed *"
+                                    label="Number of Additional Driver Slots Needed"
                                     type="number"
                                     placeholder="Enter number of driver slots"
                                 />

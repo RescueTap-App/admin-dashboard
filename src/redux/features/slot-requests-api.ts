@@ -39,10 +39,19 @@ export const slotRequestsApi = createApi({
             }),
             invalidatesTags: ['SlotRequests'],
         }),
+        createSlotRequest: builder.mutation<SlotRequest, Partial<SlotRequest>>({
+            query: (body) => ({
+                url: `/slot-requests`,
+                method: 'POST',
+                body,
+            }),
+            invalidatesTags: ['SlotRequests'],
+        }),
     }),
 });
 
 export const {
     useGetAllSlotRequestsQuery,
     useReviewSlotRequestMutation,
+    useCreateSlotRequestMutation,
 } = slotRequestsApi;

@@ -11,18 +11,26 @@ import { VoiceNotesTable } from "./table"
 type VoiceNotesListProps = {
   /** Optional subtitle override for org vs super-admin copy */
   description?: string
+  /**
+   * When provided, the org-wide endpoint is used instead of the per-user one.
+   * Pass the organization's ID to fetch all voice notes for that org.
+   */
+  organizationId?: string
 }
 
 export default function VoiceNotesList({
   description = "Voice recordings from emergencies and alerts for your account.",
+  organizationId,
 }: VoiceNotesListProps) {
   const { user } = useSelector((state: RootState) => state.auth)
-  // Always the logged-in session id — never other dashboard member ids.
   const loggedInUserId = user?._id
 
   const { voiceNotes, isLoading, isError } = useVoiceNotes({
-    userId: loggedInUserId,
-    enabled: Boolean(loggedInUserId),
+    // If we have an organizationId, use the org endpoint
+    organizationId: organizationId,
+    // Fall back to per-user endpoint if no org is provided
+    userId: organizationId ? undefined : loggedInUserId,
+    enabled: organizationId ? Boolean(organizationId) : Boolean(loggedInUserId),
   })
 
   return (

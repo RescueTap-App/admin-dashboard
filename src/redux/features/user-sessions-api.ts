@@ -34,7 +34,7 @@ export const userSessionsApi = createApi({
   tagTypes: ['UserSessions', 'Organization'],
   endpoints: (builder) => ({
     getUserSessionsAnalytics: builder.query<UserSessionStats, void>({
-      query: () => `/users/sessions/analytics`,
+      query: () => `/users/analytics/dashboard`,
       providesTags: ['UserSessions'],
     }),
     getOrganizationSessionAnalytics: builder.query<UserSessionsAnalytics, string>({

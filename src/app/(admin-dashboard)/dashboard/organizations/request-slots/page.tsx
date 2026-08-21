@@ -1,13 +1,15 @@
-import { RequestSlots } from '@/components/customs/org-dashboard/organizations/request-slots';
+import { AdminSlotRequestsList } from '@/components/customs/admin-dashboard/organizations/slot-requests';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: "Rescue Tap | Vehicle Slots",
-    description: "Rescue Tap instantly let's you share your location send emergency alerts and stay connected with the people who matter most, because safety starts with awarenes",
+    title: "Rescue Tap | Slot Requests",
+    description: "Review and manage organization requests for additional user and driver slots.",
 };
 
 export default function Page() {
     return (
-        <RequestSlots />
+        <div className="p-6">
+            <AdminSlotRequestsList />
+        </div>
     )
 }

@@ -106,10 +106,28 @@ export function VoiceNotesTable({ data }: VoiceNotesTableProps) {
   }, [data, globalFilter, statusFilter, dateRange, listeningStatus])
 
   const statistics = React.useMemo(() => {
+    let mostActiveName = "N/A"
+    if (data.length > 0) {
+      const userCounts: Record<string, { count: number; name: string }> = {}
+      let maxCount = 0
+
+      for (const row of data) {
+        if (!userCounts[row.userId]) {
+          userCounts[row.userId] = { count: 0, name: row.userName || row.userId }
+        }
+        userCounts[row.userId].count++
+
+        if (userCounts[row.userId].count > maxCount) {
+          maxCount = userCounts[row.userId].count
+          mostActiveName = userCounts[row.userId].name
+        }
+      }
+    }
+
     const stats = {
       total: data.length,
       avgDuration: "N/A",
-      mostActive: data.length > 0 ? data[0].userId : "N/A",
+      mostActive: mostActiveName,
       new: data.filter((_, idx) => listeningStatus[data[idx].id] ?? true).length,
     }
     return stats
@@ -183,7 +201,7 @@ export function VoiceNotesTable({ data }: VoiceNotesTableProps) {
           <TableHeader className="bg-muted sticky top-0 z-10">
             <TableRow>
               <TableHead className="font-nunito">File</TableHead>
-              <TableHead className="font-nunito">User ID</TableHead>
+              <TableHead className="font-nunito">Recorded By</TableHead>
               <TableHead className="font-nunito">Recorded At</TableHead>
               <TableHead className="font-nunito">Status</TableHead>
               <TableHead className="font-nunito">Actions</TableHead>
@@ -213,7 +231,7 @@ export function VoiceNotesTable({ data }: VoiceNotesTableProps) {
                     </TableCell>
                     <TableCell>
                       <p className="text-muted-foreground px-1.5 font-mono text-xs font-lato">
-                        {row.userId}
+                        {row.userName || row.userId}
                       </p>
                     </TableCell>
                     <TableCell>
@@ -232,87 +250,90 @@ export function VoiceNotesTable({ data }: VoiceNotesTableProps) {
                     <TableCell>
                       <div className="flex items-center gap-2">
                         {row.audioUrl ? (
-                          <button
-                            onClick={() =>
+                          <audio
+                            controls
+                            preload="metadata"
+                            src={row.audioUrl}
+                            aria-label={`Play voice note ${row.id}`}
+                            className="h-8 w-44 shrink-0"
+                            style={{ maxWidth: "176px" }}
+                            onPlay={() =>
                               setListeningStatus((prev) => ({
                                 ...prev,
                                 [row.id]: true,
                               }))
                             }
-                            className="inline-flex items-center gap-1 rounded bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-100 dark:bg-blue-950 dark:text-blue-300 dark:hover:bg-blue-900"
+                          />
+                        ) : (
+                          <span className="text-xs text-muted-foreground italic w-44 shrink-0 inline-block">Loading audio…</span>
+                        )}
+
+                        <div className="flex items-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="size-8"
+                            onClick={() =>
+                              handleDownload(row.audioUrl, fileKeyLabel(row.fileKey))
+                            }
+                            disabled={!row.audioUrl}
+                            title="Download audio"
                           >
-                            <IconClockPlay className="size-3" />
-                            <audio
-                              controls
-                              preload="metadata"
-                              src={row.audioUrl}
-                              aria-label={`Play voice note ${row.id}`}
-                              className="h-6 w-40"
-                              style={{ maxWidth: "160px" }}
-                            />
-                          </button>
-                        ) : null}
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() =>
-                            handleDownload(row.audioUrl, fileKeyLabel(row.fileKey))
-                          }
-                          disabled={!row.audioUrl}
-                          title="Download audio"
-                        >
-                          <IconDownload className="size-4" />
-                        </Button>
-                        <Dialog>
-                          <DialogTrigger asChild>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => setSelectedNote(row)}
-                              title="Add notes"
-                            >
-                              <IconCheck className="size-4" />
-                            </Button>
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>Add Notes to Voice Record</DialogTitle>
-                              <DialogDescription>
-                                Add internal notes for case reference or follow-up.
-                              </DialogDescription>
-                            </DialogHeader>
-                            <div className="space-y-4">
-                              <div>
-                                <p className="text-sm font-medium text-muted-foreground">
-                                  Record ID: <span className="font-mono">{row.id}</span>
-                                </p>
-                              </div>
-                              <Textarea
-                                placeholder="e.g., Relevant to case #123, Follow-up needed..."
-                                value={notes[row.id] || ""}
-                                onChange={(e) =>
-                                  setNotes((prev) => ({
-                                    ...prev,
-                                    [row.id]: e.target.value,
-                                  }))
-                                }
-                                className="h-24"
-                              />
+                            <IconDownload className="size-4" />
+                          </Button>
+
+                          <Dialog>
+                            <DialogTrigger asChild>
                               <Button
-                                className="w-full bg-[#EF4136] hover:bg-[#EF4136]/80"
-                                onClick={() => {
-                                  // In a real app, this would save to the backend
-                                  console.log(
-                                    `Saved note for ${row.id}:`,
-                                    notes[row.id],
-                                  )
-                                }}
+                                variant="ghost"
+                                size="icon"
+                                className="size-8"
+                                onClick={() => setSelectedNote(row)}
+                                title="Add notes"
                               >
-                                Save Notes
+                                <IconCheck className="size-4" />
                               </Button>
-                            </div>
-                          </DialogContent>
-                        </Dialog>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Add Notes to Voice Record</DialogTitle>
+                                <DialogDescription>
+                                  Add internal notes for case reference or follow-up.
+                                </DialogDescription>
+                              </DialogHeader>
+                              <div className="space-y-4">
+                                <div>
+                                  <p className="text-sm font-medium text-muted-foreground">
+                                    Record ID: <span className="font-mono">{row.id}</span>
+                                  </p>
+                                </div>
+                                <Textarea
+                                  placeholder="e.g., Relevant to case #123, Follow-up needed..."
+                                  value={notes[row.id] || ""}
+                                  onChange={(e) =>
+                                    setNotes((prev) => ({
+                                      ...prev,
+                                      [row.id]: e.target.value,
+                                    }))
+                                  }
+                                  className="h-24"
+                                />
+                                <Button
+                                  className="w-full bg-[#EF4136] hover:bg-[#EF4136]/80"
+                                  onClick={() => {
+                                    // In a real app, this would save to the backend
+                                    console.log(
+                                      `Saved note for ${row.id}:`,
+                                      notes[row.id],
+                                    )
+                                  }}
+                                >
+                                  Save Notes
+                                </Button>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+                        </div>
                       </div>
                     </TableCell>
                   </TableRow>

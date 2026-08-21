@@ -49,6 +49,10 @@ const data = {
                     url: "/dashboard/organizations",
                 },
                 {
+                    title: "Slot Requests",
+                    url: "/dashboard/organizations/request-slots",
+                },
+                {
                     title: "Create Organizations",
                     url: "/dashboard/organizations/create",
                 },

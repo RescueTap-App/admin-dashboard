@@ -1,14 +1,17 @@
-import VoiceNotesList from "@/components/shared/voice-notes"
-import { Metadata } from "next"
+"use client"
 
-export const metadata: Metadata = {
-  title: "Rescue Tap | Voice Notes",
-  description:
-    "Rescue Tap instantly let's you share your location send emergency alerts and stay connected with the people who matter most, because safety starts with awareness",
-}
+import VoiceNotesList from "@/components/shared/voice-notes"
+import { RootState } from "@/lib/store"
+import { useSelector } from "react-redux"
 
 export default function Page() {
+  const { user } = useSelector((state: RootState) => state.auth)
+  const organizationId = user?._id
+
   return (
-    <VoiceNotesList description="Voice recordings linked to your organization's emergencies and alerts." />
+    <VoiceNotesList
+      description="Voice recordings linked to your organization's emergencies and alerts."
+      organizationId={organizationId}
+    />
   )
 }

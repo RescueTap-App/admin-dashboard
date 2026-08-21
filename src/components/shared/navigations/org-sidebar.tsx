@@ -31,10 +31,6 @@ const data = {
             isActive: true,
             items: [
                 {
-                    title: "Request Slots",
-                    url: "/org/vehicles/request-slot",
-                },
-                {
                     title: "Drivers List",
                     url: "/org/drivers",
                 },
