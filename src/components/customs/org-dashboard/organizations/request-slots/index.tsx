@@ -11,6 +11,7 @@ import { Resolver, useForm } from "react-hook-form"
 import { useCreateSlotRequestMutation } from "@/redux/features/slot-requests-api"
 import { useSelector } from "react-redux"
 import { toast } from "sonner"
+import { AuthState } from "@/redux/slices/auth-slice"
 
 
 const urgencyOptions = [
@@ -35,20 +36,20 @@ export function RequestSlots() {
         },
     })
 
-    const user = useSelector((state: any) => state.auth.user)
+    const user = useSelector((state: AuthState) => state.user)
     const [createRequest] = useCreateSlotRequestMutation()
 
     const handleSubmit = async (data: SlotRequestFormData) => {
         try {
             await createRequest({
                 ...data,
-                organizationId: user?.tenantId || user?._id || data.organizationId,
+                organizationId: user?._id || data.organizationId,
             }).unwrap()
-            
+
             toast.success("Slot request submitted successfully!")
             form.reset()
-        } catch (error: any) {
-            toast.error(error?.data?.message || "Failed to submit request")
+        } catch (error: unknown) {
+            toast.error("Failed to submit request")
             console.error("Failed to submit request", error)
         }
     }

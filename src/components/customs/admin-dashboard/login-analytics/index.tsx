@@ -65,7 +65,7 @@ export function UserLoginAnalytics() {
                                         Total Logins (Month)
                                     </p>
                                     <p className="mt-2 text-2xl font-bold">
-                                        {userSessionsStats.totalLogins}
+                                        {userSessionsStats.totalLogins ?? '0'}
                                     </p>
                                 </div>
                                 {/* <IconTrendingUp className="size-5 text-blue-500" /> */}
@@ -80,7 +80,7 @@ export function UserLoginAnalytics() {
                                         Daily Active Users
                                     </p>
                                     <p className="mt-2 text-2xl font-bold">
-                                        {userSessionsStats.dailyActiveUsers}
+                                        {userSessionsStats.dailyActiveUsers ?? 0}
                                     </p>
                                 </div>
                                 {/* <IconUsers className="size-5 text-green-500" /> */}
@@ -95,8 +95,8 @@ export function UserLoginAnalytics() {
                                         Seats Used
                                     </p>
                                     <p className="mt-2 text-2xl font-bold">
-                                        {userSessionsStats.seatsUsed} /{" "}
-                                        {userSessionsStats.seatsAllocated}
+                                        {userSessionsStats.seatsUsed ?? 0} /{" "}
+                                        {userSessionsStats.seatsAllocated ?? 0}
                                     </p>
                                     <Badge className="mt-2" variant={seatsUsagePercent > 90 ? "destructive" : "secondary"}>
                                         {seatsUsagePercent}% Used
@@ -113,7 +113,7 @@ export function UserLoginAnalytics() {
                                     Peak Login Time
                                 </p>
                                 <p className="mt-2 text-2xl font-bold">
-                                    {userSessionsStats.peakLoginTime}
+                                    {userSessionsStats.peakLoginTime ?? 0}
                                 </p>
                             </div>
                         </div>

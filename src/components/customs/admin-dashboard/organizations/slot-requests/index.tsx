@@ -12,19 +12,19 @@ import { format } from "date-fns"
 export function AdminSlotRequestsList() {
     const { data: requests, isLoading, error } = useGetAllSlotRequestsQuery()
     const [reviewRequest, { isLoading: isReviewing }] = useReviewSlotRequestMutation()
-    
+
     // Simple state to track which row is currently loading (so all buttons don't spin)
     const [activeRowId, setActiveRowId] = useState<string | null>(null)
 
     const handleReview = async (id: string, status: "approved" | "rejected") => {
         if (!window.confirm(`Are you sure you want to ${status} this request?`)) return
-        
+
         setActiveRowId(id)
         try {
             await reviewRequest({ id, status }).unwrap()
             toast.success(`Request ${status} successfully`)
-        } catch (err: any) {
-            toast.error(err?.data?.message || `Failed to ${status} request`)
+        } catch (err: unknown) {
+            toast.error((err as { message?: string })?.message || `Failed to ${status} request`)
         } finally {
             setActiveRowId(null)
         }
@@ -75,10 +75,10 @@ export function AdminSlotRequestsList() {
                     <TableBody>
                         {requests && requests.length > 0 ? (
                             requests.map((request: SlotRequest) => {
-                                const orgName = typeof request.organizationId === 'string' 
-                                    ? request.organizationId 
+                                const orgName = typeof request.organizationId === 'string'
+                                    ? request.organizationId
                                     : request.organizationId?.organizationName || "Unknown"
-                                    
+
                                 const isRowLoading = isReviewing && activeRowId === request._id
 
                                 return (
@@ -94,8 +94,8 @@ export function AdminSlotRequestsList() {
                                         <TableCell>
                                             <Badge variant={
                                                 request.urgency === 'urgent' ? 'destructive' :
-                                                request.urgency === 'high' ? 'destructive' :
-                                                request.urgency === 'medium' ? 'secondary' : 'outline'
+                                                    request.urgency === 'high' ? 'destructive' :
+                                                        request.urgency === 'medium' ? 'secondary' : 'outline'
                                             } className="capitalize">
                                                 {request.urgency}
                                             </Badge>
@@ -106,7 +106,7 @@ export function AdminSlotRequestsList() {
                                         <TableCell>
                                             <Badge variant={
                                                 request.status === 'approved' ? 'default' :
-                                                request.status === 'rejected' ? 'destructive' : 'secondary'
+                                                    request.status === 'rejected' ? 'destructive' : 'secondary'
                                             } className={request.status === 'approved' ? 'bg-green-600' : ''}>
                                                 {request.status}
                                             </Badge>
@@ -117,18 +117,18 @@ export function AdminSlotRequestsList() {
                                         <TableCell className="text-right">
                                             {request.status === 'pending' ? (
                                                 <div className="flex justify-end gap-2">
-                                                    <Button 
-                                                        size="sm" 
-                                                        variant="outline" 
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
                                                         className="text-green-600 border-green-600 hover:bg-green-50"
                                                         disabled={isRowLoading}
                                                         onClick={() => handleReview(request._id, 'approved')}
                                                     >
                                                         Approve
                                                     </Button>
-                                                    <Button 
-                                                        size="sm" 
-                                                        variant="outline" 
+                                                    <Button
+                                                        size="sm"
+                                                        variant="outline"
                                                         className="text-red-600 border-red-600 hover:bg-red-50"
                                                         disabled={isRowLoading}
                                                         onClick={() => handleReview(request._id, 'rejected')}
