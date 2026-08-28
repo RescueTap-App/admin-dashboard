@@ -44,12 +44,89 @@ type VoiceNotesTableProps = {
   data: VoiceNoteListItem[]
 }
 
+function AudioBlobPlayer({
+  url,
+  ariaLabel,
+  onPlay,
+}: {
+  url: string
+  ariaLabel: string
+  onPlay: () => void
+}) {
+  const [blobUrl, setBlobUrl] = React.useState<string | null>(null)
+  const [error, setError] = React.useState<boolean>(false)
+
+  React.useEffect(() => {
+    let cancelled = false
+    setBlobUrl(null)
+    setError(false)
+
+    fetch(url)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch audio")
+        return res.blob()
+      })
+      .then((blob) => {
+        if (cancelled) return
+        // Force audio mime type in case S3 returns application/octet-stream
+        // which disables native browser audio controls
+        const audioBlob = new Blob([blob], { type: "audio/mpeg" })
+        const objectUrl = URL.createObjectURL(audioBlob)
+        setBlobUrl(objectUrl)
+      })
+      .catch((err) => {
+        console.error("Audio fetch error:", err)
+        if (!cancelled) setError(true)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [url])
+
+  // Cleanup object url separately to avoid stale closures
+  React.useEffect(() => {
+    return () => {
+      if (blobUrl) {
+        URL.revokeObjectURL(blobUrl)
+      }
+    }
+  }, [blobUrl])
+
+  if (error) {
+    return (
+      <span className="text-xs text-red-500 italic w-44 shrink-0 inline-block">
+        Error loading media
+      </span>
+    )
+  }
+
+  if (!blobUrl) {
+    return (
+      <span className="text-xs text-muted-foreground italic w-44 shrink-0 inline-block">
+        Buffering...
+      </span>
+    )
+  }
+
+  return (
+    <audio
+      controls
+      preload="metadata"
+      src={blobUrl}
+      aria-label={ariaLabel}
+      className="h-8 w-44 shrink-0"
+      style={{ maxWidth: "176px" }}
+      onPlay={onPlay}
+    />
+  )
+}
+
 export function VoiceNotesTable({ data }: VoiceNotesTableProps) {
   const [globalFilter, setGlobalFilter] = React.useState("")
   const [statusFilter, setStatusFilter] = React.useState<"all" | "new" | "listened">("all")
   const [dateRange, setDateRange] = React.useState<"all" | "today" | "week" | "month">("all")
   const [notes, setNotes] = React.useState<Record<string, string>>({})
-  const [selectedNote, setSelectedNote] = React.useState<VoiceNoteListItem | null>(null)
   const [listeningStatus, setListeningStatus] = React.useState<Record<string, boolean>>({})
 
   const filtered = React.useMemo(() => {
@@ -250,13 +327,9 @@ export function VoiceNotesTable({ data }: VoiceNotesTableProps) {
                     <TableCell>
                       <div className="flex items-center gap-2">
                         {row.audioUrl ? (
-                          <audio
-                            controls
-                            preload="metadata"
-                            src={row.audioUrl}
-                            aria-label={`Play voice note ${row.id}`}
-                            className="h-8 w-44 shrink-0"
-                            style={{ maxWidth: "176px" }}
+                          <AudioBlobPlayer
+                            url={row.audioUrl}
+                            ariaLabel={`Play voice note ${row.id}`}
                             onPlay={() =>
                               setListeningStatus((prev) => ({
                                 ...prev,
@@ -288,7 +361,6 @@ export function VoiceNotesTable({ data }: VoiceNotesTableProps) {
                                 variant="ghost"
                                 size="icon"
                                 className="size-8"
-                                onClick={() => setSelectedNote(row)}
                                 title="Add notes"
                               >
                                 <IconCheck className="size-4" />

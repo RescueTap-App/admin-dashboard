@@ -11,8 +11,7 @@ import { Resolver, useForm } from "react-hook-form"
 import { useCreateSlotRequestMutation } from "@/redux/features/slot-requests-api"
 import { useSelector } from "react-redux"
 import { toast } from "sonner"
-import { AuthState } from "@/redux/slices/auth-slice"
-
+import { RootState } from "@/lib/store"
 
 const urgencyOptions = [
     { value: "low", label: "Low" },
@@ -36,20 +35,33 @@ export function RequestSlots() {
         },
     })
 
-    const user = useSelector((state: AuthState) => state.user)
+    const { user } = useSelector((state: RootState) => state.auth)
     const [createRequest] = useCreateSlotRequestMutation()
 
     const handleSubmit = async (data: SlotRequestFormData) => {
         try {
-            await createRequest({
-                ...data,
-                organizationId: user?._id || data.organizationId,
-            }).unwrap()
+            const orgId = user?._id || data.organizationId;
+
+            if (!orgId) {
+                toast.error("Organization ID is missing. Please make sure you are fully logged in.");
+                return;
+            }
+
+            const { subscriptionId, ...restData } = data;
+            const payload = {
+                ...restData,
+                organizationId: orgId,
+                ...(subscriptionId ? { subscriptionId } : {})
+            };
+
+            await createRequest(payload).unwrap()
 
             toast.success("Slot request submitted successfully!")
             form.reset()
         } catch (error: unknown) {
-            toast.error("Failed to submit request")
+            const err = error as { data?: { message?: string }; error?: string };
+            const errorMsg = err?.data?.message || err?.error || JSON.stringify(error);
+            toast.error(`Failed to submit request: ${errorMsg}`)
             console.error("Failed to submit request", error)
         }
     }
