@@ -1,21 +1,21 @@
 "use client"
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import useUserSessions from "@/hooks/use-user-sessions"
-import { Badge } from "@/components/ui/badge"
+// import { Badge } from "@/components/ui/badge"
 // import { IconTrendingUp, IconUsers } from "@tabler/icons-react"
-import {
-    // BarChart,
-    // Bar,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip,
-    ResponsiveContainer,
-    LineChart,
-    Line,
-} from "recharts"
+// import {
+//     // BarChart,
+//     // Bar,
+//     XAxis,
+//     YAxis,
+//     CartesianGrid,
+//     Tooltip,
+//     ResponsiveContainer,
+//     LineChart,
+//     Line,
+// } from "recharts"
 
 export function UserLoginAnalytics() {
     const { userSessionsStats, loadingUserSessions } = useUserSessions({
@@ -38,11 +38,11 @@ export function UserLoginAnalytics() {
         )
     }
 
-    const seatsUsagePercent = userSessionsStats.seatsAllocated
-        ? Math.round(
-            (userSessionsStats.seatsUsed / userSessionsStats.seatsAllocated) * 100
-        )
-        : 0
+    // const seatsUsagePercent = userSessionsStats.seatsAllocated
+    //     ? Math.round(
+    //         (userSessionsStats.seatsUsed / userSessionsStats.seatsAllocated) * 100
+    //     )
+    //     : 0
 
     // const closingPercentage = 100 - seatsUsagePercent
 
