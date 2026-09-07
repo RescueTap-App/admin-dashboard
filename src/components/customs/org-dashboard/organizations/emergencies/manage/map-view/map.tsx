@@ -4,6 +4,7 @@ import { MAPS_API_KEY } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { IconMapPin, IconMail, IconPhone, IconBrandGoogleMaps } from '@tabler/icons-react'
 import { openEmailClient, openInGoogleMaps, openWhatsAppOrPhone } from '../contact-utils'
+import type { Report } from "@/types/reports.types"
 
 
 interface LocationData {
@@ -13,7 +14,7 @@ interface LocationData {
     accuracy?: number
     title?: string
     description?: string
-    type?: 'emergency' | 'user' | 'responder'
+    type?: 'emergency' | 'report' | 'user' | 'responder'
     timestamp?: number
 }
 
@@ -41,6 +42,7 @@ interface EmergencyData {
 interface MapViewProps {
     locations?: LocationData[]
     emergencies?: EmergencyData[]
+    reports?: Report[]
 }
 
 const containerStyle = {
@@ -50,7 +52,7 @@ const containerStyle = {
 
 const center = { lat: 7.54992, lng: 9.00678 };
 
-export default function MapView({ locations = [], emergencies = [] }: MapViewProps) {
+export default function MapView({ locations = [], emergencies = [], reports = [] }: MapViewProps) {
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: MAPS_API_KEY!,
@@ -58,10 +60,16 @@ export default function MapView({ locations = [], emergencies = [] }: MapViewPro
 
     const mapRef = useRef<google.maps.Map | null>(null)
     const [selectedEmergency, setSelectedEmergency] = useState<EmergencyData | null>(null)
+    const [selectedReport, setSelectedReport] = useState<Report | null>(null)
 
     const findEmergencyByLocation = (locationId: string | undefined): EmergencyData | null => {
         if (!locationId) return null
         return emergencies.find(emergency => emergency._id === locationId) || null
+    }
+
+    const findReportByLocation = (locationId: string | undefined): Report | null => {
+        if (!locationId) return null
+        return reports.find((report) => report._id === locationId) || null
     }
 
     const locationIdsKey = useMemo(
@@ -143,6 +151,7 @@ export default function MapView({ locations = [], emergencies = [] }: MapViewPro
 
                 {locations.map((location, index) => {
                     const emergencyData = findEmergencyByLocation(location.id)
+                    const reportData = findReportByLocation(location.id)
                     return (
                         <Marker
                             key={location.id || `marker-${index}`}
@@ -154,6 +163,10 @@ export default function MapView({ locations = [], emergencies = [] }: MapViewPro
                             onClick={() => {
                                 if (emergencyData) {
                                     setSelectedEmergency(emergencyData)
+                                    setSelectedReport(null)
+                                } else if (reportData) {
+                                    setSelectedReport(reportData)
+                                    setSelectedEmergency(null)
                                 }
                             }}
                             icon={location.type === 'emergency' ? {
@@ -167,6 +180,8 @@ export default function MapView({ locations = [], emergencies = [] }: MapViewPro
                                 `),
                                 scaledSize: new google.maps.Size(40, 40),
                                 anchor: new google.maps.Point(20, 40)
+                            } : location.type === 'report' ? {
+                                url: 'https://maps.google.com/mapfiles/ms/icons/orange-dot.png',
                             } : undefined}
                         />
                     )
@@ -288,6 +303,21 @@ export default function MapView({ locations = [], emergencies = [] }: MapViewPro
                         return null
                     }
                 })()}
+                {selectedReport?.location && Number.isFinite(selectedReport.location.latitude) && Number.isFinite(selectedReport.location.longitude) && (
+                    <InfoWindow
+                        position={{ lat: selectedReport.location.latitude!, lng: selectedReport.location.longitude! }}
+                        onCloseClick={() => setSelectedReport(null)}
+                    >
+                        <div className="max-w-sm p-3 text-sm">
+                            <h3 className="mb-2 text-lg font-semibold text-orange-600">Incident Report</h3>
+                            <p><span className="font-medium">Category:</span> {selectedReport.category || "Quick report"}</p>
+                            <p><span className="font-medium">Urgency:</span> {selectedReport.urgencyLevel}</p>
+                            <p><span className="font-medium">Status:</span> {selectedReport.status}</p>
+                            <p><span className="font-medium">Time:</span> {new Date(selectedReport.createdAt).toLocaleString()}</p>
+                            <p className="mt-2 text-muted-foreground">{selectedReport.description || "No description provided"}</p>
+                        </div>
+                    </InfoWindow>
+                )}
             </GoogleMap>
         </div>
     ) : (

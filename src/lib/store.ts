@@ -15,6 +15,9 @@ import storage from 'redux-persist/lib/storage';
 import { visitorsApi } from '@/redux/features/visitors-api';
 import { voiceNotesApi } from '@/redux/features/voice-notes-api';
 import { slotRequestsApi } from '@/redux/features/slot-requests-api';
+import { reportsApi } from '@/redux/features/reports-api';
+import { communitiesApi } from '@/redux/features/communities-api';
+import { organizationLoginLogsApi } from '@/redux/features/organization-login-logs-api';
 
 
 const persistConfig = {
@@ -35,6 +38,9 @@ const rootReducer = combineReducers({
     [userSessionsApi.reducerPath]: userSessionsApi.reducer,
     [analyticsApi.reducerPath]: analyticsApi.reducer,
     [slotRequestsApi.reducerPath]: slotRequestsApi.reducer,
+    [reportsApi.reducerPath]: reportsApi.reducer,
+    [communitiesApi.reducerPath]: communitiesApi.reducer,
+    [organizationLoginLogsApi.reducerPath]: organizationLoginLogsApi.reducer,
     auth: authSlice.reducer,
 });
 
@@ -56,7 +62,10 @@ export const store = configureStore({
             voiceNotesApi.middleware,
             userSessionsApi.middleware,
             analyticsApi.middleware,
-            slotRequestsApi.middleware
+            slotRequestsApi.middleware,
+            reportsApi.middleware,
+            communitiesApi.middleware,
+            organizationLoginLogsApi.middleware
         ),
 });
 

@@ -97,12 +97,12 @@ function Oraganizations() {
       ) : (
         <StatsCard data={analytics} />
       )}
-      
-      {/* User Login Analytics Widget */}
-      <div className="mt-10">
+
+      {/* User Login Analytics Widget
+      <div className="mt-2">
         <UserLoginAnalytics />
-      </div>
-      
+      </div> */}
+
       <Card className={"rounded-sm mt-10 px-3 min-w-full shadow"}>
         <CardHeader className="flex flex-row justify-between px-0">
           <div>

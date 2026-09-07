@@ -1,13 +1,15 @@
 "use client"
 import { Card, CardTitle } from "@/components/ui/card";
 import { EmergenciesTabs } from "./manage/tabs";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { EmergenciesTabContent } from "./manage/tabs/tab-content";
 import { useGetEmergenciesQuery } from "@/redux/features/organization-api";
 import { useMemo } from "react";
 import { RootState } from "@/lib/store";
 import { useSelector } from "react-redux";
 import { useEmergencyLivePositions } from "@/hooks/use-emergency-live-positions";
+import { useGetAdminReportsQuery } from "@/redux/features/reports-api";
+import type { Report } from "@/types/reports.types";
 
 interface LocationData {
     id?: string
@@ -16,7 +18,7 @@ interface LocationData {
     accuracy?: number
     title?: string
     description?: string
-    type?: 'emergency' | 'user' | 'responder'
+    type?: 'emergency' | 'report' | 'user' | 'responder'
     timestamp?: number
 }
 
@@ -48,10 +50,35 @@ export default function Emergencies() {
         refetchOnFocus: true,
         pollingInterval: 3000
     })
+    const { data: reportsPayload } = useGetAdminReportsQuery()
     const searchParams = useSearchParams()
+    const pathname = usePathname()
+    const router = useRouter()
+    const from = searchParams?.get("from")
+    const to = searchParams?.get("to")
     const livePositions = useEmergencyLivePositions(
         Array.isArray(payload) ? payload : undefined,
     )
+
+    const filteredEmergencies = useMemo(() => {
+        if (!Array.isArray(payload)) return []
+        return payload.filter((emergency: EmergencyData) => {
+            const createdAt = new Date(emergency.createdAt)
+            if (from && createdAt < new Date(`${from}T00:00:00`)) return false
+            if (to && createdAt > new Date(`${to}T23:59:59.999`)) return false
+            return true
+        })
+    }, [from, payload, to])
+
+    const filteredReports = useMemo(() => {
+        if (!Array.isArray(reportsPayload)) return []
+        return reportsPayload.filter((report) => {
+            const createdAt = new Date(report.createdAt)
+            if (from && createdAt < new Date(`${from}T00:00:00`)) return false
+            if (to && createdAt > new Date(`${to}T23:59:59.999`)) return false
+            return true
+        })
+    }, [from, reportsPayload, to])
 
     const stats = [
         { name: "Active Alerts", value: 100 },
@@ -62,9 +89,9 @@ export default function Emergencies() {
 
     // Prefer live socket coords over REST snapshot for each active emergency
     const emergencyLocations: LocationData[] = useMemo(() => {
-        if (!payload || !Array.isArray(payload)) return []
+        if (!filteredEmergencies.length && !filteredReports.length) return []
 
-        return payload
+        const emergencies = filteredEmergencies
             .filter((emergency: EmergencyData) => emergency.isActive)
             .map((emergency: EmergencyData) => {
                 try {
@@ -99,7 +126,21 @@ export default function Emergencies() {
                 }
             })
             .filter(Boolean) as LocationData[]
-    }, [payload, livePositions])
+
+        const reports = filteredReports
+            .filter((report) => Number.isFinite(report.location?.latitude) && Number.isFinite(report.location?.longitude))
+            .map((report) => ({
+                id: report._id,
+                latitude: report.location!.latitude!,
+                longitude: report.location!.longitude!,
+                title: report.category || "Incident report",
+                description: report.description || "No description provided",
+                type: "report" as const,
+                timestamp: new Date(report.createdAt).getTime(),
+            }))
+
+        return [...emergencies, ...reports]
+    }, [filteredEmergencies, filteredReports, livePositions])
 
     if (!searchParams) {
         return null
@@ -107,6 +148,34 @@ export default function Emergencies() {
     const activeTab = searchParams.get("tab") || "map-view"
     return (
         <section>
+            <div className="mb-4 flex flex-wrap items-end gap-3">
+                <label className="grid gap-1 text-sm font-medium">
+                    From
+                    <input
+                        type="date"
+                        value={from || ""}
+                        onChange={(event) => {
+                            const params = new URLSearchParams(searchParams.toString())
+                            event.target.value ? params.set("from", event.target.value) : params.delete("from")
+                            router.replace(`${pathname}?${params.toString()}`)
+                        }}
+                        className="h-10 rounded border px-3"
+                    />
+                </label>
+                <label className="grid gap-1 text-sm font-medium">
+                    To
+                    <input
+                        type="date"
+                        value={to || ""}
+                        onChange={(event) => {
+                            const params = new URLSearchParams(searchParams.toString())
+                            event.target.value ? params.set("to", event.target.value) : params.delete("to")
+                            router.replace(`${pathname}?${params.toString()}`)
+                        }}
+                        className="h-10 rounded border px-3"
+                    />
+                </label>
+            </div>
             <div className="hidden grid-cols-2 lg:grid-cols-4 gap-4">
                 {stats.map((stat) => (
                     <Card key={stat.name} className="rounded shadow py-4 px-2">
@@ -124,7 +193,8 @@ export default function Emergencies() {
                 <EmergenciesTabContent
                     activeTab={activeTab}
                     locations={emergencyLocations}
-                    emergencies={payload || []}
+                    emergencies={filteredEmergencies}
+                    reports={filteredReports as Report[]}
                 />
 
             </div>

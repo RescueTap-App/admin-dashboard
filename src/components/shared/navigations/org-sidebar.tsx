@@ -54,8 +54,16 @@ const data = {
                     url: "/org/invite",
                 },
                 {
+                    title: "Login Activity",
+                    url: "/org/login-activity",
+                },
+                {
                     title: "Bulk Registration",
                     url: "/org/bulk-registry/create",
+                },
+                {
+                    title: "Request More Slots",
+                    url: "/org/request-slots",
                 },
             ],
         },

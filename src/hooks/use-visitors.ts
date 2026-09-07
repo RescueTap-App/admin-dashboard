@@ -83,7 +83,7 @@ export default function useVisitors({
         orgId: organizationId,
         page: 1,
         limit: PAGE_SIZE,
-      }).unwrap()
+      }, false).unwrap()
 
       const collected = [...(first.visitors || [])]
       const totalPages = first.pagination?.totalPages ?? 1
@@ -93,7 +93,7 @@ export default function useVisitors({
           orgId: organizationId,
           page,
           limit: PAGE_SIZE,
-        }).unwrap()
+        }, false).unwrap()
         collected.push(...(next.visitors || []))
       }
 

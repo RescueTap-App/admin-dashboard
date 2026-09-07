@@ -56,6 +56,10 @@ const data = {
                     title: "Create Organizations",
                     url: "/dashboard/organizations/create",
                 },
+                {
+                    title: "Communities",
+                    url: "/dashboard/communities",
+                },
             ],
         },
         {

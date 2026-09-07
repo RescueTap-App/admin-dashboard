@@ -13,6 +13,8 @@ import { RootState } from "@/lib/store";
 import { useState } from "react";
 import { countryCodes } from "@/constants/country-codes";
 import { PhoneInput } from "@/components/shared/forms/phone-input"
+import useUsers from "@/hooks/use-users"
+import { toast } from "sonner"
 
 
 export default function InviteOrgUser() {
@@ -21,6 +23,10 @@ export default function InviteOrgUser() {
     const [selectedCountryCode, setSelectedCountryCode] = useState(countryCodes[0])
     const { user } = useSelector((state: RootState) => state.auth);
     const inviterId = user?._id as string;
+    const { activeSubscription } = useUsers({ fetchAllUsers: true, userId: inviterId })
+    const { orgUsers } = useOrganization({ fetchAllUsers: true, inviterId })
+    const userLimit = typeof activeSubscription?.userLimit === "number" ? activeSubscription.userLimit : undefined
+    const noAvailableSlots = userLimit !== undefined && Array.isArray(orgUsers) && orgUsers.length >= userLimit
 
     const form = useForm<InviteOrgSchamaFormData>({
         resolver: zodResolver(inviteOrgSchema),
@@ -33,6 +39,10 @@ export default function InviteOrgUser() {
     })
 
     const handleSubmit = async (data: InviteOrgSchamaFormData) => {
+        if (noAvailableSlots) {
+            toast.error("No user slots are available. Request additional slots before inviting another user.")
+            return
+        }
         // Combine country code with phone number
         let cleanPhoneNumber = data.phoneNumber;
         if (cleanPhoneNumber.startsWith('0')) {
@@ -87,8 +97,8 @@ export default function InviteOrgUser() {
                         </Card>
 
                         <CardFooter className={"flex flex-row justify-end"}>
-                            <Button type="submit" className="max-w-md rounded bg-[#EF4136] hover:bg-[#EF4136]/50 text-white py-3" disabled={inviting}>
-                                {inviting ? "Processing..." : "Invite User"}
+                            <Button type="submit" className="max-w-md rounded bg-[#EF4136] hover:bg-[#EF4136]/50 text-white py-3" disabled={inviting || noAvailableSlots}>
+                                {noAvailableSlots ? "No user slots available" : inviting ? "Processing..." : "Invite User"}
                             </Button>
                         </CardFooter>
                     </form>

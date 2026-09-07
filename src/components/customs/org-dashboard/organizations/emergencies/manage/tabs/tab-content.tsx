@@ -8,7 +8,7 @@ interface LocationData {
     accuracy?: number
     title?: string
     description?: string
-    type?: 'emergency' | 'user' | 'responder'
+    type?: 'emergency' | 'report' | 'user' | 'responder'
     timestamp?: number
 }
 
@@ -37,13 +37,14 @@ interface EmergenciesTabContentProps {
     activeTab: string
     locations?: LocationData[]
     emergencies?: EmergencyData[]
+    reports?: import("@/types/reports.types").Report[]
 }
 
-export function EmergenciesTabContent({ activeTab, locations = [], emergencies = [] }: EmergenciesTabContentProps) {
+export function EmergenciesTabContent({ activeTab, locations = [], emergencies = [], reports = [] }: EmergenciesTabContentProps) {
     const renderTabContent = () => {
         switch (activeTab) {
             case "map-view":
-                return <MapView locations={locations} emergencies={emergencies} />
+                return <MapView locations={locations} emergencies={emergencies} reports={reports} />
             case "list-view":
                 return <ListView emergencies={emergencies} />
         }
