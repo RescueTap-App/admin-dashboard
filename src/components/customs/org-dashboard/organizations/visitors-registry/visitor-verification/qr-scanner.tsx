@@ -39,24 +39,35 @@ interface QRScannerProps {
     disabled?: boolean
 }
 
-async function openPreferredCamera(preferred: FacingMode) {
+function exactConstraints(facing: FacingMode): MediaTrackConstraints {
+    return { facingMode: { exact: facing } }
+}
+
+function stopStream(stream: MediaStream | null) {
+    stream?.getTracks().forEach((track) => track.stop())
+}
+
+async function openExact(facing: FacingMode): Promise<MediaStream | null> {
     try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: preferred },
+        return await navigator.mediaDevices.getUserMedia({
+            video: exactConstraints(facing),
         })
-        return { stream, facingMode: preferred }
     } catch {
-        const fallback: FacingMode = preferred === "user" ? "environment" : "user"
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: fallback },
-            })
-            return { stream, facingMode: fallback }
-        } catch {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true })
-            return { stream, facingMode: preferred }
-        }
+        return null
     }
+}
+
+async function openAnyCamera(): Promise<MediaStream | null> {
+    try {
+        return await navigator.mediaDevices.getUserMedia({ video: true })
+    } catch {
+        return null
+    }
+}
+
+function deviceCanSwitchCameras(front: boolean, videoInputCount: number) {
+    const touchPoints = navigator.maxTouchPoints ?? 0
+    return videoInputCount > 1 || (front && touchPoints > 1)
 }
 
 function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tenantId, disabled = false }: QRScannerProps) {
@@ -67,7 +78,9 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
     const [isCameraInitializing, setIsCameraInitializing] = useState(false)
     const [isQrVerifying, setIsQrVerifying] = useState(false)
     const [facingMode, setFacingMode] = useState<FacingMode>("user")
+    const [useExactFacing, setUseExactFacing] = useState(true)
     const [canSwitchCamera, setCanSwitchCamera] = useState(false)
+    const [isSwitchingCamera, setIsSwitchingCamera] = useState(false)
     const lastScannedData = useRef<string | null>(null)
     const scanTimeoutRef = useRef<NodeJS.Timeout | null>(null)
     const [verifyCode] = useVerifyCodeMutation()
@@ -206,27 +219,44 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
         setIsCameraInitializing(false)
     }
 
-    const startScanning = async (preferred: FacingMode = facingMode) => {
+    const startScanning = async (preferred: FacingMode = "user") => {
         setError(null)
         setCameraError(null)
         setIsScanning(false)
         setIsCameraInitializing(true)
 
         try {
-            const { stream, facingMode: activeFacing } = await openPreferredCamera(preferred)
-            const devices = await navigator.mediaDevices.enumerateDevices()
-            const videoDevices = devices.filter(device => device.kind === 'videoinput')
+            const front = await openExact("user")
+            stopStream(front)
+            const back = await openExact("environment")
+            stopStream(back)
 
-            if (videoDevices.length === 0) {
-                stream.getTracks().forEach(track => track.stop())
-                throw new Error('No camera devices found')
+            const devices = await navigator.mediaDevices.enumerateDevices()
+            const videoInputCount = devices.filter((device) => device.kind === "videoinput").length
+            const available = {
+                user: Boolean(front),
+                environment: Boolean(back),
             }
 
-            setCanSwitchCamera(videoDevices.length > 1)
-            setFacingMode(activeFacing)
+            let active: FacingMode | null = null
+            if (available[preferred]) active = preferred
+            else if (available.user) active = "user"
+            else if (available.environment) active = "environment"
 
-            // Stop the stream immediately as the Scanner component will handle it
-            stream.getTracks().forEach(track => track.stop())
+            if (!active) {
+                const fallback = await openAnyCamera()
+                if (!fallback) {
+                    throw new Error("No camera devices found")
+                }
+                stopStream(fallback)
+                setUseExactFacing(false)
+                setCanSwitchCamera(false)
+                setFacingMode("user")
+            } else {
+                setUseExactFacing(true)
+                setCanSwitchCamera((available.user && available.environment) || deviceCanSwitchCameras(available.user, videoInputCount))
+                setFacingMode(active)
+            }
 
             setIsScanning(true)
             setIsCameraInitializing(false)
@@ -238,9 +268,24 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
         }
     }
 
-    const switchCamera = () => {
+    const switchCamera = async () => {
         const next: FacingMode = facingMode === "user" ? "environment" : "user"
-        void startScanning(next)
+        setCameraError(null)
+        setIsSwitchingCamera(true)
+
+        const stream = await openExact(next)
+        if (!stream) {
+            setIsSwitchingCamera(false)
+            setCameraError(next === "user"
+                ? "Front camera is not available on this device."
+                : "Back camera is not available on this device.")
+            return
+        }
+
+        stopStream(stream)
+        setUseExactFacing(true)
+        setFacingMode(next)
+        setIsSwitchingCamera(false)
     }
 
     const stopScanning = () => {
@@ -250,6 +295,7 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
         setError(null)
         setCameraError(null)
         setIsCameraInitializing(false)
+        setIsSwitchingCamera(false)
         // Clear any pending scan timeout
         if (scanTimeoutRef.current) {
             clearTimeout(scanTimeoutRef.current)
@@ -365,7 +411,7 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                         <p className="text-sm text-gray-500">
                             {disabled
                                 ? "Select an organization before opening the camera."
-                                : "The front camera opens first. Hold the QR code in view."}
+                                : "The front camera opens first. On a phone, switch between the front and back cameras while scanning."}
                         </p>
 
                     </div>
@@ -392,8 +438,8 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                             ) : (
                                 <>
                                     <Scanner
-                                        key={facingMode}
-                                        constraints={{ facingMode }}
+                                        key={`${facingMode}-${useExactFacing}`}
+                                        constraints={useExactFacing ? exactConstraints(facingMode) : { facingMode }}
                                         onScan={handleScan}
                                         onError={handleError}
                                     />
@@ -426,13 +472,15 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                             </Button>
                             {canSwitchCamera && (
                                 <Button
-                                    onClick={switchCamera}
+                                    onClick={() => void switchCamera()}
                                     variant="outline"
-                                    disabled={isCameraInitializing || isQrVerifying}
+                                    disabled={isCameraInitializing || isSwitchingCamera || isQrVerifying}
                                     className="border-gray-600 text-gray-700 hover:bg-gray-50"
                                 >
                                     <SwitchCamera className="w-4 h-4 mr-2" />
-                                    {facingMode === "user" ? "Use back camera" : "Use front camera"}
+                                    {isSwitchingCamera
+                                        ? "Switching..."
+                                        : facingMode === "user" ? "Use back camera" : "Use front camera"}
                                 </Button>
                             )}
                             {/* <Button
