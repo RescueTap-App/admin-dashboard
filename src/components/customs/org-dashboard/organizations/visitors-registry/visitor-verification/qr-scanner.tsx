@@ -259,51 +259,51 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
         lastScannedData.current = null
     }
 
-    const handleTestQR = async () => {
-        // Use a sample entry code for testing
-        const testEntryCode = "565512" // Using the entry code from your example
+    // const handleTestQR = async () => {
+    //     // Use a sample entry code for testing
+    //     const testEntryCode = "565512" // Using the entry code from your example
 
-        console.log('Test QR button clicked, using entry code:', testEntryCode)
-        setIsTestMode(true)
+    //     console.log('Test QR button clicked, using entry code:', testEntryCode)
+    //     setIsTestMode(true)
 
-        // Clear any pending scan timeout
-        if (scanTimeoutRef.current) {
-            clearTimeout(scanTimeoutRef.current)
-            scanTimeoutRef.current = null
-        }
+    //     // Clear any pending scan timeout
+    //     if (scanTimeoutRef.current) {
+    //         clearTimeout(scanTimeoutRef.current)
+    //         scanTimeoutRef.current = null
+    //     }
 
-        // Automatically verify the test entry code
-        setIsQrVerifying(true)
-        try {
-            console.log('Auto-verifying test entry code:', testEntryCode)
-            const result = await verifyCode({
-                data: { code: testEntryCode, tenantId: tenantId }
-            }).unwrap()
+    //     // Automatically verify the test entry code
+    //     setIsQrVerifying(true)
+    //     try {
+    //         console.log('Auto-verifying test entry code:', testEntryCode)
+    //         const result = await verifyCode({
+    //             data: { code: testEntryCode, tenantId: tenantId }
+    //         }).unwrap()
 
-            console.log('Test verification successful:', result)
-            onVerificationComplete({
-                success: true,
-                message: result.message || "Visitor verified successfully!",
-                visitor: result.visitor || result
-            })
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-            console.error('Test verification failed:', error)
-            const errorMessage = error?.data?.message || "Invalid or expired code"
-            onVerificationComplete({
-                success: false,
-                message: errorMessage,
-                visitor: undefined
-            })
-        } finally {
-            setIsQrVerifying(false)
-        }
+    //         console.log('Test verification successful:', result)
+    //         onVerificationComplete({
+    //             success: true,
+    //             message: result.message || "Visitor verified successfully!",
+    //             visitor: result.visitor || result
+    //         })
+    //         // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    //     } catch (error: any) {
+    //         console.error('Test verification failed:', error)
+    //         const errorMessage = error?.data?.message || "Invalid or expired code"
+    //         onVerificationComplete({
+    //             success: false,
+    //             message: errorMessage,
+    //             visitor: undefined
+    //         })
+    //     } finally {
+    //         setIsQrVerifying(false)
+    //     }
 
-        // Reset test mode after a delay
-        setTimeout(() => {
-            setIsTestMode(false)
-        }, 2000)
-    }
+    //     // Reset test mode after a delay
+    //     setTimeout(() => {
+    //         setIsTestMode(false)
+    //     }, 2000)
+    // }
 
     return (
         <div className="space-y-6">
@@ -435,14 +435,14 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                                     {facingMode === "user" ? "Use back camera" : "Use front camera"}
                                 </Button>
                             )}
-                            <Button
+                            {/* <Button
                                 onClick={handleTestQR}
                                 variant="outline"
                                 className="border-blue-600 text-blue-600 hover:bg-blue-50"
                                 disabled={disabled || isVerifying || isTestMode || isQrVerifying}
                             >
                                 {isTestMode || isQrVerifying ? 'processing...' : 'Test QR'}
-                            </Button>
+                            </Button> */}
                         </div>
                     </div>
                 )}
@@ -460,11 +460,11 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                 )}
 
                 {/* Debug Information */}
-                <div className="text-center text-xs text-gray-400 space-y-1">
+                {/* <div className="text-center text-xs text-gray-400 space-y-1">
                     <p>Debug: isScanning={String(isScanning)}, isTestMode={String(isTestMode)}, isCameraInitializing={String(isCameraInitializing)}, isQrVerifying={String(isQrVerifying)}</p>
                     <p>Camera Error: {cameraError || 'None'}</p>
                     <p>Note: QR scanner only accepts 6-digit entry codes. Visitor/Personnel data is fetched from the server.</p>
-                </div>
+                </div> */}
             </div>
         </div>
     )
