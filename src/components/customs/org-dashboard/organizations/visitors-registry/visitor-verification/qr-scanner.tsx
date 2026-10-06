@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { QrCode, Camera, CameraOff } from "lucide-react"
+import { QrCode, Camera, CameraOff, SwitchCamera } from "lucide-react"
 import { Scanner } from '@yudiel/react-qr-scanner';
 import { useVerifyCodeMutation } from "@/redux/features/visitors-api";
 
@@ -29,20 +29,45 @@ interface VisitorData {
     __v: number
 }
 
+type FacingMode = "user" | "environment"
+
 interface QRScannerProps {
     onVisitorScanned: (visitor: VisitorData) => void
     onVerificationComplete: (result: { success: boolean; message: string; visitor?: VisitorData }) => void
     isVerifying: boolean
     tenantId: string
+    disabled?: boolean
 }
 
-function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tenantId }: QRScannerProps) {
+async function openPreferredCamera(preferred: FacingMode) {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+            video: { facingMode: preferred },
+        })
+        return { stream, facingMode: preferred }
+    } catch {
+        const fallback: FacingMode = preferred === "user" ? "environment" : "user"
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { facingMode: fallback },
+            })
+            return { stream, facingMode: fallback }
+        } catch {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true })
+            return { stream, facingMode: preferred }
+        }
+    }
+}
+
+function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tenantId, disabled = false }: QRScannerProps) {
     const [isScanning, setIsScanning] = useState(false)
     const [error, setError] = useState<string | null>(null)
     const [isTestMode, setIsTestMode] = useState(false)
     const [cameraError, setCameraError] = useState<string | null>(null)
     const [isCameraInitializing, setIsCameraInitializing] = useState(false)
     const [isQrVerifying, setIsQrVerifying] = useState(false)
+    const [facingMode, setFacingMode] = useState<FacingMode>("user")
+    const [canSwitchCamera, setCanSwitchCamera] = useState(false)
     const lastScannedData = useRef<string | null>(null)
     const scanTimeoutRef = useRef<NodeJS.Timeout | null>(null)
     const [verifyCode] = useVerifyCodeMutation()
@@ -61,7 +86,7 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
         console.log('QR Scanner result:', result)
 
         // Prevent scanning during test mode or verification
-        if (isVerifying || isTestMode || isQrVerifying) {
+        if (isVerifying || isTestMode || isQrVerifying || disabled || !tenantId) {
             console.log('Already verifying or in test mode, ignoring scan')
             return
         }
@@ -181,26 +206,24 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
         setIsCameraInitializing(false)
     }
 
-    const startScanning = async () => {
+    const startScanning = async (preferred: FacingMode = facingMode) => {
         setError(null)
         setCameraError(null)
+        setIsScanning(false)
         setIsCameraInitializing(true)
 
         try {
-            // Check if camera is available
+            const { stream, facingMode: activeFacing } = await openPreferredCamera(preferred)
             const devices = await navigator.mediaDevices.enumerateDevices()
             const videoDevices = devices.filter(device => device.kind === 'videoinput')
 
             if (videoDevices.length === 0) {
+                stream.getTracks().forEach(track => track.stop())
                 throw new Error('No camera devices found')
             }
 
-            // Request camera permission
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: {
-                    facingMode: 'environment' // Prefer back camera for QR scanning
-                }
-            })
+            setCanSwitchCamera(videoDevices.length > 1)
+            setFacingMode(activeFacing)
 
             // Stop the stream immediately as the Scanner component will handle it
             stream.getTracks().forEach(track => track.stop())
@@ -213,6 +236,11 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
             setIsScanning(false)
             setIsCameraInitializing(false)
         }
+    }
+
+    const switchCamera = () => {
+        const next: FacingMode = facingMode === "user" ? "environment" : "user"
+        void startScanning(next)
     }
 
     const stopScanning = () => {
@@ -286,7 +314,7 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                 </div>
                 <div>
                     <h2 className="text-xl font-semibold text-gray-900 font-nunito">Scan Visitor QR</h2>
-                    <p className="text-gray-600 font-nunito">Scan visitor/Personnel QR code containing 6-digit entry code</p>
+                    <p className="text-gray-600 font-nunito">Scan a visitor or personnel QR code with the front camera</p>
                 </div>
             </div>
 
@@ -317,8 +345,8 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                         </div>
 
                         <Button
-                            onClick={startScanning}
-                            disabled={isVerifying || isCameraInitializing || isQrVerifying}
+                            onClick={() => startScanning(facingMode)}
+                            disabled={disabled || isVerifying || isCameraInitializing || isQrVerifying}
                             className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 disabled:opacity-50"
                         >
                             {isCameraInitializing ? (
@@ -334,7 +362,11 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                             )}
                         </Button>
 
-                        <p className="text-sm text-gray-500">Position Visitor/Personnel QR Code in camera view</p>
+                        <p className="text-sm text-gray-500">
+                            {disabled
+                                ? "Select an organization before opening the camera."
+                                : "The front camera opens first. Hold the QR code in view."}
+                        </p>
 
                     </div>
                 ) : (
@@ -347,7 +379,7 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                                         <p className="text-red-600 font-medium">Camera Failed to Load</p>
                                         <p className="text-sm text-gray-300">{cameraError}</p>
                                         <Button
-                                            onClick={startScanning}
+                                            onClick={() => startScanning(facingMode)}
                                             variant="outline"
                                             size="sm"
                                             className="mt-2 border-white text-white hover:bg-white hover:text-black"
@@ -360,6 +392,8 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                             ) : (
                                 <>
                                     <Scanner
+                                        key={facingMode}
+                                        constraints={{ facingMode }}
                                         onScan={handleScan}
                                         onError={handleError}
                                     />
@@ -378,7 +412,10 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                         </div>
 
 
-                        <div className="flex justify-center gap-2">
+                        <p className="text-center text-sm text-gray-500">
+                            {facingMode === "user" ? "Front camera" : "Back camera"}
+                        </p>
+                        <div className="flex justify-center gap-2 flex-wrap">
                             <Button
                                 onClick={stopScanning}
                                 variant="outline"
@@ -387,11 +424,22 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                                 <CameraOff className="w-4 h-4 mr-2" />
                                 Stop Camera
                             </Button>
+                            {canSwitchCamera && (
+                                <Button
+                                    onClick={switchCamera}
+                                    variant="outline"
+                                    disabled={isCameraInitializing || isQrVerifying}
+                                    className="border-gray-600 text-gray-700 hover:bg-gray-50"
+                                >
+                                    <SwitchCamera className="w-4 h-4 mr-2" />
+                                    {facingMode === "user" ? "Use back camera" : "Use front camera"}
+                                </Button>
+                            )}
                             <Button
                                 onClick={handleTestQR}
                                 variant="outline"
                                 className="border-blue-600 text-blue-600 hover:bg-blue-50"
-                                disabled={isVerifying || isTestMode || isQrVerifying}
+                                disabled={disabled || isVerifying || isTestMode || isQrVerifying}
                             >
                                 {isTestMode || isQrVerifying ? 'processing...' : 'Test QR'}
                             </Button>

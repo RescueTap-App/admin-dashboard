@@ -24,9 +24,10 @@ type ManualEntryForm = z.infer<typeof manualEntrySchema>
 interface ManualEntryProps {
     onCodeSubmit: (code: string) => void
     isVerifying: boolean
+    disabled?: boolean
 }
 
-function ManualEntry({ onCodeSubmit, isVerifying }: ManualEntryProps) {
+function ManualEntry({ onCodeSubmit, isVerifying, disabled = false }: ManualEntryProps) {
     const form = useForm<ManualEntryForm>({
         resolver: zodResolver(manualEntrySchema),
         defaultValues: {
@@ -35,6 +36,7 @@ function ManualEntry({ onCodeSubmit, isVerifying }: ManualEntryProps) {
     })
 
     const onSubmit = (data: ManualEntryForm) => {
+        if (disabled) return
         onCodeSubmit(data.code)
     }
 
@@ -77,7 +79,7 @@ function ManualEntry({ onCodeSubmit, isVerifying }: ManualEntryProps) {
                                                 handleInputChange(e.target.value)
                                                 field.onChange(e.target.value)
                                             }}
-                                            disabled={isVerifying}
+                                            disabled={isVerifying || disabled}
                                         />
                                     </FormControl>
                                     <FormMessage />
@@ -88,7 +90,7 @@ function ManualEntry({ onCodeSubmit, isVerifying }: ManualEntryProps) {
                         <Button
                             type="submit"
                             // disabled={isVerifying || !form.watch('code') || form.watch('code').length !== 6}
-                            disabled={isVerifying || !form.watch('code')}
+                            disabled={disabled || isVerifying || !form.watch('code')}
                             className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 min-w-[100px]"
                         >
                             {isVerifying ? (

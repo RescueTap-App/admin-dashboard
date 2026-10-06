@@ -5,6 +5,10 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Card, CardContent } from "@/components/ui/card"
 import { formatVisitorDisplayData, formatJSONData, getStatusColor } from "@/lib/utils"
 import { useVerifyCodeMutation } from "@/redux/features/visitors-api"
+import { useGetOrgsQuery } from "@/redux/features/organization-api"
+import { OrganizationTableType } from "@/types/organization.types"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { AlertCircle, Check, Hash, QrCode, User, Phone, Car, Calendar, Eye, EyeOff, Copy } from "lucide-react"
 import { useState } from "react"
 import { toast } from "sonner"
@@ -44,7 +48,7 @@ type VerificationResult = {
     visitor?: any
 }
 
-export default function VisitorVerification() {
+export default function VisitorVerification({ selectOrganization = false }: { selectOrganization?: boolean }) {
     const [activeTab, setActiveTab] = useState<'scan' | 'manual'>('scan')
     const [verificationResult, setVerificationResult] = useState<VerificationResult | null>(null)
     const [isVerifying, setIsVerifying] = useState(false)
@@ -53,7 +57,13 @@ export default function VisitorVerification() {
     const [copiedToClipboard, setCopiedToClipboard] = useState(false)
     const [verifyCode] = useVerifyCodeMutation()
     const { user } = useSelector((state: RootState) => state.auth)
-    const tenantId = user?._id as string
+    const [selectedOrgId, setSelectedOrgId] = useState("")
+    const { data: organizations, isLoading: loadingOrganizations } = useGetOrgsQuery(undefined, {
+        skip: !selectOrganization,
+    })
+    const organizationOptions = (organizations?.data ?? []) as OrganizationTableType[]
+    const tenantId = selectOrganization ? selectedOrgId : (user?._id as string)
+    const needsOrganization = selectOrganization && !tenantId
 
     // Dialog state
     const [isDialogOpen, setIsDialogOpen] = useState(false)
@@ -90,7 +100,23 @@ export default function VisitorVerification() {
         }
     }
 
+    const clearResult = () => {
+        setVerificationResult(null)
+        setScannedVisitor(null)
+        setShowRawData(false)
+        setCopiedToClipboard(false)
+    }
+
+    const handleOrganizationChange = (orgId: string) => {
+        setSelectedOrgId(orgId)
+        clearResult()
+    }
+
     const handleVerification = async (code: string) => {
+        if (!tenantId) {
+            toast.error("Select an organization before verifying a visitor")
+            return
+        }
         //TODO(ANYDEV): UNCOMMENT THIS TO FINALIZE THE VALIDATION REINSTATION
         // if (!code || code.length !== 6) {
         //     setDialogData({
@@ -134,13 +160,6 @@ export default function VisitorVerification() {
         }
     }
 
-    const clearResult = () => {
-        setVerificationResult(null)
-        setScannedVisitor(null)
-        setShowRawData(false)
-        setCopiedToClipboard(false)
-    }
-
     const handleDialogClose = () => {
         setIsDialogOpen(false)
         setDialogData({
@@ -170,6 +189,31 @@ export default function VisitorVerification() {
                 <h1 className="text-2xl font-bold font-nunito text-gray-900">Visitor/Personnel Verification</h1>
                 <p className="text-gray-600 font-nunito">Scan visitor/Personnel QR code to view information or manually verify access</p>
             </div>
+
+            {selectOrganization && (
+                <div className="space-y-2">
+                    <Label htmlFor="verify-organization">Organization</Label>
+                    <Select
+                        value={selectedOrgId}
+                        onValueChange={handleOrganizationChange}
+                        disabled={loadingOrganizations}
+                    >
+                        <SelectTrigger id="verify-organization" className="w-full">
+                            <SelectValue placeholder={loadingOrganizations ? "Loading organizations..." : "Select an organization"} />
+                        </SelectTrigger>
+                        <SelectContent>
+                            {organizationOptions.map((organization) => (
+                                <SelectItem key={organization._id} value={organization._id}>
+                                    {organization.organizationName || `${organization.firstName} ${organization.lastName}`}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    {needsOrganization && (
+                        <p className="text-sm text-gray-500">Select the organization this visitor belongs to before scanning.</p>
+                    )}
+                </div>
+            )}
 
             {/* Tab Navigation */}
             <div className="flex justify-center">
@@ -212,11 +256,13 @@ export default function VisitorVerification() {
                             onVerificationComplete={handleVerificationComplete}
                             isVerifying={isVerifying}
                             tenantId={tenantId}
+                            disabled={needsOrganization}
                         />
                     ) : (
                         <ManualEntry
                             onCodeSubmit={handleVerification}
                             isVerifying={isVerifying}
+                            disabled={needsOrganization}
                         />
                     )}
                 </CardContent>

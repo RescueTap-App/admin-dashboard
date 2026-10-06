@@ -18,7 +18,7 @@ import useUserSessions from "@/hooks/use-user-sessions"
 // } from "recharts"
 
 export function UserLoginAnalytics() {
-    const { userSessionsStats, loadingUserSessions } = useUserSessions({
+    const { loadingUserSessions } = useUserSessions({
         fetchUserSessions: true,
     })
 

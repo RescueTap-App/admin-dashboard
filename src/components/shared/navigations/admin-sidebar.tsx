@@ -57,6 +57,10 @@ const data = {
                     url: "/dashboard/organizations/create",
                 },
                 {
+                    title: "Verify Visitor",
+                    url: "/dashboard/visitors/verify",
+                },
+                {
                     title: "Communities",
                     url: "/dashboard/communities",
                 },

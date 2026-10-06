@@ -156,7 +156,11 @@ export default function Emergencies() {
                         value={from || ""}
                         onChange={(event) => {
                             const params = new URLSearchParams(searchParams.toString())
-                            event.target.value ? params.set("from", event.target.value) : params.delete("from")
+                            if (event.target.value) {
+                                params.set("from", event.target.value)
+                            } else {
+                                params.delete("from")
+                            }
                             router.replace(`${pathname}?${params.toString()}`)
                         }}
                         className="h-10 rounded border px-3"
@@ -169,7 +173,11 @@ export default function Emergencies() {
                         value={to || ""}
                         onChange={(event) => {
                             const params = new URLSearchParams(searchParams.toString())
-                            event.target.value ? params.set("to", event.target.value) : params.delete("to")
+                            if (event.target.value) {
+                                params.set("to", event.target.value)
+                            } else {
+                                params.delete("to")
+                            }
                             router.replace(`${pathname}?${params.toString()}`)
                         }}
                         className="h-10 rounded border px-3"
