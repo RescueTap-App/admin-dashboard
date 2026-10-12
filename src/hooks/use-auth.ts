@@ -27,6 +27,8 @@ export function useAuth() {
         sessionStorage.removeItem("token");
         sessionStorage.removeItem("userId");
         sessionStorage.removeItem("role");
+        sessionStorage.removeItem("userType");
+        Cookies.remove("userType");
         dispatch(resetUser());
     };
 
@@ -34,9 +36,10 @@ export function useAuth() {
         try {
             const res = await loginMutation(credentials).unwrap();
             const role = res.user?.role as string | undefined;
+            const userType = res.user?.userType as string | undefined;
 
-            // Normal users / org members / drivers cannot use this admin app
-            if (!canAccessAdminApp(role)) {
+            // Normal users, drivers, and individual/family accounts cannot use this admin app
+            if (!canAccessAdminApp(role, userType)) {
                 clearClientSession();
                 toast.error(NO_ADMIN_ACCESS_MESSAGE);
                 return;
@@ -52,6 +55,10 @@ export function useAuth() {
             sessionStorage.setItem("token", res.access_token);
             sessionStorage.setItem("userId", res.user._id);
             sessionStorage.setItem("role", res.user.role);
+            if (userType) {
+                sessionStorage.setItem("userType", userType);
+                Cookies.set("userType", userType, { expires: 7 });
+            }
             Cookies.set("token", res.access_token, { expires: 7 });
 
             toast.success(res.messages || "Login successful");

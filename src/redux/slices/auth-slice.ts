@@ -7,6 +7,7 @@ interface User {
     email: string;
     phoneNumber: string;
     role: string;
+    userType?: string;
     verified: boolean;
     profileImage?: string;
     // Add other fields you care to persist

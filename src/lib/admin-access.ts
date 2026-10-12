@@ -1,6 +1,16 @@
-/** Roles allowed to use this admin web app (super-admin or org-admin). */
-export function canAccessAdminApp(role?: string | null): boolean {
-  return role === "admin" || role === "organization"
+/**
+ * Super-admins (`role === "admin"`) may sign in.
+ * Organization dashboards require both `role === "organization"` and
+ * `userType === "organization"`. Individual and family accounts are rejected
+ * even when their role is `organization`.
+ */
+export function canAccessAdminApp(
+  role?: string | null,
+  userType?: string | null,
+): boolean {
+  if (role === "admin") return true
+  if (role !== "organization") return false
+  return userType === "organization"
 }
 
 export function homePathForRole(role?: string | null): string | null {

@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict'
 
-function canAccessAdminApp(role) {
-  return role === 'admin' || role === 'organization'
+function canAccessAdminApp(role, userType) {
+  if (role === 'admin') return true
+  if (role !== 'organization') return false
+  return userType === 'organization'
 }
 
 function homePathForRole(role) {
@@ -24,8 +26,12 @@ function isSafeRedirectForRole(role, redirect) {
 }
 
 assert.equal(canAccessAdminApp('admin'), true)
-assert.equal(canAccessAdminApp('organization'), true)
-assert.equal(canAccessAdminApp('user'), false)
+assert.equal(canAccessAdminApp('admin', 'individual'), true)
+assert.equal(canAccessAdminApp('organization', 'organization'), true)
+assert.equal(canAccessAdminApp('organization'), false)
+assert.equal(canAccessAdminApp('organization', 'individual'), false)
+assert.equal(canAccessAdminApp('organization', 'family'), false)
+assert.equal(canAccessAdminApp('user', 'individual'), false)
 assert.equal(canAccessAdminApp('driver'), false)
 assert.equal(canAccessAdminApp(undefined), false)
 
