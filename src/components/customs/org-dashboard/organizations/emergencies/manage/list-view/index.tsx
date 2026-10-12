@@ -148,7 +148,7 @@ export default function ListView({ emergencies = [] }: ListViewProps) {
                 updatedAt: new Date(emergency.updatedAt),
             }
         }
-    })
+    }).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime())
 
     return (
         <div className="flex flex-col gap-4">
