@@ -6,7 +6,9 @@ import {
     Car,
     Users,
     BookAudioIcon,
-    LogOut
+    LogOut,
+    AlertTriangle,
+    Activity,
 } from "lucide-react"
 import {
     Sidebar,
@@ -25,18 +27,42 @@ import Link from "next/link"
 const data = {
     navMain: [
         {
+            title: "Analytics",
+            url: "#",
+            icon: Activity,
+            isActive: true,
+            items: [
+                {
+                    title: "Dashboard",
+                    url: "/dashboard/analytics",
+                },
+            ],
+        },
+        {
             title: "Organizations",
             url: "#",
             icon: Boxes,
-            isActive: true,
+            isActive: false,
             items: [
                 {
                     title: "All Organizations",
                     url: "/dashboard/organizations",
                 },
                 {
+                    title: "Slot Requests",
+                    url: "/dashboard/organizations/request-slots",
+                },
+                {
                     title: "Create Organizations",
                     url: "/dashboard/organizations/create",
+                },
+                {
+                    title: "Verify Visitor",
+                    url: "/dashboard/visitors/verify",
+                },
+                {
+                    title: "Communities",
+                    url: "/dashboard/communities",
                 },
             ],
         },
@@ -67,6 +93,17 @@ const data = {
                 {
                     title: "Create User",
                     url: "/dashboard/users/create",
+                },
+            ],
+        },
+        {
+            title: "Emergencies",
+            url: "#",
+            icon: AlertTriangle,
+            items: [
+                {
+                    title: "Voice Notes",
+                    url: "/dashboard/voice-notes",
                 },
             ],
         },

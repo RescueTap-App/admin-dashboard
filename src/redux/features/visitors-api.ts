@@ -9,7 +9,9 @@ export const visitorsApi = createApi({
     endpoints: (builder) => ({
         getOrgVisitors: builder.query<VisitorsLogResponse, { orgId: string, page: number, limit: number }>({
             query: ({ orgId, limit, page }) => `/visitors/organization/${orgId}/visitors?limit=${limit}&page=${page}`,
-            providesTags: ['Visitors'],
+            providesTags: (_result, _error, { orgId }) => [
+                { type: 'Visitors', id: orgId },
+            ],
         }),
         getAllVisitors: builder.query({
             query: () => `/visitors/logs`,
@@ -25,12 +27,15 @@ export const visitorsApi = createApi({
                 method: 'POST',
                 body: data,
             }),
-            invalidatesTags: ['Visitors'],
+            invalidatesTags: (_result, _error, { tenantId }) => [
+                { type: 'Visitors', id: tenantId },
+            ],
         }),
         verifyCode: builder.mutation({
-            query: ({ data }: { data: { code: string } }) => ({
+            query: ({ data }: { data: { code: string, tenantId: string } }) => ({
                 url: `/visitors/verify/${data.code}`,
                 method: 'POST',
+                body: { 'tenantId': data.tenantId },
             }),
             invalidatesTags: ['Visitors'],
         }),
@@ -61,6 +66,7 @@ export const visitorsApi = createApi({
 
 export const {
     useGetOrgVisitorsQuery,
+    useLazyGetOrgVisitorsQuery,
     useGetAllVisitorsQuery,
     useGetTenantVisitorsQuery,
     useInviteVisitorMutation,

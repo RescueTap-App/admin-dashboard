@@ -8,7 +8,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { SlotRequestFormData, slotRequestSchema } from "@/constants/validations/register-vehicle"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Resolver, useForm } from "react-hook-form"
-
+import { useCreateSlotRequestMutation } from "@/redux/features/slot-requests-api"
+import { useSelector } from "react-redux"
+import { toast } from "sonner"
+import { RootState } from "@/lib/store"
 
 const urgencyOptions = [
     { value: "low", label: "Low" },
@@ -32,16 +35,43 @@ export function RequestSlots() {
         },
     })
 
-    const handleSubmit = (data: SlotRequestFormData) => {
-        console.log(data)
+    const { user } = useSelector((state: RootState) => state.auth)
+    const [createRequest] = useCreateSlotRequestMutation()
+
+    const handleSubmit = async (data: SlotRequestFormData) => {
+        try {
+            const orgId = user?._id || data.organizationId;
+
+            if (!orgId) {
+                toast.error("Organization ID is missing. Please make sure you are fully logged in.");
+                return;
+            }
+
+            const { subscriptionId, ...restData } = data;
+            const payload = {
+                ...restData,
+                organizationId: orgId,
+                ...(subscriptionId ? { subscriptionId } : {})
+            };
+
+            await createRequest(payload).unwrap()
+
+            toast.success("Slot request submitted successfully!")
+            form.reset()
+        } catch (error: unknown) {
+            const err = error as { data?: { message?: string }; error?: string };
+            const errorMsg = err?.data?.message || err?.error || JSON.stringify(error);
+            toast.error(`Failed to submit request: ${errorMsg}`)
+            console.error("Failed to submit request", error)
+        }
     }
 
     return (
         <Card className="rounded shadow max-w-4xl">
             <CardHeader>
-                <CardTitle className="text-xl">Request Additional Vehicle Slots</CardTitle>
+                <CardTitle className="text-xl">Request Additional Slots</CardTitle>
                 <p className="text-gray-600">
-                    Submit a request to RescueTap admin for additional vehicle slots for your organization.
+                    Submit a request to RescueTap admin for additional user or driver slots for your organization.
                 </p>
             </CardHeader>
             <CardContent>
@@ -52,14 +82,14 @@ export function RequestSlots() {
                                 <ReusableFormField
                                     control={form.control}
                                     name="additionalUserSlots"
-                                    label="Number of Additional Slots Needed *"
+                                    label="Number of Additional User Slots Needed"
                                     type="number"
                                     placeholder="Enter number of slots"
                                 />
                                 <ReusableFormField
                                     control={form.control}
                                     name="additionalDriverSlots"
-                                    label="Number of Additional Driver Slots Needed *"
+                                    label="Number of Additional Driver Slots Needed"
                                     type="number"
                                     placeholder="Enter number of driver slots"
                                 />
@@ -102,7 +132,7 @@ export function RequestSlots() {
                             type="text"
                             fieldType="textarea"
                             label="Justification for Additional User and Driver Slots *"
-                            placeholder="Please explain why you need additional vehicle slots..."
+                            placeholder="Please explain why you need additional slots..."
                             className="min-h-32 resize-none"
                         />
 

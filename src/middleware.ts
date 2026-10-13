@@ -9,6 +9,7 @@ import {
 interface DecodedToken {
     exp: number;
     role?: string;
+    userType?: string;
 }
 
 const PUBLIC_ROUTES = [
@@ -57,6 +58,7 @@ export function middleware(request: NextRequest) {
     }
 
     const { exp, role } = decoded;
+    const userType = decoded.userType ?? request.cookies.get("userType")?.value;
     const now = Date.now() / 1000;
 
     if (exp && exp < now) {
@@ -66,14 +68,21 @@ export function middleware(request: NextRequest) {
     }
 
     // Logged-in users without admin-app roles should not keep a session here
-    if (!canAccessAdminApp(role) && isProtected) {
+    if (!canAccessAdminApp(role, userType) && isProtected) {
         const res = NextResponse.redirect(new URL("/unauthorized", request.url));
         res.cookies.delete("token");
+        res.cookies.delete("userType");
         return res;
     }
 
     // Redirect logged-in admins/orgs away from public auth/home
     if (isPublic || pathname === "/") {
+        if (!canAccessAdminApp(role, userType)) {
+            const res = NextResponse.next();
+            res.cookies.delete("token");
+            res.cookies.delete("userType");
+            return res;
+        }
         const home = homePathForRole(role);
         if (home) {
             return NextResponse.redirect(new URL(home, request.url));

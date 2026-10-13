@@ -135,13 +135,13 @@ export function DashboardOverview({
 
 
                         <Item variant="outline" size="sm" asChild>
-                            <Link href="/org/vehicles/request-slot">
+                            <Link href="/org/request-slots">
                                 <ItemMedia>
                                     <BadgeCheckIcon className="size-5" />
                                 </ItemMedia>
                                 <ItemContent>
                                     <ItemTitle>Request More Slots</ItemTitle>
-                                    <ItemDescription>Submit a request for additional vehicle registration slots</ItemDescription>
+                                    <ItemDescription>Submit a request for additional user and driver slots</ItemDescription>
                                 </ItemContent>
                                 <ItemActions>
                                     <ChevronRightIcon className="size-4" />

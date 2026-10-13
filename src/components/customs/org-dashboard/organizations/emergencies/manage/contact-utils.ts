@@ -111,3 +111,42 @@ export function getPrimaryUserId(emergencies: EmergencyData[]): string | null {
     const activeEmergency = emergencies.find(emergency => emergency.isActive);
     return activeEmergency ? activeEmergency.user._id : null;
 }
+
+/**
+ * Opens Google Maps directions to the emergency location.
+ * Uses the admin's browser geolocation as origin when available;
+ * otherwise opens maps with destination only.
+ */
+export function openInGoogleMaps(destLat: number, destLng: number) {
+    if (!Number.isFinite(destLat) || !Number.isFinite(destLng)) {
+        return;
+    }
+
+    const destination = `${destLat},${destLng}`;
+
+    const openUrl = (origin?: { lat: number; lng: number }) => {
+        const url = origin
+            ? `https://www.google.com/maps/dir/?api=1&origin=${origin.lat},${origin.lng}&destination=${destination}&travelmode=driving`
+            : `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
+        window.open(url, "_blank", "noopener,noreferrer");
+    };
+
+    if (typeof navigator === "undefined" || !navigator.geolocation) {
+        openUrl();
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+        (pos) => {
+            openUrl({
+                lat: pos.coords.latitude,
+                lng: pos.coords.longitude,
+            });
+        },
+        () => {
+            // Permission denied / timeout — still open to the emergency pin
+            openUrl();
+        },
+        { enableHighAccuracy: true, timeout: 8000, maximumAge: 60_000 },
+    );
+}

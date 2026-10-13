@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "rescuetapbucket.s3.eu-north-1.amazonaws.com",
+        pathname: "/**"
+      },
+      {
+        protocol: "https",
         hostname: "example.com",
         pathname: "/**"
       }

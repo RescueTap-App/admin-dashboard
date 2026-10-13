@@ -31,10 +31,6 @@ const data = {
             isActive: true,
             items: [
                 {
-                    title: "Request Slots",
-                    url: "/org/vehicles/request-slot",
-                },
-                {
                     title: "Drivers List",
                     url: "/org/drivers",
                 },
@@ -58,8 +54,16 @@ const data = {
                     url: "/org/invite",
                 },
                 {
+                    title: "Login Activity",
+                    url: "/org/login-activity",
+                },
+                {
                     title: "Bulk Registration",
                     url: "/org/bulk-registry/create",
+                },
+                {
+                    title: "Request More Slots",
+                    url: "/org/request-slots",
                 },
             ],
         },
@@ -90,7 +94,11 @@ const data = {
                 {
                     title: "All Emergencies",
                     url: "/org/emergencies",
-                }
+                },
+                {
+                    title: "Voice Notes",
+                    url: "/org/voice-notes",
+                },
             ],
         },
     ],
