@@ -1,6 +1,7 @@
 /**
- * Which visitor date field defines the activity-log month.
- * Swap `VISITOR_MONTH_BASIS` to change behavior app-wide.
+ * Fallback date used by the visitors-log date filter for rows that were never
+ * checked in (pending, canceled, expired). Rows with a check-in are always
+ * filtered by that visit's check-in time.
  */
 export enum VisitorMonthBasis {
         CheckedInAt = "checkedInAt",

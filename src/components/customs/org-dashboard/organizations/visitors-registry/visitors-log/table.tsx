@@ -19,7 +19,7 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { isVisitorLate } from "@/lib/visitors/late-check-in"
-import { ActiveVisitorsLogTableTypes } from "@/types/visitors.types"
+import { VisitorLogRow } from "@/types/visitors.types"
 import {
     closestCenter,
     DndContext,
@@ -86,7 +86,7 @@ function DragHandle({ id }: { id: string }) {
     )
 }
 
-const columns: ColumnDef<ActiveVisitorsLogTableTypes>[] = [
+const columns: ColumnDef<VisitorLogRow>[] = [
     {
         id: "drag",
         header: () => null,
@@ -249,9 +249,27 @@ const columns: ColumnDef<ActiveVisitorsLogTableTypes>[] = [
         cell: ({ row }) => (
             <div className="max-w-fit">
                 <p className="text-muted-foreground px-1.5 font-lato">
-                  {row.original.checkedInAt
-  ? format(new Date(row.original.checkedInAt), 'MMM d, yyyy hh:mm a')
-  : `Hasn't Checked In`}
+                    {row.original.checkedInAt
+                        ? format(new Date(row.original.checkedInAt), 'MMM d, yyyy hh:mm a')
+                        : `Hasn't Checked In`}
+                </p>
+                {row.original.visitIndex != null && row.original.visitCount > 1 && (
+                    <p className="px-1.5 text-xs text-muted-foreground/80">
+                        Visit {row.original.visitIndex + 1} of {row.original.visitCount}
+                    </p>
+                )}
+            </div>
+        ),
+    },
+    {
+        accessorKey: "checkedOutAt",
+        header: "Check-Out Time",
+        cell: ({ row }) => (
+            <div className="max-w-fit">
+                <p className="text-muted-foreground px-1.5 font-lato">
+                    {row.original.checkedOutAt
+                        ? format(new Date(row.original.checkedOutAt), 'MMM d, yyyy hh:mm a')
+                        : '—'}
                 </p>
             </div>
         ),
@@ -265,7 +283,7 @@ const columns: ColumnDef<ActiveVisitorsLogTableTypes>[] = [
     },
 ]
 
-function DraggableRow({ row }: { row: Row<ActiveVisitorsLogTableTypes> }) {
+function DraggableRow({ row }: { row: Row<VisitorLogRow> }) {
     const { transform, transition, setNodeRef, isDragging } = useSortable({
         id: row.original._id,
     })
@@ -295,7 +313,7 @@ export function ActiveVisitorsLogTable({
     setLimit,
     setPage,
 }: {
-    data: ActiveVisitorsLogTableTypes[],
+    data: VisitorLogRow[],
     setLimit: (limit: number) => void,
     setPage: (page: number) => void,
 }) {

@@ -8,16 +8,19 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useIsMobile } from "@/hooks/use-mobile"
 import useVisitors from "@/hooks/use-visitors"
 import { formatVisitorForQR, generateAndDownloadVisitorQR } from "@/lib/utils"
-import { ActiveVisitorsLogTableTypes, VisitorDataTypes } from "@/types/visitors.types"
+import { VisitorDataTypes, VisitorLogRow } from "@/types/visitors.types"
 import { IconDotsVertical } from "@tabler/icons-react"
 import { useState } from "react"
 
-export function VisitorsLogActions({ data }: { data: ActiveVisitorsLogTableTypes }) {
+export function VisitorsLogActions({ data }: { data: VisitorLogRow }) {
     const [cancel, setCancel] = useState(false)
     const [checkOut, setCheckOut] = useState(false)
     const [update, setUpdate] = useState(false)
     const isMobile = useIsMobile()
-    const { checkOutVisitor, cancelVisitor, updateVisitor } = useVisitors({ fetchVisitor: true, visitorId: data._id })
+    // Row `_id` is per visit; API calls must target the underlying record.
+    const { checkOutVisitor, cancelVisitor, updateVisitor } = useVisitors({ fetchVisitor: true, visitorId: data.recordId })
+    // Past visits are history: only the latest visit can be checked out/updated/canceled.
+    const isPastVisit = !data.isLatestVisit
 
     const handleCheckOut = async () => {
         const res = await checkOutVisitor()
@@ -55,11 +58,11 @@ export function VisitorsLogActions({ data }: { data: ActiveVisitorsLogTableTypes
                     <Button size="sm" variant="ghost"><IconDotsVertical /></Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-40">
-                    <DropdownMenuItem disabled={data.status !== 'checked_in'} onClick={() => setTimeout(() => {
+                    <DropdownMenuItem disabled={isPastVisit || data.status !== 'checked_in'} onClick={() => setTimeout(() => {
                         setCheckOut(true)
                     }, 60)}>Check out</DropdownMenuItem>
 
-                    <DropdownMenuItem disabled={data.status === 'checked_in'} onClick={() => setTimeout(() => {
+                    <DropdownMenuItem disabled={isPastVisit || data.status === 'checked_in'} onClick={() => setTimeout(() => {
                         setUpdate(true)
                     }, 60)}>Update Visitor</DropdownMenuItem>
 
@@ -69,7 +72,7 @@ export function VisitorsLogActions({ data }: { data: ActiveVisitorsLogTableTypes
 
                     <DropdownMenuItem
                         variant="destructive"
-                        disabled={data.status !== 'pending'}
+                        disabled={isPastVisit || data.status !== 'pending'}
                         onClick={() => setTimeout(() => {
                             setCancel(true)
                         }, 60)}

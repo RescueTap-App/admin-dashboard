@@ -1,5 +1,5 @@
 import type { ActiveVisitorsLogTableTypes } from "@/types/visitors.types"
-import { toYearMonthKey, type YearMonth } from "@/lib/visitors/filter-by-month"
+import { toPeriodKey, type VisitorPeriod } from "@/lib/visitors/filter-by-month"
 
 function csvEscape(value: unknown): string {
   const raw = value == null ? "" : String(value)
@@ -25,6 +25,7 @@ const CSV_HEADERS = [
   "Host",
   "Visitors Count",
   "Checked In At",
+  "Checked Out At",
   "Start Time",
   "End Time",
   "Created At",
@@ -44,6 +45,7 @@ export function visitorsToCsv(rows: ActiveVisitorsLogTableTypes[]): string {
         hostName(row),
         row.noOfVisitors,
         row.checkedInAt,
+        row.checkedOutAt,
         row.startTime,
         row.endTime,
         row.createdAt,
@@ -58,14 +60,14 @@ export function visitorsToCsv(rows: ActiveVisitorsLogTableTypes[]): string {
 /** Same download pattern as QR export in `lib/utils.ts`. */
 export function downloadVisitorsCsv(
   rows: ActiveVisitorsLogTableTypes[],
-  ym: YearMonth,
+  period: VisitorPeriod,
 ): void {
   const csv = visitorsToCsv(rows)
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
   const url = URL.createObjectURL(blob)
   const link = document.createElement("a")
   link.href = url
-  link.download = `visitors-${toYearMonthKey(ym)}.csv`
+  link.download = `visitors-${toPeriodKey(period)}.csv`
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)

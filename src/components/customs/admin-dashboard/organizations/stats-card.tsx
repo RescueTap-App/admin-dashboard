@@ -64,6 +64,7 @@ export default function StatsCard({ data }: { data: DashboardData }) {
                                         </div>
                                 </CardContent>
                         </Card>
+                        
 
                         {/* Analytics Summary */}
                         <Card className="rounded py-2 border shadow-none border-[#DDDDDD] bg-white">

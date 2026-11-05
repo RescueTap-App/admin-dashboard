@@ -5,10 +5,12 @@ import {
   useGetOrgVisitorsQuery,
   useGetTenantVisitorsQuery,
   useInviteVisitorMutation,
-  useLazyGetOrgVisitorsQuery,
   useUpdateVisitorMutation,
   useVerifyCodeMutation,
+  visitorsApi,
 } from "@/redux/features/visitors-api"
+import type { AppDispatch } from "@/lib/store"
+import { useDispatch } from "react-redux"
 import type {
   ActiveVisitorsLogTableTypes,
   VisitorDataTypes,
@@ -51,7 +53,7 @@ export default function useVisitors({
     useCancelVisitorMutation()
   const [checkOutVisitorMutation, { isLoading: checkingOutVisitor }] =
     useCheckOutVisitorMutation()
-  const [triggerOrgVisitors] = useLazyGetOrgVisitorsQuery()
+  const dispatch = useDispatch<AppDispatch>()
 
   const { data: allVisitors } = useGetAllVisitorsQuery(undefined, {
     skip: !fetchAllVisitors,
@@ -76,30 +78,43 @@ export default function useVisitors({
     },
   )
 
-  /** Pages through org visitors until all rows are loaded (for month filter / CSV). */
+  /**
+   * Loads every org visitor (for the date filter / CSV). The first page tells
+   * us how many pages exist; the rest are fetched in parallel. Rows are
+   * de-duplicated by id, since records created mid-fetch can shift across pages.
+   */
   const fetchAllOrgVisitors = useCallback(
     async (organizationId: string): Promise<ActiveVisitorsLogTableTypes[]> => {
-      const first = await triggerOrgVisitors({
-        orgId: organizationId,
-        page: 1,
-        limit: PAGE_SIZE,
-      }, false).unwrap()
-
-      const collected = [...(first.visitors || [])]
-      const totalPages = first.pagination?.totalPages ?? 1
-
-      for (let page = 2; page <= totalPages; page += 1) {
-        const next = await triggerOrgVisitors({
-          orgId: organizationId,
-          page,
-          limit: PAGE_SIZE,
-        }, false).unwrap()
-        collected.push(...(next.visitors || []))
+      const fetchPage = async (page: number) => {
+        const sub = dispatch(
+          visitorsApi.endpoints.getOrgVisitors.initiate(
+            { orgId: organizationId, page, limit: PAGE_SIZE },
+            { forceRefetch: true },
+          ),
+        )
+        try {
+          return await sub.unwrap()
+        } finally {
+          sub.unsubscribe()
+        }
       }
 
-      return collected
+      const first = await fetchPage(1)
+      const totalPages = first.pagination?.totalPages ?? 1
+
+      const rest = await Promise.all(
+        Array.from({ length: Math.max(0, totalPages - 1) }, (_, i) =>
+          fetchPage(i + 2),
+        ),
+      )
+
+      const byId = new Map<string, ActiveVisitorsLogTableTypes>()
+      for (const res of [first, ...rest]) {
+        for (const row of res.visitors || []) byId.set(String(row._id), row)
+      }
+      return Array.from(byId.values())
     },
-    [triggerOrgVisitors],
+    [dispatch],
   )
 
   const inviteVisitor = async (data: VisitorDataTypes, inviteTenantId: string) => {
