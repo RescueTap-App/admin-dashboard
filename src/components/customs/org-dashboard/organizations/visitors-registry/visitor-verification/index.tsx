@@ -257,6 +257,7 @@ export default function VisitorVerification({ selectOrganization = false }: { se
                             isVerifying={isVerifying}
                             tenantId={tenantId}
                             disabled={needsOrganization}
+                            paused={isDialogOpen}
                         />
                     ) : (
                         <ManualEntry
