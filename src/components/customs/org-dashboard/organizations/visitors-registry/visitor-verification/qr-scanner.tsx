@@ -336,7 +336,11 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                     <div className="space-y-4">
                         <div
                             className={cn(
-                                "relative overflow-hidden bg-black [perspective:1200px]",
+                                // `perspective` only while switching: any 3D context or filter on the
+                                // live video forces the GPU to re-composite every camera frame, which
+                                // at full-screen size makes the feed lag.
+                                "relative overflow-hidden bg-black",
+                                isSwitching && "[perspective:1200px]",
                                 expanded
                                     ? "fixed inset-0 z-40 h-[100dvh] w-screen rounded-none"
                                     : "w-full h-64 sm:h-80 rounded-lg",
@@ -375,10 +379,12 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                                         ref={camera.containerRef}
                                         onPlayingCapture={camera.handlePlaying}
                                         className={cn(
-                                            "absolute inset-0 transition-all duration-300 ease-in-out",
+                                            "absolute inset-0 transition-[opacity,transform,filter] duration-300 ease-in-out",
                                             "[&_video]:!object-cover",
+                                            // At rest: no transform/filter at all (not even identity values),
+                                            // so the video can be composited cheaply.
                                             isLive
-                                                ? "opacity-100 [transform:rotateY(0deg)_scale(1)] blur-0"
+                                                ? "opacity-100"
                                                 : isSwitching
                                                     ? "opacity-0 [transform:rotateY(90deg)_scale(0.92)] blur-sm"
                                                     : "opacity-0",
@@ -430,7 +436,7 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                                         <div
                                             role="status"
                                             aria-live="assertive"
-                                            className="absolute inset-0 flex items-center justify-center bg-black/45 backdrop-blur-[2px] animate-in fade-in duration-150"
+                                            className="absolute inset-0 flex items-center justify-center bg-black/55 animate-in fade-in duration-150"
                                         >
                                             <div className="flex flex-col items-center gap-3 rounded-2xl bg-white/95 px-8 py-6 text-center shadow-xl animate-in zoom-in-90 duration-200">
                                                 <CircleCheck className="w-12 h-12 text-green-600 animate-in zoom-in-50 duration-300" />
@@ -475,7 +481,7 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                                     {/* Top bar: active camera + close fullscreen */}
                                     <div className="absolute top-3 left-3 right-3 flex items-start justify-between gap-2 pointer-events-none">
                                         {isLive ? (
-                                            <span className="rounded-full bg-black/60 px-3 py-1 text-xs font-medium text-white backdrop-blur animate-in fade-in duration-300">
+                                            <span className="rounded-full bg-black/60 px-3 py-1 text-xs font-medium text-white animate-in fade-in duration-300">
                                                 {camera.activeFacing === "user" ? "Front camera" : "Back camera"}
                                             </span>
                                         ) : <span />}
@@ -484,7 +490,7 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                                                 type="button"
                                                 onClick={fullscreen.exit}
                                                 aria-label="Exit full screen"
-                                                className="pointer-events-auto rounded-full bg-black/60 p-2 text-white backdrop-blur transition hover:bg-black/80"
+                                                className="pointer-events-auto rounded-full bg-black/60 p-2 text-white transition hover:bg-black/80"
                                             >
                                                 <X className="w-5 h-5" />
                                             </button>
@@ -512,7 +518,7 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                                                 onClick={camera.switchCamera}
                                                 disabled={!isLive || isQrVerifying}
                                                 aria-label={`Switch to ${cameraName(camera.activeFacing === "user" ? "environment" : "user")} camera`}
-                                                className="rounded-full bg-black/60 p-3 text-white backdrop-blur transition hover:bg-black/80 disabled:opacity-40"
+                                                className="rounded-full bg-black/60 p-3 text-white transition hover:bg-black/80 disabled:opacity-40"
                                             >
                                                 <SwitchCamera className={cn("w-5 h-5 transition-transform duration-300", isSwitching && "rotate-180")} />
                                             </button>
@@ -522,7 +528,7 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                                                 <button
                                                     type="button"
                                                     onClick={stopScanning}
-                                                    className="rounded-full bg-red-600/90 px-4 py-3 text-sm font-medium text-white backdrop-blur transition hover:bg-red-600"
+                                                    className="rounded-full bg-red-600/90 px-4 py-3 text-sm font-medium text-white transition hover:bg-red-600"
                                                 >
                                                     Stop camera
                                                 </button>
@@ -532,7 +538,7 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                                                 onClick={fullscreen.toggle}
                                                 aria-label={expanded ? "Exit full screen" : "Full screen"}
                                                 title={expanded ? "Exit full screen" : "Full screen"}
-                                                className="rounded-full bg-black/60 p-3 text-white backdrop-blur transition hover:bg-black/80"
+                                                className="rounded-full bg-black/60 p-3 text-white transition hover:bg-black/80"
                                             >
                                                 {expanded ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
                                             </button>
