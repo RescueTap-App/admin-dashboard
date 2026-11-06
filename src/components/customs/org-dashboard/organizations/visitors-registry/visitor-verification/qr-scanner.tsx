@@ -342,7 +342,10 @@ function QRScanner({ onVisitorScanned, onVerificationComplete, isVerifying, tena
                                 "relative overflow-hidden bg-black",
                                 isSwitching && "[perspective:1200px]",
                                 expanded
-                                    ? "fixed inset-0 z-40 h-[100dvh] w-screen rounded-none"
+                                    // pointer-events-auto: stays tappable even if a closed dialog left
+                                    // `pointer-events: none` on <body>. An open dialog's overlay (z-50)
+                                    // still sits above and blocks it as intended.
+                                    ? "fixed inset-0 z-40 h-[100dvh] w-screen rounded-none pointer-events-auto"
                                     : "w-full h-64 sm:h-80 rounded-lg",
                             )}
                         >

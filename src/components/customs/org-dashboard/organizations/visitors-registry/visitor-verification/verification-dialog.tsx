@@ -48,9 +48,11 @@ export default function VerificationDialog({
         onClose()
     }
 
-    if (!visitor) return null
-
-    const formattedData = formatVisitorDisplayData(visitor)
+    // Keep <Dialog> mounted at all times: unmounting it while open (e.g. when the
+    // visitor is cleared on close) skips Radix's cleanup and leaves
+    // `pointer-events: none` on <body>, freezing the page — notably the
+    // full-screen scanner's buttons.
+    const formattedData = visitor ? formatVisitorDisplayData(visitor) : null
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
@@ -77,7 +79,7 @@ export default function VerificationDialog({
                     </div>
 
                     {/* Visitor Information */}
-                    {isSuccess && (
+                    {isSuccess && formattedData && (
                         <div className="space-y-6">
                             {/* Basic Information */}
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

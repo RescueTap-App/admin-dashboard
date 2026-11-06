@@ -161,12 +161,9 @@ export default function VisitorVerification({ selectOrganization = false }: { se
     }
 
     const handleDialogClose = () => {
+        // Only close: keep dialogData so the dialog animates out with its content
+        // (clearing it here unmounted the dialog mid-close). The next scan overwrites it.
         setIsDialogOpen(false)
-        setDialogData({
-            success: false,
-            message: '',
-            visitor: null
-        })
     }
 
     const copyToClipboard = async (data: VisitorData) => {
